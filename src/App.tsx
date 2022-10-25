@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RouteObject, useRoutes, useNavigate } from 'react-router-dom';
+import { RouteObject, useRoutes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import Favorite from './pages/Favorite';
@@ -9,6 +9,8 @@ import NoMatch from './components/common/NoMatch';
 import { useMobileCheck } from './hooks/useMobile';
 import OnBoarding from './pages/OnBoarding';
 import { isMobile } from 'react-device-detect';
+import Landing from './pages/Landing';
+import Join from './pages/Join';
 
 const App = () => {
   // router
@@ -17,7 +19,9 @@ const App = () => {
       path: '/',
       element: <Layout />,
       children: [
-        { index: true, element: <Home /> },
+        { index: true, element: <Landing /> },
+        { path: 'home', element: <Home /> },
+        { path: 'join', element: <Join /> },
         { path: 'favorite', element: <Favorite /> },
         { path: 'story', element: <Story /> },
         { path: 'profile', element: <Profile /> },
@@ -34,7 +38,7 @@ const App = () => {
     } else {
       setShow(false);
     }
-  }, [isShow]);
+  });
 
   return (
     <>
