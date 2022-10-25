@@ -5,7 +5,7 @@ export const useMobileCheck = () => {
   const [mobile, setMobile] = useState<boolean>();
   const mobileState = () => {
     const minWidth = 500;
-    return window.innerWidth < minWidth || isMobile;
+    return window.innerWidth < minWidth && isMobile;
   };
   useEffect(() => {
     setMobile(mobileState);

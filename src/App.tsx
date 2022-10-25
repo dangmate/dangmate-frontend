@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck } from './hooks/useMobile';
 import OnBoarding from './pages/OnBoarding';
+import { isMobile } from 'react-device-detect';
 
 const App = () => {
   // router
@@ -28,8 +29,12 @@ const App = () => {
 
   const [isShow, setShow] = useState<boolean>(true);
   useEffect(() => {
-    setTimeout(() => setShow(false), 1000);
-  });
+    if (isMobile) {
+      setTimeout(() => setShow(false), 1000);
+    } else {
+      setShow(false);
+    }
+  }, [isShow]);
 
   return (
     <>
