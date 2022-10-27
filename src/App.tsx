@@ -6,9 +6,8 @@ import Favorite from './pages/Favorite';
 import Story from './pages/Story';
 import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
-import { useMobileCheck } from './hooks/useMobile';
+import { useMobileCheck, isMobile } from './hooks/useMobile';
 import OnBoarding from './pages/OnBoarding';
-import { isMobile } from 'react-device-detect';
 import Landing from './pages/Landing';
 import Join from './pages/Join';
 
@@ -33,7 +32,7 @@ const App = () => {
 
   const [isShow, setShow] = useState<boolean>(true);
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile()) {
       setTimeout(() => setShow(false), 1000);
     } else {
       setShow(false);

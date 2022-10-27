@@ -6,7 +6,7 @@ const S = {
     position: relative;
     width: 100%;
     height: 100vh;
-    background: #888;
+    background: #fff;
     text-align: center;
   `,
   Logo: styled.div`
