@@ -24,10 +24,10 @@ export const handlers = [
   }),
 
   rest.post('/join', (req, res, ctx) => {
-    const { user } = req.body;
+    // const { user } = req.body;
     return res(
       ctx.json({
-        user
+        // user
       }),
       ctx.status(200)
     );

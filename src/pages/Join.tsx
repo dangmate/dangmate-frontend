@@ -21,6 +21,7 @@ const DuplicateEmailCheck = () => {
       setValidEmail(true);
     } else {
       alert('중복된 이메일입니다.');
+      setValidEmail(false);
     }
   };
   return (
@@ -46,6 +47,7 @@ const DuplicateNickCheck = () => {
       setValidNick(true);
     } else {
       alert('중복된 닉네임입니다.');
+      setValidNick(false);
     }
   };
   return (
