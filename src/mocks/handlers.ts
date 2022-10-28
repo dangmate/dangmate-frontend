@@ -1,20 +1,33 @@
 import { rest } from 'msw';
+import { JoinForm } from '../pages/Join';
+
 export const handlers = [
   // 이메일 중복 체크
   rest.post('/join/email-check', (req, res, ctx) => {
     const emailValue = req.body;
     return res(
       ctx.json({
-        check: emailValue === 'diddpwl80@naver.com' ? false : true
+        check: true
       }),
       ctx.status(200)
     );
   }),
   // 닉네임 중복 체크
   rest.post('/join/nick-check', (req, res, ctx) => {
+    const nickValue = req.body;
     return res(
       ctx.json({
         check: true
+      }),
+      ctx.status(200)
+    );
+  }),
+
+  rest.post('/join', (req, res, ctx) => {
+    const { user } = req.body;
+    return res(
+      ctx.json({
+        user
       }),
       ctx.status(200)
     );

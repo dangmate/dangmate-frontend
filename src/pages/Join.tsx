@@ -20,13 +20,38 @@ const DuplicateEmailCheck = () => {
     if (await value.data.check) {
       setValidEmail(true);
     } else {
-      alert('중복된 아이디입니다.');
+      alert('중복된 이메일입니다.');
     }
   };
   return (
     <>
       {validEmail ? (
-        <span>사용 가능한 아이디입니다.</span>
+        <span>사용 가능한 이메일입니다.</span>
+      ) : (
+        <button type='button' onClick={checkEmail}>
+          중복체크
+        </button>
+      )}
+    </>
+  );
+};
+
+const DuplicateNickCheck = () => {
+  const { values, submitForm } = useFormikContext<JoinForm>() ?? {};
+  const [validNick, setValidNick] = useState<boolean>(false);
+
+  const checkEmail = async () => {
+    const value = await axios.post('/join/nick-check', values.nick);
+    if (await value.data.check) {
+      setValidNick(true);
+    } else {
+      alert('중복된 닉네임입니다.');
+    }
+  };
+  return (
+    <>
+      {validNick ? (
+        <span>사용 가능한 닉네임입니다.</span>
       ) : (
         <button type='button' onClick={checkEmail}>
           중복체크
@@ -59,7 +84,13 @@ const Join = () => {
           name: Yup.string().required('필수값입니다'),
           nick: Yup.string().required('필수값입니다')
         })}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values, { resetForm }) => {
+          resetForm({});
+          axios
+            .post('/join', values)
+            .then((res) => alert('회원가입이 완료되었습니다.'))
+            .catch((err) => console.log(err));
+        }}
       >
         {({ handleSubmit, getFieldProps, errors, touched }) => (
           <form onSubmit={handleSubmit}>
@@ -74,14 +105,15 @@ const Join = () => {
                   placeholder='이메일을 입력해주세요'
                   {...getFieldProps('email')}
                 />
+                <DuplicateEmailCheck />
+
                 <p
                   style={{
-                    display: errors.email && touched.email ? 'block' : 'hidden'
+                    display: errors.email && touched.email ? 'block' : 'none'
                   }}
                 >
                   {errors.email}
                 </p>
-                <DuplicateEmailCheck />
               </dd>
 
               <dt>
@@ -97,8 +129,8 @@ const Join = () => {
               </dd>
               <p
                 style={{
-                  visibility:
-                    errors.password && touched.password ? 'visible' : 'hidden'
+                  display:
+                    errors.password && touched.password ? 'block' : 'none'
                 }}
               >
                 {errors.password}
@@ -117,7 +149,7 @@ const Join = () => {
               </dd>
               <p
                 style={{
-                  visibility: errors.tel && touched.tel ? 'visible' : 'hidden'
+                  display: errors.tel && touched.tel ? 'block' : 'none'
                 }}
               >
                 {errors.tel}
@@ -136,7 +168,7 @@ const Join = () => {
               </dd>
               <p
                 style={{
-                  visibility: errors.name && touched.name ? 'visible' : 'hidden'
+                  display: errors.name && touched.name ? 'block' : 'none'
                 }}
               >
                 {errors.name}
@@ -152,10 +184,11 @@ const Join = () => {
                   placeholder='닉네임'
                   {...getFieldProps('nick')}
                 />
+                <DuplicateNickCheck />
               </dd>
               <p
                 style={{
-                  visibility: errors.nick && touched.nick ? 'visible' : 'hidden'
+                  display: errors.nick && touched.nick ? 'block' : 'none'
                 }}
               >
                 {errors.nick}
