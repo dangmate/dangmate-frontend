@@ -18,21 +18,22 @@ const Join = () => {
     name: '',
     nick: ''
   };
+  const userSchema = Yup.object({
+    email: Yup.string()
+      .email('올바른 이메일 주소가 아닙니다.')
+      .required('필수값입니다.'),
+    password: Yup.string().min(5).required('필수값입니다'),
+    tel: Yup.number().required('필수값입니다'),
+    name: Yup.string().required('필수값입니다'),
+    nick: Yup.string().required('필수값입니다')
+  });
 
   return (
     <>
       <h2>회원가입</h2>
       <Formik
         initialValues={initialValues}
-        validationSchema={Yup.object({
-          email: Yup.string()
-            .email('올바른 이메일 주소가 아닙니다.')
-            .required('필수값입니다.'),
-          password: Yup.string().min(5).required('필수값입니다'),
-          tel: Yup.number().required('필수값입니다'),
-          name: Yup.string().required('필수값입니다'),
-          nick: Yup.string().required('필수값입니다')
-        })}
+        validationSchema={userSchema}
         onSubmit={(values) => console.log(values)}
       >
         {({ handleSubmit, getFieldProps, errors, touched }) => (
