@@ -21,7 +21,8 @@ interface JoinType {
 
 const Join = () => {
   const test = () => {
-    axios.get('/user').then((res) => console.log(res.data));
+    // axios.get('/user').then((res) => console.log(res.data));
+    console.log(import.meta.env.VITE_SOME_KEY);
   };
   const initialValues: JoinType = {
     email: '',

@@ -5,7 +5,7 @@ import './styles/reset.css';
 import { BrowserRouter } from 'react-router-dom';
 import { worker } from './mocks/browser';
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.MODE === 'development') {
   worker.start();
 }
 
