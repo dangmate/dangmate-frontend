@@ -1,5 +1,25 @@
 import { rest } from 'msw';
 export const handlers = [
+  // 이메일 중복 체크
+  rest.post('/join/email-check', (req, res, ctx) => {
+    const emailValue = req.body;
+    return res(
+      ctx.json({
+        check: emailValue === 'diddpwl80@naver.com' ? false : true
+      }),
+      ctx.status(200)
+    );
+  }),
+  // 닉네임 중복 체크
+  rest.post('/join/nick-check', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        check: true
+      }),
+      ctx.status(200)
+    );
+  }),
+
   rest.post('/login', (req, res, ctx) => {
     // Persist user's authentication in the session
     sessionStorage.setItem('is-authenticated', 'true');
@@ -25,6 +45,16 @@ export const handlers = [
       ctx.status(200),
       ctx.json({
         username: 'admin'
+      })
+    );
+  }),
+  rest.get('/users/:userId', (req, res, ctx) => {
+    const { userId } = req.params;
+    return res(
+      ctx.json({
+        id: userId,
+        firstName: 'John',
+        lastName: 'Maverick'
       })
     );
   })

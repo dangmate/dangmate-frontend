@@ -1,54 +1,64 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, { useState } from 'react';
+import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import styled from '@emotion/styled';
 import axios from 'axios';
 
-const S = {
-  ErrorMsg: styled.p`
-    color: red;
-    visibility: hidden;
-  `
-};
-
-interface JoinType {
+export interface JoinForm {
   email: string;
-  password: number | string;
-  tel: number | string;
+  password: string | number;
+  tel: string | number;
   name: string;
   nick: string;
 }
 
-const Join = () => {
-  const test = () => {
-    // axios.get('/user').then((res) => console.log(res.data));
-    console.log(import.meta.env.VITE_SOME_KEY);
-  };
-  const initialValues: JoinType = {
-    email: '',
-    password: '',
-    tel: '',
-    name: '',
-    nick: ''
-  };
-  const userSchema = Yup.object({
-    email: Yup.string()
-      .email('올바른 이메일 주소가 아닙니다.')
-      .required('필수값입니다.'),
-    password: Yup.string()
-      .min(5, '최소 5자 이상입니다')
-      .required('필수값입니다'),
-    tel: Yup.number().required('필수값입니다'),
-    name: Yup.string().required('필수값입니다'),
-    nick: Yup.string().required('필수값입니다')
-  });
+const DuplicateEmailCheck = () => {
+  const { values, submitForm } = useFormikContext<JoinForm>() ?? {};
+  const [validEmail, setValidEmail] = useState<boolean>(false);
 
+  const checkEmail = async () => {
+    const value = await axios.post('/join/email-check', values.email);
+    if (await value.data.check) {
+      setValidEmail(true);
+    } else {
+      alert('중복된 아이디입니다.');
+    }
+  };
+  return (
+    <>
+      {validEmail ? (
+        <span>사용 가능한 아이디입니다.</span>
+      ) : (
+        <button type='button' onClick={checkEmail}>
+          중복체크
+        </button>
+      )}
+    </>
+  );
+};
+
+const Join = () => {
   return (
     <>
       <h2>회원가입</h2>
       <Formik
-        initialValues={initialValues}
-        validationSchema={userSchema}
+        initialValues={{
+          email: '',
+          password: '',
+          tel: '',
+          name: '',
+          nick: ''
+        }}
+        validationSchema={Yup.object({
+          email: Yup.string()
+            .email('올바른 이메일 주소가 아닙니다.')
+            .required('필수값입니다.'),
+          password: Yup.string()
+            .min(5, '최소 5자 이상입니다')
+            .required('필수값입니다'),
+          tel: Yup.number().required('필수값입니다'),
+          name: Yup.string().required('필수값입니다'),
+          nick: Yup.string().required('필수값입니다')
+        })}
         onSubmit={(values) => console.log(values)}
       >
         {({ handleSubmit, getFieldProps, errors, touched }) => (
@@ -64,16 +74,15 @@ const Join = () => {
                   placeholder='이메일을 입력해주세요'
                   {...getFieldProps('email')}
                 />
+                <p
+                  style={{
+                    display: errors.email && touched.email ? 'block' : 'hidden'
+                  }}
+                >
+                  {errors.email}
+                </p>
+                <DuplicateEmailCheck />
               </dd>
-
-              <p
-                style={{
-                  visibility:
-                    errors.email && touched.email ? 'visible' : 'hidden'
-                }}
-              >
-                {errors.email}
-              </p>
 
               <dt>
                 <label htmlFor='password'>비밀번호</label>
@@ -153,9 +162,6 @@ const Join = () => {
               </p>
             </dl>
             <button type='submit'>가입하기</button>
-            <button type='button' onClick={test}>
-              test
-            </button>
           </form>
         )}
       </Formik>
