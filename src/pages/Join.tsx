@@ -1,6 +1,15 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import styled from '@emotion/styled';
+import axios from 'axios';
+
+const S = {
+  ErrorMsg: styled.p`
+    color: red;
+    visibility: hidden;
+  `
+};
 
 interface JoinType {
   email: string;
@@ -11,6 +20,9 @@ interface JoinType {
 }
 
 const Join = () => {
+  const test = () => {
+    axios.get('/user').then((res) => console.log(res.data));
+  };
   const initialValues: JoinType = {
     email: '',
     password: '',
@@ -22,7 +34,9 @@ const Join = () => {
     email: Yup.string()
       .email('올바른 이메일 주소가 아닙니다.')
       .required('필수값입니다.'),
-    password: Yup.string().min(5).required('필수값입니다'),
+    password: Yup.string()
+      .min(5, '최소 5자 이상입니다')
+      .required('필수값입니다'),
     tel: Yup.number().required('필수값입니다'),
     name: Yup.string().required('필수값입니다'),
     nick: Yup.string().required('필수값입니다')
@@ -50,6 +64,7 @@ const Join = () => {
                   {...getFieldProps('email')}
                 />
               </dd>
+
               <p
                 style={{
                   visibility:
@@ -137,6 +152,9 @@ const Join = () => {
               </p>
             </dl>
             <button type='submit'>가입하기</button>
+            <button type='button' onClick={test}>
+              test
+            </button>
           </form>
         )}
       </Formik>
