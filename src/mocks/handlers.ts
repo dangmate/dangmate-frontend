@@ -1,5 +1,4 @@
 import { rest } from 'msw';
-import { JoinForm } from '../pages/Join';
 
 export const handlers = [
   // 이메일 중복 체크

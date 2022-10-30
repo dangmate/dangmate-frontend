@@ -8,8 +8,9 @@ import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck, isMobile } from './hooks/useMobile';
 import OnBoarding from './pages/OnBoarding';
-import Landing from './pages/Landing';
+import Login1 from './pages/Login-1';
 import Join from './pages/Join';
+import Login from './pages/Login';
 
 const App = () => {
   // router
@@ -18,9 +19,10 @@ const App = () => {
       path: '/',
       element: <Layout />,
       children: [
-        { index: true, element: <Landing /> },
+        { index: true, element: <Login1 /> },
         { path: 'home', element: <Home /> },
         { path: 'join', element: <Join /> },
+        { path: 'login', element: <Login /> },
         { path: 'favorite', element: <Favorite /> },
         { path: 'story', element: <Story /> },
         { path: 'profile', element: <Profile /> },
