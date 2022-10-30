@@ -2,7 +2,6 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
-import { Common } from '../styles/common';
 import ButtonRound from '../components/asset/ButtonRound';
 
 const S = {
@@ -33,7 +32,7 @@ const S = {
   `
 };
 
-const Login1 = () => {
+const LoginStep1 = () => {
   const navigate = useNavigate();
 
   return (
@@ -44,7 +43,7 @@ const Login1 = () => {
       </S.Title>
       <div>이미지</div>
       <S.Bottom>
-        <S.Button onClick={() => navigate('/join')}>
+        <S.Button onClick={() => navigate('/login')}>
           <ButtonRound disabled={false} type='button'>
             시작하기
           </ButtonRound>
@@ -55,4 +54,4 @@ const Login1 = () => {
   );
 };
 
-export default Login1;
+export default LoginStep1;

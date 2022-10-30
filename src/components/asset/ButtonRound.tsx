@@ -23,7 +23,6 @@ const Button = styled.button<IProps>`
 `;
 
 const ButtonRound = (props: IProps) => {
-  console.log(props);
   return (
     <Button disabled={props.disabled} type={props.type}>
       {props.children}
