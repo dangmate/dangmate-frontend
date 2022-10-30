@@ -1,17 +1,17 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-const Nav = styled.nav`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding-bottom: 3vw;
-  & > ul {
-    display: flex;
-    justify-content: space-around;
-  }
-`;
+// const Nav = styled.nav`
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+//   padding-bottom: 3vw;
+//   & > ul {
+//     display: flex;
+//     justify-content: space-around;
+//   }
+// `;
 
 const Layout = () => {
   return (
