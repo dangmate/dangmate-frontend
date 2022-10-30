@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import { Common } from '../styles/common';
+import ButtonRound from '../components/asset/ButtonRound';
 
 const S = {
   Wrapper: styled.div`
@@ -23,14 +24,6 @@ const S = {
   `,
   Button: styled.div`
     width: 100%;
-    & > button {
-      width: 100%;
-      height: ${getVwValue('56')};
-      background-color: ${Common.colors.primary};
-      border: none;
-      border-radius: ${getVwValue('6')};
-      color: #fff;
-    }
   `,
   Login: styled.div`
     padding: 5vw;
@@ -51,8 +44,10 @@ const Login1 = () => {
       </S.Title>
       <div>이미지</div>
       <S.Bottom>
-        <S.Button>
-          <button onClick={() => navigate('/join')}>시작하기</button>
+        <S.Button onClick={() => navigate('/join')}>
+          <ButtonRound disabled={false} type='button'>
+            시작하기
+          </ButtonRound>
         </S.Button>
         <S.Login>일단 구경할게요!</S.Login>
       </S.Bottom>
