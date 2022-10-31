@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
@@ -65,23 +65,12 @@ const S = {
     width: 100%;
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
-    border: none;
     border-bottom: ${(props) =>
       props.err
         ? '1.5px solid ' + Common.colors.system_error
         : '1px solid ' + Common.colors.grey_disabled};
   `
 };
-
-interface LoginType {
-  email: string;
-  password: string;
-}
-
-interface ErrorType {
-  email: string;
-  password: string;
-}
 
 const LoginStep2 = () => {
   const navigate = useNavigate();
@@ -105,7 +94,7 @@ const LoginStep2 = () => {
 
   const validateEmail = (value: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    if (!regex.test(email)) {
+    if (!regex.test(value)) {
       setEmailErrorMsg('올바른 이메일 형식을 입력해 주세요.');
       setEmailError(true);
     } else {
@@ -114,7 +103,7 @@ const LoginStep2 = () => {
   };
 
   const validatePassword = (value: string) => {
-    if (password.length < 4) {
+    if (value.length < 4) {
       setPsErrorMsg('잘못된 비밀번호입니다.');
       setPasswordError(true);
     } else {
