@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
 
+interface InputProps {
+  err: boolean;
+}
+
 const S = {
   Wrapper: styled.div`
     position: relative;
@@ -56,13 +60,15 @@ const S = {
       font-size: ${getVwValue('12')};
     }
   `,
-  Input: styled.input`
+  Input: styled.input<InputProps>`
     display: block;
     width: 100%;
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border: none;
-    border-bottom: 1px solid ${Common.colors.grey_disabled};
+    border-bottom: 1px solid
+      ${(props) =>
+        props.err ? Common.colors.system_error : Common.colors.grey_disabled};
   `
 };
 
@@ -76,11 +82,6 @@ interface ErrorType {
   password: string;
 }
 
-interface TouchedType {
-  email: boolean;
-  password: boolean;
-}
-
 const LoginStep2 = () => {
   const navigate = useNavigate();
 
@@ -88,7 +89,6 @@ const LoginStep2 = () => {
   const initialValues = { email: '', password: '' };
   const [formValues, setFormValues] = useState<LoginType>(initialValues);
   const [formErrors, setFormErrors] = useState({} as ErrorType);
-  const [formTouched, setFormTouched] = useState({} as TouchedType);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitForm = () => {
@@ -98,17 +98,6 @@ const LoginStep2 = () => {
   const handleChange = (e: React.ChangeEvent) => {
     const { name, value } = e.currentTarget as HTMLInputElement;
     setFormValues({ ...formValues, [name]: value });
-    touched(formValues);
-  };
-
-  const touched = (values: LoginType) => {
-    const touched = {} as TouchedType;
-    if (!values.email) touched.email = false;
-    else touched.email = true;
-
-    if (!values.password) touched.password = false;
-    else touched.password = true;
-    console.log(touched);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -161,6 +150,7 @@ const LoginStep2 = () => {
               id='email'
               value={formValues.email}
               onChange={handleChange}
+              err={!!formErrors.email}
               placeholder='올바른 이메일 형식을 입력해주세요.'
             />
             {formErrors.email && <p>{formErrors.email}</p>}
@@ -173,6 +163,7 @@ const LoginStep2 = () => {
               id='password'
               value={formValues.password}
               onChange={handleChange}
+              err={!!formErrors.password}
               placeholder='N자리 이상 입력해 주세요.'
             />
             {formErrors.password && <p>{formErrors.password}</p>}
