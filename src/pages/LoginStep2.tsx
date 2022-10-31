@@ -62,9 +62,7 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border: none;
-    border-bottom: 1px solid
-      ${(props) =>
-        props.error ? Common.colors.system_error : Common.colors.grey_disabled};
+    border-bottom: 1px solid ${Common.colors.grey_disabled};
   `
 };
 
@@ -170,7 +168,6 @@ const LoginStep2 = () => {
           <S.Field>
             <label htmlFor='password'>비밀번호</label>
             <S.Input
-              error={formErrors.password && formTouched.password}
               type='password'
               name='password'
               id='password'
