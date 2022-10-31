@@ -177,7 +177,7 @@ const LoginStep2 = () => {
         </S.Form>
       </S.Content>
       <S.Bottom>
-        <S.Join>
+        <S.Join onClick={() => navigate('/join')}>
           <span>초간단 회원가입</span>
         </S.Join>
         <S.Button onClick={handleSubmit}>
