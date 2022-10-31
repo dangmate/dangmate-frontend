@@ -4,6 +4,7 @@ import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
+import { requestLogin, LoginType } from '../api/request';
 
 interface InputProps {
   err: boolean;
@@ -129,9 +130,17 @@ const LoginStep2 = () => {
       !emailError &&
       !passwordError
     ) {
-      console.log(email, password);
+      const data = { email, password };
+      // console.log(email, password);
+      onLogin(data);
       alert('로그인 성공!');
     }
+  };
+
+  const onLogin = (data: LoginType) => {
+    requestLogin(data);
+    setEmail('');
+    setPassword('');
   };
 
   return (
