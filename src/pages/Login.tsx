@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
 import { requestLogin, LoginType } from '../api/request';
+import axios from 'axios';
 
 interface InputProps {
-  err: boolean;
+  state?: string;
 }
 
 const S = {
@@ -59,11 +60,16 @@ const S = {
     margin-top: ${getVwValue('20')};
   `,
   Join: styled.div`
-    width: ${getVwValue('150')};
-    margin: 0 auto;
-    background: url('/images/join_arrow.png') no-repeat right center/contain;
-    background-size: ${getVwValue('10')};
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+  ArrowImg: styled.div`
+    display: inline-block;
+    width: ${getVwValue('10')};
+    height: ${getVwValue('20')};
+    margin-left: ${getVwValue('15')};
   `,
   Field: styled.div`
     margin-bottom: ${getVwValue('28')};
@@ -78,15 +84,78 @@ const S = {
     width: 100%;
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
-    border-bottom: ${(props) =>
-      props.err
-        ? '1.5px solid ' + Common.colors.system_error
-        : '1px solid ' + Common.colors.grey_disabled};
+    border-bottom: 1px solid ${(props) => props.state};
   `
 };
 
+const EMAIL_REGEX =
+  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+const PWD_REGEX = /^[A-Za-z0-9]{6,12}$/;
+
 const Login = () => {
   const navigate = useNavigate();
+
+  const userRef = useRef<HTMLInputElement>(null);
+
+  const [email, setEmail] = useState<string>('');
+  const [validEmail, setValidEmail] = useState<boolean>(false);
+  const [emailFocus, setEmailFocus] = useState<boolean>(false);
+
+  const [pwd, setPwd] = useState<string>('');
+  const [validPwd, setValidPwd] = useState<boolean>(false);
+  const [pwdFocus, setPwdFocus] = useState<boolean>(false);
+
+  const [collectPwd, setCollectPwd] = useState(true);
+
+  const inputEmailState = () => {
+    let color = '';
+    if (!!email && !validEmail) color = Common.colors.system_error;
+    else if (!!email && validEmail) color = Common.colors.system_good;
+    else if (!email && !validEmail) color = Common.colors.grey_disabled;
+    return color;
+  };
+  const inputPwdState = () => {
+    let color = '';
+    if (!!pwd && !validPwd) color = Common.colors.system_error;
+    else if (!!pwd && validPwd) color = Common.colors.system_good;
+    else if (!pwd && !validPwd) color = Common.colors.grey_disabled;
+    return color;
+  };
+
+  useEffect(() => {
+    if (userRef.current) {
+      userRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(email));
+  }, [email]);
+
+  useEffect(() => {
+    setValidPwd(PWD_REGEX.test(pwd));
+    setCollectPwd(true);
+  }, [pwd]);
+
+  const handleSubmit = async () => {
+    const data = { email, pwd };
+
+    try {
+      const response = await axios.post('/login', data);
+      if (response.data.user) {
+        console.log(response.data.accessToken);
+        alert('로그인 성공!');
+        setEmail('');
+        setPwd('');
+      } else {
+        // 로그인을 실패했을 때는 wrongPwd 상태값을 변경
+        setCollectPwd(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    // 로그인을 성공했을 때 : accessToken을 저장
+  };
 
   return (
     <S.Wrapper>
@@ -101,20 +170,27 @@ const Login = () => {
           <br /> 내 동네 댕댕이들 만나기
         </S.Title>
 
-        <S.Form noValidate>
+        <S.Form>
           <S.Field>
             <label htmlFor='email'>이메일</label>
             <S.Input
               type='email'
               name='email'
               id='email'
-              // value={email}
-              // onChange={handleEmailChange}
-              // onBlur={handleEmailBlur}
-              // err={emailError}
+              ref={userRef}
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setEmailFocus(true)}
+              onBlur={() => setEmailFocus(false)}
               placeholder='올바른 이메일 형식을 입력해주세요.'
+              state={inputEmailState()}
             />
-            {/*{emailError && <p>{emailErrorMsg}</p>}*/}
+            {email && !validEmail ? (
+              <p>올바른 이메일 형식을 입력해 주세요.</p>
+            ) : (
+              <></>
+            )}
           </S.Field>
           <S.Field>
             <label htmlFor='password'>비밀번호</label>
@@ -122,23 +198,37 @@ const Login = () => {
               type='password'
               name='password'
               id='password'
-              // value={password}
-              // onChange={handlePasswordChange}
-              // onBlur={handlePasswordBlur}
-              // err={passwordError}
+              autoComplete='off'
+              required
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              onFocus={() => setPwdFocus(true)}
+              onBlur={() => setPwdFocus(false)}
               placeholder='N자리 이상 입력해 주세요.'
+              state={inputPwdState()}
             />
-            {/*{passwordError && <p>{psErrorMsg}</p>}*/}
+            {pwd && !validPwd ? (
+              <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+            ) : (
+              <></>
+            )}
+            {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
           </S.Field>
         </S.Form>
       </S.Content>
       <S.Bottom>
         <S.Join onClick={() => navigate('/join')}>
           <span>초간단 회원가입</span>
+          <S.ArrowImg>
+            <img src='/images/join_arrow.png' alt='arrow' />
+          </S.ArrowImg>
         </S.Join>
-        {/*<S.Button onClick={handleSubmit}>*/}
         <S.Button>
-          <ButtonRound disabled={false} type='submit'>
+          <ButtonRound
+            onClick={handleSubmit}
+            disabled={!(validEmail && validPwd)}
+            type='button'
+          >
             로그인
           </ButtonRound>
         </S.Button>

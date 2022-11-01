@@ -36,14 +36,22 @@ export const handlers = [
     );
   }),
 
+  // 로그인
   rest.post('/login', (req, res, ctx) => {
     // Persist user's authentication in the session
-    sessionStorage.setItem('is-authenticated', 'true');
+    // sessionStorage.setItem('is-authenticated', 'true');
+    const { email, pwd }: any = req.body;
+    const accessToken = '1233577';
     return res(
       // Respond with a 200 status code
+      ctx.json({
+        accessToken,
+        user: email === 'diddpwl80@naver.com' && pwd === '123456' ? true : false
+      }),
       ctx.status(200)
     );
   }),
+
   rest.get('/user', (req, res, ctx) => {
     // Check if the user is authenticated in this session
     const isAuthenticated = sessionStorage.getItem('is-authenticated');

@@ -8,6 +8,7 @@ interface IProps {
   children: string;
   state?: 'enable' | 'disable';
   disabled: boolean;
+  onClick?: () => void;
 }
 
 const Button = styled.button<IProps>`
@@ -24,7 +25,7 @@ const Button = styled.button<IProps>`
 
 const ButtonRound = (props: IProps) => {
   return (
-    <Button disabled={props.disabled} type={props.type}>
+    <Button disabled={props.disabled} type={props.type} onClick={props.onClick}>
       {props.children}
     </Button>
   );

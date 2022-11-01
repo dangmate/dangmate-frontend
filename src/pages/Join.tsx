@@ -66,11 +66,16 @@ const S = {
     margin-top: ${getVwValue('20')};
   `,
   Join: styled.div`
-    width: ${getVwValue('200')};
-    margin: 0 auto;
-    background: url('/images/join_arrow.png') no-repeat right center/contain;
-    background-size: ${getVwValue('10')};
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+  ArrowImg: styled.div`
+    display: inline-block;
+    width: ${getVwValue('10')};
+    height: ${getVwValue('20')};
+    margin-left: ${getVwValue('15')};
   `,
   Field: styled.div`
     margin-bottom: ${getVwValue('28')};
@@ -124,7 +129,7 @@ const Join = () => {
   const [keywordFocus, setKeywordFocus] = useState<boolean>(false);
   const [checkUniqNick, setCheckUniqNick] = useState<boolean>(true);
 
-  const inputUserState = () => {
+  const inputEmailState = () => {
     let color = '';
     if (!!email && !validEmail) color = Common.colors.system_error;
     else if (!!email && validEmail) color = Common.colors.system_good;
@@ -218,8 +223,7 @@ const Join = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const nick = keyword + ' ' + nickname;
     const data: SubmitType = { email, pwd, nick };
     try {
@@ -271,7 +275,7 @@ const Join = () => {
                     onFocus={() => setEmailFocus(true)}
                     onBlur={() => setEmailFocus(false)}
                     placeholder='올바른 이메일 형식을 입력해주세요.'
-                    state={inputUserState()}
+                    state={inputEmailState()}
                   />
                   {email && !validEmail ? (
                     <p>올바른 이메일 형식을 입력해 주세요.</p>
@@ -332,6 +336,9 @@ const Join = () => {
           <S.Bottom>
             <S.Join onClick={() => navigate('/join')}>
               <span>내 지역이 잘못 입력됐나요?</span>
+              <S.ArrowImg>
+                <img src='/images/join_arrow.png' alt='arrow' />
+              </S.ArrowImg>
             </S.Join>
             <S.Button onClick={() => setStep(!firstStep)}>
               <ButtonRound
@@ -346,7 +353,9 @@ const Join = () => {
       ) : (
         <>
           <S.Arrow onClick={() => setStep(true)}>
-            <img src='/images/back_arrow.png' alt='arrow' />
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>{' '}
           </S.Arrow>
           <S.Content>
             <S.Title>내 정보 입력 (2/2)</S.Title>
@@ -410,8 +419,9 @@ const Join = () => {
             </S.Form>
           </S.Content>
           <S.Bottom>
-            <S.Button onClick={handleSubmit}>
+            <S.Button>
               <ButtonRound
+                onClick={handleSubmit}
                 disabled={
                   !(
                     validEmail &&
