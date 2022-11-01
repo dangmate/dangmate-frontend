@@ -11,6 +11,7 @@ import OnBoarding from './pages/OnBoarding';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Join from './pages/Join';
+import MobileGuide from './components/common/MobileGuide';
 
 const App = () => {
   // router
@@ -43,12 +44,11 @@ const App = () => {
 
   return (
     <>
-      <div className='App'>{useMobileCheck() ? element : mobileGuide()}</div>
+      <div className='App'>{useMobileCheck() ? element : <MobileGuide />}</div>
       {isShow && <OnBoarding />}
     </>
   );
 };
-
 const mobileGuide = () => {
   return (
     <>
