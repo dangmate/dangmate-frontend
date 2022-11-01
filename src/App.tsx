@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RouteObject, useRoutes } from 'react-router-dom';
+import { RouteObject, useLocation, useRoutes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import Favorite from './pages/Favorite';
@@ -32,6 +32,7 @@ const App = () => {
     }
   ];
   const element = useRoutes(routes);
+  const location = useLocation();
 
   const [isShow, setShow] = useState<boolean>(true);
   useEffect(() => {
@@ -45,14 +46,7 @@ const App = () => {
   return (
     <>
       <div className='App'>{useMobileCheck() ? element : <MobileGuide />}</div>
-      {isShow && <OnBoarding />}
-    </>
-  );
-};
-const mobileGuide = () => {
-  return (
-    <>
-      <h2>모바일에 최적화된 서비스입니다.</h2>
+      {location.pathname === '/' && isShow && <OnBoarding />}
     </>
   );
 };
