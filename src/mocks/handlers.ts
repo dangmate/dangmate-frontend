@@ -16,7 +16,6 @@ export const handlers = [
   rest.post('/join/nick-check', (req, res, ctx) => {
     const { nickname, keyword }: any = req.body;
     const check = `${keyword} ${nickname}`;
-    console.log(check);
     return res(
       ctx.json({
         check: check === '세젤귀 초코' ? false : true
@@ -25,11 +24,13 @@ export const handlers = [
     );
   }),
 
+  //회원가입
   rest.post('/join', (req, res, ctx) => {
     // const { user } = req.body;
+    const param = req.body;
     return res(
       ctx.json({
-        // user
+        param
       }),
       ctx.status(200)
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,12 @@ import axios from 'axios';
 
 interface InputProps {
   state?: string;
+}
+
+interface SubmitType {
+  email: string;
+  pwd: string | number;
+  nick: string;
 }
 
 const S = {
@@ -81,10 +87,10 @@ const NICK_REGEX = /^[A-Za-z가-힣]{1,6}$/;
 const Join = () => {
   const navigate = useNavigate();
   const userRef = useRef<HTMLInputElement>(null);
-  const errRef = useRef();
+  const [success, setSuccess] = useState<boolean>(false);
   const [firstStep, setStep] = useState<boolean>(true);
 
-  const [user, setUser] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [validEmail, setValidEmail] = useState<boolean>(false);
   const [checkUniqEmail, setCheckUniqEmail] = useState<boolean>(true);
   const [emailFocus, setEmailFocus] = useState<boolean>(false);
@@ -108,9 +114,9 @@ const Join = () => {
 
   const inputUserState = () => {
     let color = '';
-    if (!!user && !validEmail) color = Common.colors.system_error;
-    else if (!!user && validEmail) color = Common.colors.system_good;
-    else if (!user && !validEmail) color = Common.colors.grey_disabled;
+    if (!!email && !validEmail) color = Common.colors.system_error;
+    else if (!!email && validEmail) color = Common.colors.system_good;
+    else if (!email && !validEmail) color = Common.colors.grey_disabled;
     return color;
   };
   const inputPwdState = () => {
@@ -151,9 +157,9 @@ const Join = () => {
   }, []);
 
   useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(user));
+    setValidEmail(EMAIL_REGEX.test(email));
     checkEmail();
-  }, [user]);
+  }, [email]);
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
@@ -173,14 +179,12 @@ const Join = () => {
    * email uniq check
    * */
   const checkEmail = () => {
-    if (user && validEmail) {
-      axios.post('/join/email-check', user).then((res) => {
+    if (email && validEmail) {
+      axios.post('/join/email-check', email).then((res) => {
         if (res.data.check) {
           setCheckUniqEmail(true);
-          console.log('uniq!');
         } else {
           setCheckUniqEmail(false);
-          console.log('not uniq!');
         }
       });
     }
@@ -195,12 +199,32 @@ const Join = () => {
       axios.post('/join/nick-check', data).then((res) => {
         if (res.data.check) {
           setCheckUniqNick(true);
-          console.log('사용가능한 닉네임!');
         } else {
           setCheckUniqNick(false);
-          console.log('이미 존재하는 닉네임!!');
         }
       });
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const nick = keyword + ' ' + nickname;
+    const data: SubmitType = { email, pwd, nick };
+    try {
+      const res = await axios.post('/join', data, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
+      console.log(res.data);
+      await alert(`${res.data?.param.nick}님 환영합니다!`);
+      setEmail('');
+      setPwd('');
+      setMatchPwd('');
+      setNickname('');
+      setKeyword('');
+      setSuccess(true);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -228,19 +252,19 @@ const Join = () => {
                     ref={userRef}
                     autoComplete='off'
                     required
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setEmailFocus(true)}
                     onBlur={() => setEmailFocus(false)}
                     placeholder='올바른 이메일 형식을 입력해주세요.'
                     state={inputUserState()}
                   />
-                  {user && !validEmail ? (
+                  {email && !validEmail ? (
                     <p>올바른 이메일 형식을 입력해 주세요.</p>
                   ) : (
                     <></>
                   )}
-                  {user && validEmail && !checkUniqEmail ? (
+                  {email && validEmail && !checkUniqEmail ? (
                     <p>이미 사용중인 이메일입니다.</p>
                   ) : (
                     <></>
@@ -372,7 +396,7 @@ const Join = () => {
             </S.Form>
           </S.Content>
           <S.Bottom>
-            <S.Button>
+            <S.Button onClick={handleSubmit}>
               <ButtonRound
                 disabled={
                   !(
