@@ -6,17 +6,20 @@ export const handlers = [
     const emailValue = req.body;
     return res(
       ctx.json({
-        check: true
+        check: emailValue === 'diddpwl80@naver.com' ? false : true
       }),
       ctx.status(200)
     );
   }),
+
   // 닉네임 중복 체크
   rest.post('/join/nick-check', (req, res, ctx) => {
-    const nickValue = req.body;
+    const { nickname, keyword }: any = req.body;
+    const check = `${keyword} ${nickname}`;
+    console.log(check);
     return res(
       ctx.json({
-        check: true
+        check: check === '세젤귀 초코' ? false : true
       }),
       ctx.status(200)
     );
