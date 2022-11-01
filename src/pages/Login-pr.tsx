@@ -25,23 +25,11 @@ const S = {
   `,
   Arrow: styled.div`
     width: 100%;
-    height: ${getVwValue('64')};
-  `,
-  ImgWrap: styled.div`
-    position: relative;
-    display: inline-block;
     height: 100%;
-    padding: ${getVwValue('0 28')};
-    vertical-align: center;
     cursor: pointer;
+    padding: ${getVwValue('24 28')};
     & > img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       width: ${getVwValue('10')};
-      height: ${getVwValue('20')};
-      object-fit: contain;
     }
   `,
   Title: styled.h3`
@@ -88,12 +76,77 @@ const S = {
 const Login = () => {
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMsg, setEmailErrorMsg] = useState('');
+
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [psErrorMsg, setPsErrorMsg] = useState('');
+
+  const handleEmailChange = (e: React.ChangeEvent) => {
+    const target = e.currentTarget as HTMLInputElement;
+    setEmail(target.value);
+  };
+  const handlePasswordChange = (e: React.ChangeEvent) => {
+    const target = e.currentTarget as HTMLInputElement;
+    setPassword(target.value);
+  };
+
+  const validateEmail = (value: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (!regex.test(value)) {
+      setEmailErrorMsg('올바른 이메일 형식을 입력해 주세요.');
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  };
+
+  const validatePassword = (value: string) => {
+    if (value.length < 4) {
+      setPsErrorMsg('잘못된 비밀번호입니다.');
+      setPasswordError(true);
+    } else {
+      setPasswordError(false);
+    }
+  };
+
+  const handleEmailBlur = () => {
+    validateEmail(email);
+  };
+
+  const handlePasswordBlur = () => {
+    validatePassword(password);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    validateEmail(email);
+    validatePassword(password);
+    if (
+      email.length > 0 &&
+      password.length > 0 &&
+      !emailError &&
+      !passwordError
+    ) {
+      const data = { email, password };
+      // console.log(email, password);
+      onLogin(data);
+      alert('로그인 성공!');
+    }
+  };
+
+  const onLogin = (data: LoginType) => {
+    requestLogin(data);
+    setEmail('');
+    setPassword('');
+  };
+
   return (
     <S.Wrapper>
-      <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
-          <img src='/images/back_arrow.png' alt='arrow' />
-        </S.ImgWrap>
+      <S.Arrow onClick={() => navigate(-1)}>
+        <img src='/images/back_arrow.png' alt='arrow' />
       </S.Arrow>
       <S.Content>
         <S.Title>
@@ -108,13 +161,13 @@ const Login = () => {
               type='email'
               name='email'
               id='email'
-              // value={email}
-              // onChange={handleEmailChange}
-              // onBlur={handleEmailBlur}
-              // err={emailError}
+              value={email}
+              onChange={handleEmailChange}
+              onBlur={handleEmailBlur}
+              err={emailError}
               placeholder='올바른 이메일 형식을 입력해주세요.'
             />
-            {/*{emailError && <p>{emailErrorMsg}</p>}*/}
+            {emailError && <p>{emailErrorMsg}</p>}
           </S.Field>
           <S.Field>
             <label htmlFor='password'>비밀번호</label>
@@ -122,13 +175,13 @@ const Login = () => {
               type='password'
               name='password'
               id='password'
-              // value={password}
-              // onChange={handlePasswordChange}
-              // onBlur={handlePasswordBlur}
-              // err={passwordError}
+              value={password}
+              onChange={handlePasswordChange}
+              onBlur={handlePasswordBlur}
+              err={passwordError}
               placeholder='N자리 이상 입력해 주세요.'
             />
-            {/*{passwordError && <p>{psErrorMsg}</p>}*/}
+            {passwordError && <p>{psErrorMsg}</p>}
           </S.Field>
         </S.Form>
       </S.Content>
@@ -136,8 +189,7 @@ const Login = () => {
         <S.Join onClick={() => navigate('/join')}>
           <span>초간단 회원가입</span>
         </S.Join>
-        {/*<S.Button onClick={handleSubmit}>*/}
-        <S.Button>
+        <S.Button onClick={handleSubmit}>
           <ButtonRound disabled={false} type='submit'>
             로그인
           </ButtonRound>

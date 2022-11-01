@@ -32,11 +32,23 @@ const S = {
   `,
   Arrow: styled.div`
     width: 100%;
+    height: ${getVwValue('64')};
+  `,
+  ImgWrap: styled.div`
+    position: relative;
+    display: inline-block;
     height: 100%;
+    padding: ${getVwValue('0 28')};
+    vertical-align: center;
     cursor: pointer;
-    padding: ${getVwValue('24 28')};
     & > img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: ${getVwValue('10')};
+      height: ${getVwValue('20')};
+      object-fit: contain;
     }
   `,
   Title: styled.h3`
@@ -232,8 +244,10 @@ const Join = () => {
     <S.Wrapper>
       {firstStep ? (
         <>
-          <S.Arrow onClick={() => navigate(-1)}>
-            <img src='/images/back_arrow.png' alt='arrow' />
+          <S.Arrow>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>
           </S.Arrow>
           <S.Content>
             <S.Title>
