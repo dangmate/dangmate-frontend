@@ -6,6 +6,8 @@ import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
 import { requestLogin, LoginType } from '../api/request';
 import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import { locationState } from '../store/locationState';
 
 interface InputProps {
   state?: string;
@@ -103,6 +105,8 @@ const NICK_REGEX = /^[A-Za-z가-힣]{1,6}$/;
 
 const Join = () => {
   const navigate = useNavigate();
+  const location = useRecoilValue(locationState);
+
   const userRef = useRef<HTMLInputElement>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [firstStep, setStep] = useState<boolean>(true);
@@ -257,7 +261,7 @@ const Join = () => {
             <S.Title>
               내 정보 입력 (1/2)
               <br />
-              서울 마포구 공덕동
+              {location}
             </S.Title>
             <S.Form>
               <div>
@@ -334,7 +338,7 @@ const Join = () => {
             </S.Form>
           </S.Content>
           <S.Bottom>
-            <S.Join onClick={() => navigate('/join')}>
+            <S.Join onClick={() => navigate('/location')}>
               <span>내 지역이 잘못 입력됐나요?</span>
               <S.ArrowImg>
                 <img src='/images/join_arrow.png' alt='arrow' />
@@ -358,7 +362,11 @@ const Join = () => {
             </S.ImgWrap>{' '}
           </S.Arrow>
           <S.Content>
-            <S.Title>내 정보 입력 (2/2)</S.Title>
+            <S.Title>
+              내 정보 입력 (2/2)
+              <br />
+              {location}
+            </S.Title>
             <S.Form>
               <div>
                 <S.Field>

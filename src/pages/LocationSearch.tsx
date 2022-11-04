@@ -1,13 +1,12 @@
-/* global kakao */
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
-import { requestLogin, LoginType } from '../api/request';
-import axios from 'axios';
-import { Address } from '../api/address';
+import { p } from 'msw/lib/glossary-dc3fd077';
+import { useSetRecoilState } from 'recoil';
+import { locationState } from '../store/locationState';
 
 declare global {
   interface Window {
@@ -61,9 +60,15 @@ const S = {
       font-size: ${getVwValue('16')};
     }
   `,
-  RegionContent: styled.div`
+  SearchList: styled.ul`
     height: ${getVwValue('300')};
-    overflow-y: scroll;
+    overflow: scroll;
+    & > li {
+      padding: ${getVwValue('12 0')};
+      cursor: pointer;
+      font-size: ${getVwValue('14')};
+      border-bottom: 1px solid ${Common.colors.line_medium};
+    }
   `,
   Bottom: styled.div`
     position: fixed;
@@ -104,17 +109,56 @@ const S = {
   `
 };
 
-interface CoordsType {
-  latitude: number;
-  longitude: number;
-}
-
-interface LocationType {
-  name: string;
-  distance: number;
-}
+// 2~10자리 문자
+const SEARCH_REGEX = /^[A-Za-z가-힣]{2,10}$/;
 const LocationSearch = () => {
   const navigate = useNavigate();
+  const userRef = useRef<HTMLInputElement>(null);
+
+  const [search, setSearch] = useState<string>('');
+  const [validSearch, setValidSearch] = useState<boolean>(false);
+  const [searchList, setSearchList] = useState([]);
+  const setLocation = useSetRecoilState(locationState);
+
+  const onSearchHandler = (e: ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    setSearch(target.value);
+  };
+
+  const addressSearch = () => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+
+    const callback = function (result: any, status: any) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        setSearchList(result);
+      }
+    };
+    geocoder.addressSearch(search, callback);
+  };
+
+  const inputSearchState = () => {
+    let color = '';
+    if (!!search && !validSearch) color = Common.colors.system_error;
+    else if (!!search && validSearch) color = Common.colors.system_good;
+    else if (!search && !validSearch) color = Common.colors.grey_disabled;
+    return color;
+  };
+
+  const onSelectHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLTextAreaElement;
+    setLocation(target.innerText);
+    navigate('/join');
+  };
+
+  useEffect(() => {
+    if (userRef.current) {
+      userRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    setValidSearch(SEARCH_REGEX.test(search));
+  }, [search]);
   return (
     <S.Wrapper>
       <S.Arrow onClick={() => navigate(-1)}>
@@ -128,18 +172,27 @@ const LocationSearch = () => {
           <p>내 반려견에게 동네친구를 선물해 주세요!</p>
         </S.Title>
 
-        <S.RegionContent>
-          <ul>
-            {/*{regionList*/}
-            {/*  .sort((a, b) => a.distance - b.distance)*/}
-            {/*  .map((item, index) => (*/}
-            {/*    <li key={index}>*/}
-            {/*      {item.name}*/}
-            {/*      {item.distance}*/}
-            {/*    </li>*/}
-            {/*  ))}*/}
-          </ul>
-        </S.RegionContent>
+        <S.Field>
+          <S.Input
+            type='text'
+            name='search'
+            id='search'
+            ref={userRef}
+            value={search}
+            onChange={onSearchHandler}
+            state={inputSearchState()}
+            placeholder='내 동네 검색 (동,읍,면)'
+          />
+          {search && !validSearch ? <p>2글자 이상 입력해주세요.</p> : <></>}
+        </S.Field>
+        <span>검색 결과</span>
+        <S.SearchList>
+          {searchList.map((item, index) => (
+            <li key={index} onClick={onSelectHandler}>
+              {item['address_name']}
+            </li>
+          ))}
+        </S.SearchList>
       </S.Content>
       <S.Bottom>
         <S.Join onClick={() => navigate('/location')}>
@@ -148,8 +201,8 @@ const LocationSearch = () => {
             <img src='/images/join_arrow.png' alt='arrow' />
           </S.ArrowImg>
         </S.Join>
-        <S.Button>
-          <ButtonRound disabled={false} type='button'>
+        <S.Button onClick={addressSearch}>
+          <ButtonRound disabled={!validSearch} type='button'>
             검색하기
           </ButtonRound>
         </S.Button>
