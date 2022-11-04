@@ -8,6 +8,8 @@ import ButtonRound from '../components/asset/ButtonRound';
 import { requestLogin, LoginType } from '../api/request';
 import axios from 'axios';
 import { Address } from '../api/address';
+import { useSetRecoilState } from 'recoil';
+import { locationState } from '../store/locationState';
 
 declare global {
   interface Window {
@@ -65,6 +67,16 @@ const S = {
     height: ${getVwValue('300')};
     overflow-y: scroll;
   `,
+  SearchList: styled.ul`
+    height: ${getVwValue('400')};
+    overflow: scroll;
+    & > li {
+      padding: ${getVwValue('12 0')};
+      cursor: pointer;
+      font-size: ${getVwValue('14')};
+      border-bottom: 1px solid ${Common.colors.line_medium};
+    }
+  `,
   Bottom: styled.div`
     position: fixed;
     bottom: 0;
@@ -115,7 +127,8 @@ interface LocationType {
 }
 const Location = () => {
   const navigate = useNavigate();
-  // 1. 현재 위치의 위도 경도 값 추출
+  const setLocation = useSetRecoilState(locationState);
+
   const [coords, setCoords] = useState<CoordsType>({
     latitude: 0,
     longitude: 0
@@ -123,57 +136,76 @@ const Location = () => {
   const [regionFirstName, setRegionFirstName] = useState<string>('');
 
   const [regionList, setRegionList] = useState<object[]>([]);
-  // 현재 위치의 위도,경도 값 추출
-  const getCoords = async () => {
-    await navigator.geolocation.getCurrentPosition(
+
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  };
+
+  /**
+   * 1. 현재 위치의 위도 경도 값 추출(웹브라우저에서는 좌표값이 정확하지 않을수도 있음)
+   */
+
+  const getCoords = () => {
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         setCoords({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         });
+        console.log('정확도', position.coords.accuracy);
       },
-      (err) => console.log(err)
+      (err) => console.log(err),
+      options
     );
-    await getRegionFirstName();
-    console.log('현재 위치의 위도 경도 반환', coords);
+
+    if (coords.latitude !== 0 && coords.longitude !== 0) {
+      console.log('현재 위치의 위도 경도 반환', coords);
+      getRegionFirstName();
+    }
   };
 
-  // 현재 위치의 도시 이름 추출
-  const getRegionFirstName = async () => {
+  /**
+   * 2. 현재 위치의 도시 이름 추출
+   * */
+  const getRegionFirstName = () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
     const coord = new window.kakao.maps.LatLng(
       coords.latitude,
       coords.longitude
     );
+
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
+        console.log('현재 위치 주소', result[0]);
         setRegionFirstName(result[0].address.region_1depth_name);
       }
     };
+
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
     if (regionFirstName) {
-      await getRegionThirdList();
+      console.log('현재 도시', regionFirstName);
+      getRegionThirdList();
     }
-    console.log('현재 도시', regionFirstName);
   };
 
-  // region first name으로 행정동 리스트 추출
-  const getRegionThirdList = async () => {
+  /**
+   * 3. region first name으로 행정동 리스트 추출
+   * */
+  const getRegionThirdList = () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
-        console.log(result[0]);
-        const lat1 = Number(coords.latitude);
-        const lon1 = Number(coords.longitude);
-        const lat2 = Number(result[0].address.y);
-        const lon2 = Number(result[0].address.x);
-
-        console.log(result[0].address.address_name, lat1, lon1, lat2, lon2);
-
-        const location: LocationType = {
+        const location = {
           name: result[0].address.address_name,
-          distance: CosineDistanceBetweenPoints(lat1, lon1, lat2, lon2)
+          distance: CosineDistanceBetweenPoints(
+            coords.latitude,
+            coords.longitude,
+            Number(result[0].y),
+            Number(result[0].x)
+          )
         };
 
         setRegionList((regionList) => {
@@ -182,7 +214,7 @@ const Location = () => {
       }
     };
 
-    await Address.forEach((item) => {
+    Address.forEach((item) => {
       geocoder.addressSearch(item.region_3depth_name, callback);
     });
   };
@@ -209,13 +241,24 @@ const Location = () => {
     return d;
   }
 
+  const autoSearch = () => {
+    setRegionList([]);
+    getCoords();
+  };
+
+  const onSelectHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLTextAreaElement;
+    setLocation(target.innerText);
+    navigate('/join');
+  };
+
   useEffect(() => {
     getCoords();
   }, [coords.latitude, coords.longitude, regionFirstName]);
 
   return (
     <S.Wrapper>
-      <S.Arrow>
+      <S.Arrow onClick={() => navigate(-1)}>
         <S.ImgWrap>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
@@ -225,18 +268,15 @@ const Location = () => {
           내 동네 찾기
           <p>내 반려견에게 동네친구를 선물해 주세요!</p>
         </S.Title>
-        <S.RegionContent>
-          <ul>
-            {regionList
-              .sort((a: any, b: any) => a.distance - b.distance)
-              .map((item: any, index) => (
-                <li key={index}>
-                  {item.name}
-                  {item.distance}
-                </li>
-              ))}
-          </ul>
-        </S.RegionContent>
+        <S.SearchList>
+          {regionList
+            .sort((a: any, b: any) => a.distance - b.distance)
+            .map((item: any, index) => (
+              <li onClick={onSelectHandler} key={index}>
+                {item.name}
+              </li>
+            ))}
+        </S.SearchList>
       </S.Content>
       <S.Bottom>
         <S.Join onClick={() => navigate('/location-search')}>
@@ -246,7 +286,11 @@ const Location = () => {
           </S.ArrowImg>
         </S.Join>
         <S.Button>
-          <ButtonRound onClick={getCoords} disabled={false} type='button'>
+          <ButtonRound
+            onClick={() => autoSearch()}
+            disabled={false}
+            type='button'
+          >
             자동 검색
           </ButtonRound>
         </S.Button>
