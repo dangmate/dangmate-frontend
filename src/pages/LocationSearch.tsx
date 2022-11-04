@@ -110,7 +110,7 @@ const S = {
 };
 
 // 2~10자리 문자
-const SEARCH_REGEX = /^[A-Za-z가-힣]{2,10}$/;
+const SEARCH_REGEX = /^[A-Za-z가-힣 ]{2,10}$/;
 const LocationSearch = () => {
   const navigate = useNavigate();
   const userRef = useRef<HTMLInputElement>(null);
