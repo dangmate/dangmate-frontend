@@ -1,13 +1,11 @@
 /* global kakao */
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
-import { requestLogin, LoginType } from '../api/request';
 import axios from 'axios';
-import { Address } from '../api/address';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
 
@@ -120,11 +118,6 @@ interface CoordsType {
   latitude: number;
   longitude: number;
 }
-
-interface LocationType {
-  name: string;
-  distance: number;
-}
 const Location = () => {
   const navigate = useNavigate();
   const setLocation = useSetRecoilState(locationState);
@@ -136,6 +129,8 @@ const Location = () => {
   const [regionFirstName, setRegionFirstName] = useState<string>('');
 
   const [regionList, setRegionList] = useState<object[]>([]);
+
+  const [addressList, setAddressList] = useState<string[]>([]);
 
   const options = {
     enableHighAccuracy: true,
@@ -154,14 +149,14 @@ const Location = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         });
-        console.log('정확도', position.coords.accuracy);
+        // console.log('정확도', position.coords.accuracy);
       },
       (err) => console.log(err),
       options
     );
 
     if (coords.latitude !== 0 && coords.longitude !== 0) {
-      console.log('현재 위치의 위도 경도 반환', coords);
+      // console.log('현재 위치의 위도 경도 반환', coords);
       getRegionFirstName();
     }
   };
@@ -178,16 +173,36 @@ const Location = () => {
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
-        console.log('현재 위치 주소', result[0]);
+        // console.log('현재 위치 주소', result[0]);
         setRegionFirstName(result[0].address.region_1depth_name);
       }
     };
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
     if (regionFirstName) {
-      console.log('현재 도시', regionFirstName);
-      getRegionThirdList();
+      getAddressList(getDataCode(regionFirstName));
     }
+  };
+
+  const getDataCode = (sido: string): string => {
+    if (sido === '서울') return '11';
+    else if (sido === '부산') return '21';
+    else if (sido === '대구') return '22';
+    else if (sido === '인천') return '23';
+    else if (sido === '광주') return '24';
+    else if (sido === '대전') return '25';
+    else if (sido === '울산') return '26';
+    else if (sido === '세종') return '29';
+    else if (sido === '경기') return '31';
+    else if (sido === '강원') return '32';
+    else if (sido === '충북') return '33';
+    else if (sido === '충남') return '34';
+    else if (sido === '전북') return '35';
+    else if (sido === '전남') return '36';
+    else if (sido === '경북') return '37';
+    else if (sido === '경남') return '38';
+    else if (sido === '제주') return '39';
+    else return '00';
   };
 
   /**
@@ -214,8 +229,8 @@ const Location = () => {
       }
     };
 
-    Address.forEach((item) => {
-      geocoder.addressSearch(item.region_3depth_name, callback);
+    addressList.forEach((item) => {
+      geocoder.addressSearch(item, callback);
     });
   };
 
@@ -254,7 +269,56 @@ const Location = () => {
 
   useEffect(() => {
     getCoords();
+    return () => {
+      setRegionList([]);
+    };
   }, [coords.latitude, coords.longitude, regionFirstName]);
+
+  const getAddressList = async (code: string) => {
+    const response = await axios.get(
+      'https://sgisapi.kostat.go.kr/OpenAPI3/auth/authentication.json',
+      {
+        params: {
+          consumer_key: 'f59f1481b6c34d259fd8',
+          consumer_secret: '578d46fd7efa4108aeb8'
+        }
+      }
+    );
+    const addressData = await axios.get(
+      'https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json',
+      {
+        params: {
+          accessToken: response.data.result.accessToken,
+          cd: code,
+          pg_yn: '0'
+        }
+      }
+    );
+    const valueArray = await addressData.data.result.map(
+      (item: any) => item.cd
+    );
+
+    await valueArray.forEach((item: any) => {
+      axios
+        .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
+          params: {
+            accessToken: response.data.result.accessToken,
+            cd: item,
+            pg_yn: '0'
+          }
+        })
+        .then((res) => {
+          const mapData = res.data.result.map((item: any) => item.addr_name);
+          const setData = () => {
+            mapData.forEach((item: any) => {
+              setAddressList((addressList) => [...addressList, item]);
+            });
+          };
+          setData();
+        });
+    });
+    await getRegionThirdList();
+  };
 
   return (
     <S.Wrapper>
@@ -276,6 +340,8 @@ const Location = () => {
                 {item.name}
               </li>
             ))}
+
+          {/*{}*/}
         </S.SearchList>
       </S.Content>
       <S.Bottom>
