@@ -1,11 +1,11 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
-import { requestLogin, LoginType } from '../api/request';
-import axios from 'axios';
+import AuthContext from '../context/AuthProvider';
+import axiosRequest from '../api/axios';
 
 interface InputProps {
   state?: string;
@@ -16,6 +16,13 @@ const S = {
     position: relative;
     width: 100%;
     height: 100%;
+  `,
+  Introduce: styled.h3`
+    padding: ${getVwValue('70 20 60')};
+    text-align: center;
+  `,
+  IntroduceImg: styled.h3`
+    text-align: center;
   `,
   Content: styled.div`
     display: flex;
@@ -90,10 +97,11 @@ const S = {
 
 const EMAIL_REGEX =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-const PWD_REGEX = /^[A-Za-z0-9]{6,12}$/;
+const PWD_REGEX = /^[A-Za-z0-9]{4,12}$/;
 
 const Login = () => {
   const navigate = useNavigate();
+  // const { setAuth } = useContext(AuthContext);
 
   const userRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +113,9 @@ const Login = () => {
   const [validPwd, setValidPwd] = useState<boolean>(false);
   const [pwdFocus, setPwdFocus] = useState<boolean>(false);
 
-  const [collectPwd, setCollectPwd] = useState(true);
+  const [collectPwd, setCollectPwd] = useState<boolean>(true);
+
+  const [success, setSuccess] = useState<boolean>(false);
 
   const inputEmailState = () => {
     let color = '';
@@ -117,6 +127,7 @@ const Login = () => {
   const inputPwdState = () => {
     let color = '';
     if (!!pwd && !validPwd) color = Common.colors.system_error;
+    else if (!collectPwd) color = Common.colors.system_error;
     else if (!!pwd && validPwd) color = Common.colors.system_good;
     else if (!pwd && !validPwd) color = Common.colors.grey_disabled;
     return color;
@@ -138,102 +149,118 @@ const Login = () => {
   }, [pwd]);
 
   const handleSubmit = async () => {
-    const data = { email, pwd };
+    const data = { email, password: pwd };
 
     try {
-      const response = await axios.post('/login', data);
-      if (response.data.user) {
-        console.log(response.data.accessToken);
-        alert('로그인 성공!');
+      const response = await axiosRequest().post('/api/user/login', data);
+      if (response.data) {
+        // const accessToken = response.data.accessToken;
         setEmail('');
         setPwd('');
-      } else {
-        // 로그인을 실패했을 때는 wrongPwd 상태값을 변경
-        setCollectPwd(false);
+        setSuccess(true);
+        setTimeout(() => navigate('/home'), 2000);
       }
+      // {
+      //   "statusCode": "200",
+      //     "email": "abcd@gmail.com",
+      //     "fullName": "귀여운 댕댕이"
+      // }
     } catch (err) {
       console.log(err);
+      setCollectPwd(false);
     }
     // 로그인을 성공했을 때 : accessToken을 저장
   };
 
   return (
-    <S.Wrapper>
-      <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
-          <img src='/images/back_arrow.png' alt='arrow' />
-        </S.ImgWrap>
-      </S.Arrow>
-      <S.Content>
-        <S.Title>
-          로그인하고
-          <br /> 내 동네 댕댕이들 만나기
-        </S.Title>
+    <>
+      {success ? (
+        <S.Wrapper>
+          <S.Introduce>
+            소심쟁이 제이에게
+            <br /> 공덕동 친구들을 소개할게요!
+          </S.Introduce>
+          <S.IntroduceImg>이미지</S.IntroduceImg>
+        </S.Wrapper>
+      ) : (
+        <S.Wrapper>
+          <S.Arrow>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>
+          </S.Arrow>
+          <S.Content>
+            <S.Title>
+              로그인하고
+              <br /> 내 동네 댕댕이들 만나기
+            </S.Title>
 
-        <S.Form>
-          <S.Field>
-            <label htmlFor='email'>이메일</label>
-            <S.Input
-              type='email'
-              name='email'
-              id='email'
-              ref={userRef}
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
-              placeholder='올바른 이메일 형식을 입력해주세요.'
-              state={inputEmailState()}
-            />
-            {email && !validEmail ? (
-              <p>올바른 이메일 형식을 입력해 주세요.</p>
-            ) : (
-              <></>
-            )}
-          </S.Field>
-          <S.Field>
-            <label htmlFor='password'>비밀번호</label>
-            <S.Input
-              type='password'
-              name='password'
-              id='password'
-              autoComplete='off'
-              required
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
-              placeholder='N자리 이상 입력해 주세요.'
-              state={inputPwdState()}
-            />
-            {pwd && !validPwd ? (
-              <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
-            ) : (
-              <></>
-            )}
-            {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
-          </S.Field>
-        </S.Form>
-      </S.Content>
-      <S.Bottom>
-        <S.Join onClick={() => navigate('/location')}>
-          <span>초간단 회원가입</span>
-          <S.ArrowImg>
-            <img src='/images/join_arrow.png' alt='arrow' />
-          </S.ArrowImg>
-        </S.Join>
-        <S.Button>
-          <ButtonRound
-            onClick={handleSubmit}
-            disabled={!(validEmail && validPwd)}
-            type='button'
-          >
-            로그인
-          </ButtonRound>
-        </S.Button>
-      </S.Bottom>
-    </S.Wrapper>
+            <S.Form>
+              <S.Field>
+                <label htmlFor='email'>이메일</label>
+                <S.Input
+                  type='email'
+                  name='email'
+                  id='email'
+                  ref={userRef}
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                  placeholder='올바른 이메일 형식을 입력해주세요.'
+                  state={inputEmailState()}
+                />
+                {email && !validEmail ? (
+                  <p>올바른 이메일 형식을 입력해 주세요.</p>
+                ) : (
+                  <></>
+                )}
+              </S.Field>
+              <S.Field>
+                <label htmlFor='password'>비밀번호</label>
+                <S.Input
+                  type='password'
+                  name='password'
+                  id='password'
+                  autoComplete='off'
+                  required
+                  value={pwd}
+                  onChange={(e) => setPwd(e.target.value)}
+                  onFocus={() => setPwdFocus(true)}
+                  onBlur={() => setPwdFocus(false)}
+                  placeholder='N자리 이상 입력해 주세요.'
+                  state={inputPwdState()}
+                />
+                {pwd && !validPwd ? (
+                  <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+                ) : (
+                  <></>
+                )}
+                {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
+              </S.Field>
+            </S.Form>
+          </S.Content>
+          <S.Bottom>
+            <S.Join onClick={() => navigate('/location')}>
+              <span>초간단 회원가입</span>
+              <S.ArrowImg>
+                <img src='/images/join_arrow.png' alt='arrow' />
+              </S.ArrowImg>
+            </S.Join>
+            <S.Button>
+              <ButtonRound
+                onClick={handleSubmit}
+                disabled={!(validEmail && validPwd)}
+                type='button'
+              >
+                로그인
+              </ButtonRound>
+            </S.Button>
+          </S.Bottom>
+        </S.Wrapper>
+      )}
+    </>
   );
 };
 

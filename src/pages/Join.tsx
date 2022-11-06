@@ -4,7 +4,6 @@ import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
-import { requestLogin, LoginType } from '../api/request';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { locationState } from '../store/locationState';
