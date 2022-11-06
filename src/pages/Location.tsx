@@ -8,6 +8,7 @@ import ButtonRound from '../components/asset/ButtonRound';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
+import { cosineDistanceBetweenPoints } from '../utils/distance';
 
 declare global {
   interface Window {
@@ -118,6 +119,7 @@ interface CoordsType {
   latitude: number;
   longitude: number;
 }
+
 const Location = () => {
   const navigate = useNavigate();
   const setLocation = useSetRecoilState(locationState);
@@ -132,6 +134,8 @@ const Location = () => {
 
   const [addressList, setAddressList] = useState<string[]>([]);
 
+  const [sortState, setSortState] = useState<boolean>(false);
+
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -140,8 +144,8 @@ const Location = () => {
 
   /**
    * 1. 현재 위치의 위도 경도 값 추출(웹브라우저에서는 좌표값이 정확하지 않을수도 있음)
+   * 해당 페이지 마운트 되었을 대 바로 실행
    */
-
   const getCoords = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -149,11 +153,11 @@ const Location = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         });
-        // console.log('정확도', position.coords.accuracy);
       },
       (err) => console.log(err),
       options
     );
+    console.log('위도, 경도', coords);
 
     if (coords.latitude !== 0 && coords.longitude !== 0) {
       // console.log('현재 위치의 위도 경도 반환', coords);
@@ -162,7 +166,7 @@ const Location = () => {
   };
 
   /**
-   * 2. 현재 위치의 도시 이름 추출
+   * 2. 현재 위치의 도시 이름만 추출(ex: 서울)
    * */
   const getRegionFirstName = () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
@@ -173,107 +177,21 @@ const Location = () => {
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
-        // console.log('현재 위치 주소', result[0]);
         setRegionFirstName(result[0].address.region_1depth_name);
+        console.log('현재 위치 도시 :', regionFirstName);
       }
     };
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+
     if (regionFirstName) {
       getAddressList(getDataCode(regionFirstName));
     }
   };
 
-  const getDataCode = (sido: string): string => {
-    if (sido === '서울') return '11';
-    else if (sido === '부산') return '21';
-    else if (sido === '대구') return '22';
-    else if (sido === '인천') return '23';
-    else if (sido === '광주') return '24';
-    else if (sido === '대전') return '25';
-    else if (sido === '울산') return '26';
-    else if (sido === '세종') return '29';
-    else if (sido === '경기') return '31';
-    else if (sido === '강원') return '32';
-    else if (sido === '충북') return '33';
-    else if (sido === '충남') return '34';
-    else if (sido === '전북') return '35';
-    else if (sido === '전남') return '36';
-    else if (sido === '경북') return '37';
-    else if (sido === '경남') return '38';
-    else if (sido === '제주') return '39';
-    else return '00';
-  };
-
   /**
-   * 3. region first name으로 행정동 리스트 추출
+   * 3. 해당 도시의 모든 행정동 리스트를 반환
    * */
-  const getRegionThirdList = () => {
-    const geocoder = new window.kakao.maps.services.Geocoder();
-
-    const callback = function (result: any, status: any) {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const location = {
-          name: result[0].address.address_name,
-          distance: CosineDistanceBetweenPoints(
-            coords.latitude,
-            coords.longitude,
-            Number(result[0].y),
-            Number(result[0].x)
-          )
-        };
-
-        setRegionList((regionList) => {
-          return [...regionList, location];
-        });
-      }
-    };
-
-    addressList.forEach((item) => {
-      geocoder.addressSearch(item, callback);
-    });
-  };
-
-  function CosineDistanceBetweenPoints(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ) {
-    const R = 6371e3;
-    const p1 = (lat1 * Math.PI) / 180;
-    const p2 = (lat2 * Math.PI) / 180;
-    const deltaP = p2 - p1;
-    const deltaLon = lon2 - lon1;
-    const deltaLambda = (deltaLon * Math.PI) / 180;
-    const a =
-      Math.sin(deltaP / 2) * Math.sin(deltaP / 2) +
-      Math.cos(p1) *
-        Math.cos(p2) *
-        Math.sin(deltaLambda / 2) *
-        Math.sin(deltaLambda / 2);
-    const d = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * R;
-    return d;
-  }
-
-  const autoSearch = () => {
-    setRegionList([]);
-    getCoords();
-  };
-
-  const onSelectHandler = (e: React.MouseEvent) => {
-    const target = e.target as HTMLTextAreaElement;
-    setLocation(target.innerText);
-    navigate('/join');
-  };
-
-  useEffect(() => {
-    getCoords();
-    return () => {
-      setRegionList([]);
-    };
-  }, [coords.latitude, coords.longitude, regionFirstName]);
-
   const getAddressList = async (code: string) => {
     const response = await axios.get(
       'https://sgisapi.kostat.go.kr/OpenAPI3/auth/authentication.json',
@@ -294,6 +212,7 @@ const Location = () => {
         }
       }
     );
+
     const valueArray = await addressData.data.result.map(
       (item: any) => item.cd
     );
@@ -320,6 +239,79 @@ const Location = () => {
     await getRegionThirdList();
   };
 
+  const getDataCode = (sido: string): string => {
+    if (sido === '서울') return '11';
+    else if (sido === '부산') return '21';
+    else if (sido === '대구') return '22';
+    else if (sido === '인천') return '23';
+    else if (sido === '광주') return '24';
+    else if (sido === '대전') return '25';
+    else if (sido === '울산') return '26';
+    else if (sido === '세종') return '29';
+    else if (sido === '경기') return '31';
+    else if (sido === '강원') return '32';
+    else if (sido === '충북') return '33';
+    else if (sido === '충남') return '34';
+    else if (sido === '전북') return '35';
+    else if (sido === '전남') return '36';
+    else if (sido === '경북') return '37';
+    else if (sido === '경남') return '38';
+    else if (sido === '제주') return '39';
+    else return '00';
+  };
+
+  /**
+   * 4. 현재 좌표값과 행정동들의 좌표값을 모두 비교해서 거리를 반환.*/
+  const getRegionThirdList = () => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+
+    const callback = function (result: any, status: any) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const location = {
+          name: result[0].address.address_name,
+          distance: cosineDistanceBetweenPoints(
+            coords.latitude,
+            coords.longitude,
+            Number(result[0].y),
+            Number(result[0].x)
+          )
+        };
+
+        setRegionList((regionList) => {
+          return [...regionList, location];
+        });
+      }
+    };
+
+    addressList.forEach((item) => {
+      geocoder.addressSearch(item, callback);
+    });
+  };
+
+  const autoSearch = () => {
+    setSortState(false);
+    setRegionList([]);
+    getCoords();
+    setSortState(true);
+  };
+
+  const onSelectHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLTextAreaElement;
+    setLocation(target.innerText);
+    navigate('/join');
+  };
+
+  // useEffect(() => {
+  //   getCoords();
+  //   return () => {
+  //     setRegionList([]);
+  //   };
+  // }, [coords.latitude, coords.longitude, regionFirstName]);
+
+  useEffect(() => {
+    getCoords();
+  }, [coords.latitude, coords.longitude, regionFirstName]);
+
   return (
     <S.Wrapper>
       <S.Arrow onClick={() => navigate(-1)}>
@@ -333,15 +325,17 @@ const Location = () => {
           <p>내 반려견에게 동네친구를 선물해 주세요!</p>
         </S.Title>
         <S.SearchList>
-          {regionList
-            .sort((a: any, b: any) => a.distance - b.distance)
-            .map((item: any, index) => (
-              <li onClick={onSelectHandler} key={index}>
-                {item.name}
-              </li>
-            ))}
-
-          {/*{}*/}
+          {sortState ? (
+            regionList
+              .sort((a: any, b: any) => a.distance - b.distance)
+              .map((item: any, index) => (
+                <li onClick={onSelectHandler} key={index}>
+                  {item.name}
+                </li>
+              ))
+          ) : (
+            <></>
+          )}
         </S.SearchList>
       </S.Content>
       <S.Bottom>
