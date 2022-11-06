@@ -159,11 +159,8 @@ const Location = () => {
       options
     );
     console.log('위도, 경도', coords);
-
-    if (coords.latitude !== 0 && coords.longitude !== 0) {
-      // console.log('현재 위치의 위도 경도 반환', coords);
-      getRegionFirstName();
-    }
+    // console.log('현재 위치의 위도 경도 반환', coords);
+    getRegionFirstName();
   };
 
   /**
@@ -185,9 +182,9 @@ const Location = () => {
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
 
-    if (regionFirstName) {
-      getAddressList(getCityCode(regionFirstName));
-    }
+    const cityCode = getCityCode(regionFirstName);
+    console.log(cityCode);
+    getAddressList(cityCode);
   };
 
   /**
@@ -219,31 +216,33 @@ const Location = () => {
       }
     );
     // 서울 구 코드를 array로 반환
-    const guCodeArray = await addressData.data.result.map(
-      (item: any) => item.cd
-    );
+    const guCodeArray =
+      (await addressData.data.result) &&
+      (await addressData.data.result.map((item: any) => item.cd));
 
     // 구코드를 반복문으로 돌려 다시 검색
-    await guCodeArray.forEach((item: any) => {
-      axios
-        .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
-          params: {
-            accessToken: response.data.result.accessToken,
-            cd: item,
-            pg_yn: '0'
-          }
-        })
-        .then((res) => {
-          const mapData = res.data.result.map((item: any) => item.addr_name);
-          const setData = () => {
-            mapData.forEach((item: any) => {
-              setAddressList((addressList) => [...addressList, item]);
-            });
-          };
-          setData();
-        });
-    });
-    // await getRegionThirdList();
+    (await guCodeArray) &&
+      (await guCodeArray.forEach((item: any) => {
+        axios
+          .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
+            params: {
+              accessToken: response.data.result.accessToken,
+              cd: item,
+              pg_yn: '0'
+            }
+          })
+          .then((res) => {
+            const mapData =
+              res.data.result &&
+              res.data.result.map((item: any) => item.addr_name);
+            const setData = () => {
+              mapData.forEach((item: any) => {
+                setAddressList((addressList) => [...addressList, item]);
+              });
+            };
+            setData();
+          });
+      }));
   };
 
   /**
@@ -269,16 +268,16 @@ const Location = () => {
       }
     };
 
-    addressList.forEach((item) => {
-      geocoder.addressSearch(item, callback);
+    const promised = addressList.map(async (value, index) => {
+      await geocoder.addressSearch(value, callback);
     });
+
+    await Promise.all(promised);
   };
 
   const autoSearch = () => {
-    setSortState(false);
     setRegionList([]);
-    getCoords();
-    setSortState(true);
+    getRegionThirdList();
   };
 
   const onSelectHandler = (e: React.MouseEvent) => {
@@ -286,13 +285,6 @@ const Location = () => {
     setLocation(target.innerText);
     navigate('/join');
   };
-
-  // useEffect(() => {
-  //   getCoords();
-  //   return () => {
-  //     setRegionList([]);
-  //   };
-  // }, [coords.latitude, coords.longitude, regionFirstName]);
 
   useEffect(() => {
     getCoords();
@@ -311,17 +303,13 @@ const Location = () => {
           <p>내 반려견에게 동네친구를 선물해 주세요!</p>
         </S.Title>
         <S.SearchList>
-          {/*{sortState ? (*/}
-          {/*  regionList*/}
-          {/*    .sort((a: any, b: any) => a.distance - b.distance)*/}
-          {/*    .map((item: any, index) => (*/}
-          {/*      <li onClick={onSelectHandler} key={index}>*/}
-          {/*        {item.name}*/}
-          {/*      </li>*/}
-          {/*    ))*/}
-          {/*) : (*/}
-          {/*  <></>*/}
-          {/*)}*/}
+          {regionList
+            .sort((a: any, b: any) => a.distance - b.distance)
+            .map((item: any, index) => (
+              <li onClick={onSelectHandler} key={index}>
+                {item.name}
+              </li>
+            ))}
         </S.SearchList>
       </S.Content>
       <S.Bottom>
