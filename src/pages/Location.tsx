@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
 import { cosineDistanceBetweenPoints } from '../utils/distance';
+import { getCityCode } from '../utils/ciryCode';
 
 declare global {
   interface Window {
@@ -185,7 +186,7 @@ const Location = () => {
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
 
     if (regionFirstName) {
-      getAddressList(getDataCode(regionFirstName));
+      getAddressList(getCityCode(regionFirstName));
     }
   };
 
@@ -193,6 +194,7 @@ const Location = () => {
    * 3. 해당 도시의 모든 행정동 리스트를 반환
    * */
   const getAddressList = async (code: string) => {
+    // 인증키를 통해 accessToken 발급
     const response = await axios.get(
       'https://sgisapi.kostat.go.kr/OpenAPI3/auth/authentication.json',
       {
@@ -202,6 +204,10 @@ const Location = () => {
         }
       }
     );
+    // 해당 도시에 대한 주소 코드 반환
+    // 행정동에 대한 리스트가 아닌 구 단위의 코드를 반환.(강남구, 강서구, 강동구...)
+    // 구에 대한 코드를 입력해야 행정동 리스트가 나옴.
+
     const addressData = await axios.get(
       'https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json',
       {
@@ -212,12 +218,13 @@ const Location = () => {
         }
       }
     );
-
-    const valueArray = await addressData.data.result.map(
+    // 서울 구 코드를 array로 반환
+    const guCodeArray = await addressData.data.result.map(
       (item: any) => item.cd
     );
 
-    await valueArray.forEach((item: any) => {
+    // 구코드를 반복문으로 돌려 다시 검색
+    await guCodeArray.forEach((item: any) => {
       axios
         .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
           params: {
@@ -236,33 +243,12 @@ const Location = () => {
           setData();
         });
     });
-    await getRegionThirdList();
-  };
-
-  const getDataCode = (sido: string): string => {
-    if (sido === '서울') return '11';
-    else if (sido === '부산') return '21';
-    else if (sido === '대구') return '22';
-    else if (sido === '인천') return '23';
-    else if (sido === '광주') return '24';
-    else if (sido === '대전') return '25';
-    else if (sido === '울산') return '26';
-    else if (sido === '세종') return '29';
-    else if (sido === '경기') return '31';
-    else if (sido === '강원') return '32';
-    else if (sido === '충북') return '33';
-    else if (sido === '충남') return '34';
-    else if (sido === '전북') return '35';
-    else if (sido === '전남') return '36';
-    else if (sido === '경북') return '37';
-    else if (sido === '경남') return '38';
-    else if (sido === '제주') return '39';
-    else return '00';
+    // await getRegionThirdList();
   };
 
   /**
    * 4. 현재 좌표값과 행정동들의 좌표값을 모두 비교해서 거리를 반환.*/
-  const getRegionThirdList = () => {
+  const getRegionThirdList = async () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
 
     const callback = function (result: any, status: any) {
@@ -325,17 +311,17 @@ const Location = () => {
           <p>내 반려견에게 동네친구를 선물해 주세요!</p>
         </S.Title>
         <S.SearchList>
-          {sortState ? (
-            regionList
-              .sort((a: any, b: any) => a.distance - b.distance)
-              .map((item: any, index) => (
-                <li onClick={onSelectHandler} key={index}>
-                  {item.name}
-                </li>
-              ))
-          ) : (
-            <></>
-          )}
+          {/*{sortState ? (*/}
+          {/*  regionList*/}
+          {/*    .sort((a: any, b: any) => a.distance - b.distance)*/}
+          {/*    .map((item: any, index) => (*/}
+          {/*      <li onClick={onSelectHandler} key={index}>*/}
+          {/*        {item.name}*/}
+          {/*      </li>*/}
+          {/*    ))*/}
+          {/*) : (*/}
+          {/*  <></>*/}
+          {/*)}*/}
         </S.SearchList>
       </S.Content>
       <S.Bottom>
