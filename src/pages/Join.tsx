@@ -15,8 +15,9 @@ interface InputProps {
 
 interface SubmitType {
   email: string;
-  pwd: string | number;
-  nick: string;
+  password: string | number;
+  fullName: string;
+  location: string;
 }
 
 const S = {
@@ -116,7 +117,7 @@ const Join = () => {
   const [checkUniqEmail, setCheckUniqEmail] = useState<boolean>(true);
   const [emailFocus, setEmailFocus] = useState<boolean>(false);
 
-  const [pwd, setPwd] = useState<string>('');
+  const [password, setPwd] = useState<string>('');
   const [validPwd, setValidPwd] = useState<boolean>(false);
   const [pwdFocus, setPwdFocus] = useState<boolean>(false);
 
@@ -133,6 +134,8 @@ const Join = () => {
   const [keywordFocus, setKeywordFocus] = useState<boolean>(false);
   const [checkUniqNick, setCheckUniqNick] = useState<boolean>(true);
 
+  const [fullName, setFullName] = useState<string>('');
+
   const inputEmailState = () => {
     let color = '';
     if (!!email && !validEmail) color = Common.colors.system_error;
@@ -143,9 +146,9 @@ const Join = () => {
   };
   const inputPwdState = () => {
     let color = '';
-    if (!!pwd && !validPwd) color = Common.colors.system_error;
-    else if (!!pwd && validPwd) color = Common.colors.system_good;
-    else if (!pwd && !validPwd) color = Common.colors.grey_disabled;
+    if (!!password && !validPwd) color = Common.colors.system_error;
+    else if (!!password && validPwd) color = Common.colors.system_good;
+    else if (!password && !validPwd) color = Common.colors.grey_disabled;
     return color;
   };
   const inputMatchState = () => {
@@ -167,6 +170,7 @@ const Join = () => {
   const inputUniqNickState = () => {
     let color = '';
     if (!!keyword && !validKeyword) color = Common.colors.system_error;
+    else if (!!keyword && !checkUniqNick) color = Common.colors.system_error;
     else if (!!keyword && validKeyword) color = Common.colors.system_good;
     else if (!keyword) color = Common.colors.grey_disabled;
     return color;
@@ -179,14 +183,20 @@ const Join = () => {
   }, []);
 
   useEffect(() => {
+    if (!location) {
+      navigate('/location');
+    }
+  }, []);
+
+  useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
     checkEmail();
   }, [email]);
 
   useEffect(() => {
-    setValidPwd(PWD_REGEX.test(pwd));
-    setValidMatch(pwd === matchPwd);
-  }, [pwd, matchPwd]);
+    setValidPwd(PWD_REGEX.test(password));
+    setValidMatch(password === matchPwd);
+  }, [password, matchPwd]);
 
   useEffect(() => {
     setValidNick(NICK_REGEX.test(nickname));
@@ -194,8 +204,13 @@ const Join = () => {
 
   useEffect(() => {
     setValidKeyword(NICK_REGEX.test(keyword));
+
+    console.log(fullName);
+  }, [keyword, fullName]);
+
+  useEffect(() => {
     checkNickname();
-  }, [keyword]);
+  }, [keyword, fullName]);
 
   /**
    * email uniq check
@@ -219,7 +234,7 @@ const Join = () => {
    * */
   const checkNickname = async () => {
     if (nickname && validNick && keyword && validKeyword) {
-      const fullName = `${nickname} ${keyword}`;
+      setFullName(`${keyword} ${nickname}`);
       console.log(fullName);
       try {
         const response = await axiosRequest().post(
@@ -236,21 +251,19 @@ const Join = () => {
   };
 
   const handleSubmit = async () => {
-    const nick = keyword + ' ' + nickname;
-    const data: SubmitType = { email, pwd, nick };
+    const data: SubmitType = { email, password, fullName, location };
     try {
-      const res = await axios.post('/join', data, {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true
-      });
+      const res = await axiosRequest().post('/api/user/signin', data);
+      alert(`${res.data.fullName}님 회원가입 성공!`);
       console.log(res.data);
-      await alert(`${res.data?.param.nick}님 환영합니다!`);
+      // await alert(`${res.data?.param.nick}님 환영합니다!`);
       setEmail('');
       setPwd('');
       setMatchPwd('');
       setNickname('');
       setKeyword('');
       setSuccess(true);
+      navigate('/login');
     } catch (err) {
       console.log(err);
     }
@@ -308,14 +321,14 @@ const Join = () => {
                     id='password'
                     autoComplete='off'
                     required
-                    value={pwd}
+                    value={password}
                     onChange={(e) => setPwd(e.target.value)}
                     onFocus={() => setPwdFocus(true)}
                     onBlur={() => setPwdFocus(false)}
                     placeholder='N자리 이상 입력해 주세요.'
                     state={inputPwdState()}
                   />
-                  {pwd && !validPwd ? (
+                  {password && !validPwd ? (
                     <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
                   ) : (
                     <></>
