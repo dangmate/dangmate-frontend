@@ -7,6 +7,7 @@ import ButtonRound from '../components/asset/ButtonRound';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { locationState } from '../store/locationState';
+import axiosRequest from '../api/axios';
 
 interface InputProps {
   state?: string;
@@ -135,6 +136,7 @@ const Join = () => {
   const inputEmailState = () => {
     let color = '';
     if (!!email && !validEmail) color = Common.colors.system_error;
+    else if (!checkUniqEmail) color = Common.colors.system_error;
     else if (!!email && validEmail) color = Common.colors.system_good;
     else if (!email && !validEmail) color = Common.colors.grey_disabled;
     return color;
@@ -198,31 +200,38 @@ const Join = () => {
   /**
    * email uniq check
    * */
-  const checkEmail = () => {
+  const checkEmail = async () => {
     if (email && validEmail) {
-      axios.post('/join/email-check', email).then((res) => {
-        if (res.data.check) {
-          setCheckUniqEmail(true);
-        } else {
-          setCheckUniqEmail(false);
-        }
-      });
+      const data = { email };
+      try {
+        const response = await axiosRequest().post('/api/user/email', data);
+        setCheckUniqEmail(true);
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+        setCheckUniqEmail(false);
+      }
     }
   };
 
   /**
    * nickname uniq check
    * */
-  const checkNickname = () => {
+  const checkNickname = async () => {
     if (nickname && validNick && keyword && validKeyword) {
-      const data = { nickname, keyword };
-      axios.post('/join/nick-check', data).then((res) => {
-        if (res.data.check) {
-          setCheckUniqNick(true);
-        } else {
-          setCheckUniqNick(false);
-        }
-      });
+      const fullName = `${nickname} ${keyword}`;
+      console.log(fullName);
+      try {
+        const response = await axiosRequest().post(
+          '/api/user/full-name',
+          fullName
+        );
+        setCheckUniqNick(true);
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+        setCheckUniqNick(false);
+      }
     }
   };
 

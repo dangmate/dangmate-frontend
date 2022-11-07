@@ -8,7 +8,7 @@ import ButtonRound from '../components/asset/ButtonRound';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
-import { cosineDistanceBetweenPoints } from '../utils/distance';
+import { cosineDistanceBetweenPoints, distance } from '../utils/distance';
 import { getCityCode } from '../utils/ciryCode';
 
 declare global {
@@ -185,6 +185,7 @@ const Location = () => {
     const cityCode = getCityCode(regionFirstName);
     console.log(cityCode);
     getAddressList(cityCode);
+    getRegionThirdList();
   };
 
   /**
@@ -252,19 +253,30 @@ const Location = () => {
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
-        const location = {
-          name: result[0].address.address_name,
-          distance: cosineDistanceBetweenPoints(
+        // 거리가 6km 미만 주소만 검색.
+        if (
+          distance(
             coords.latitude,
             coords.longitude,
             Number(result[0].y),
-            Number(result[0].x)
-          )
-        };
-
-        setRegionList((regionList) => {
-          return [...regionList, location];
-        });
+            Number(result[0].x),
+            'K'
+          ) < 6
+        ) {
+          const location = {
+            name: result[0].address.address_name,
+            distance: distance(
+              coords.latitude,
+              coords.longitude,
+              Number(result[0].y),
+              Number(result[0].x),
+              'K'
+            )
+          };
+          setRegionList((regionList) => {
+            return [...regionList, location];
+          });
+        }
       }
     };
 
@@ -273,6 +285,7 @@ const Location = () => {
     });
 
     await Promise.all(promised);
+    console.log(regionList);
   };
 
   const autoSearch = () => {

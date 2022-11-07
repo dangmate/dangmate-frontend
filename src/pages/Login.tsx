@@ -6,6 +6,8 @@ import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
 import AuthContext from '../context/AuthProvider';
 import axiosRequest from '../api/axios';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../store/user';
 
 interface InputProps {
   state?: string;
@@ -97,11 +99,14 @@ const S = {
 
 const EMAIL_REGEX =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-const PWD_REGEX = /^[A-Za-z0-9]{4,12}$/;
+const PWD_REGEX = /^[A-Za-z0-9]{6,12}$/;
 
 const Login = () => {
   const navigate = useNavigate();
   // const { setAuth } = useContext(AuthContext);
+  const setUserState = useSetRecoilState(userState);
+  // const [userData, setUserData] = useRecoilState(userState);
+  const userData = useRecoilValue(userState);
 
   const userRef = useRef<HTMLInputElement>(null);
 
@@ -155,16 +160,16 @@ const Login = () => {
       const response = await axiosRequest().post('/api/user/login', data);
       if (response.data) {
         // const accessToken = response.data.accessToken;
+        console.log(response.data);
+        const { email, fullName } = response.data;
+        if (email && fullName) {
+          setUserState({ email, fullName });
+        }
         setEmail('');
         setPwd('');
         setSuccess(true);
         setTimeout(() => navigate('/home'), 2000);
       }
-      // {
-      //   "statusCode": "200",
-      //     "email": "abcd@gmail.com",
-      //     "fullName": "귀여운 댕댕이"
-      // }
     } catch (err) {
       console.log(err);
       setCollectPwd(false);
@@ -177,7 +182,7 @@ const Login = () => {
       {success ? (
         <S.Wrapper>
           <S.Introduce>
-            소심쟁이 제이에게
+            {userData.fullName}에게
             <br /> 공덕동 친구들을 소개할게요!
           </S.Introduce>
           <S.IntroduceImg>이미지</S.IntroduceImg>
