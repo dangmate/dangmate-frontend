@@ -161,9 +161,9 @@ const Login = () => {
       if (response.data) {
         // const accessToken = response.data.accessToken;
         console.log(response.data);
-        const { email, fullName } = response.data;
-        if (email && fullName) {
-          setUserState({ email, fullName });
+        const { email, fullName, location } = response.data;
+        if (email && fullName && location) {
+          setUserState({ email, fullName, location });
         }
         setEmail('');
         setPwd('');
@@ -183,7 +183,7 @@ const Login = () => {
         <S.Wrapper>
           <S.Introduce>
             {userData.fullName}에게
-            <br /> 공덕동 친구들을 소개할게요!
+            <br /> {userData.location} 친구들을 소개할게요!
           </S.Introduce>
           <S.IntroduceImg>이미지</S.IntroduceImg>
         </S.Wrapper>

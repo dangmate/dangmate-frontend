@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 interface UserType {
   email: string;
   fullName: string;
-  location?: string;
+  location: string;
 }
 
 export const userState = atom({
