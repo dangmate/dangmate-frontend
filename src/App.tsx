@@ -11,7 +11,10 @@ import OnBoarding from './pages/OnBoarding';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Join from './pages/Join';
+import Location from './pages/Location';
 import MobileGuide from './components/common/MobileGuide';
+import LocationSearch from './pages/LocationSearch';
+import { RecoilRoot } from 'recoil';
 
 const App = () => {
   // router
@@ -22,8 +25,10 @@ const App = () => {
       children: [
         { index: true, element: <Landing /> },
         { path: 'login', element: <Login /> },
-        { path: 'home', element: <Home /> },
         { path: 'join', element: <Join /> },
+        { path: 'location', element: <Location /> },
+        { path: 'location-search', element: <LocationSearch /> },
+        { path: 'home', element: <Home /> },
         { path: 'favorite', element: <Favorite /> },
         { path: 'story', element: <Story /> },
         { path: 'profile', element: <Profile /> },
@@ -45,7 +50,9 @@ const App = () => {
 
   return (
     <>
-      <div className='App'>{useMobileCheck() ? element : <MobileGuide />}</div>
+      <div className='App'>
+        <RecoilRoot>{useMobileCheck() ? element : <MobileGuide />}</RecoilRoot>
+      </div>
       {location.pathname === '/' && isShow && <OnBoarding />}
     </>
   );

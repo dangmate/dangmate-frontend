@@ -217,7 +217,7 @@ const Login = () => {
         </S.Form>
       </S.Content>
       <S.Bottom>
-        <S.Join onClick={() => navigate('/join')}>
+        <S.Join onClick={() => navigate('/location')}>
           <span>초간단 회원가입</span>
           <S.ArrowImg>
             <img src='/images/join_arrow.png' alt='arrow' />
