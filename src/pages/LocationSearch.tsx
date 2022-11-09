@@ -117,6 +117,7 @@ const LocationSearch = () => {
 
   const [search, setSearch] = useState<string>('');
   const [validSearch, setValidSearch] = useState<boolean>(false);
+  const [foundSearch, setFoundSearch] = useState<boolean>(true);
   const [searchList, setSearchList] = useState([]);
   const setLocation = useSetRecoilState(locationState);
 
@@ -130,7 +131,11 @@ const LocationSearch = () => {
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
+        console.log(result);
         setSearchList(result);
+      } else {
+        setFoundSearch(false);
+        setSearchList([]);
       }
     };
     geocoder.addressSearch(search, callback);
@@ -139,6 +144,7 @@ const LocationSearch = () => {
   const inputSearchState = () => {
     let color = '';
     if (!!search && !validSearch) color = Common.colors.system_error;
+    else if (!!search && !foundSearch) color = Common.colors.system_error;
     else if (!!search && validSearch) color = Common.colors.system_good;
     else if (!search && !validSearch) color = Common.colors.grey_disabled;
     return color;
@@ -158,6 +164,7 @@ const LocationSearch = () => {
 
   useEffect(() => {
     setValidSearch(SEARCH_REGEX.test(search));
+    setFoundSearch(true);
   }, [search]);
   return (
     <S.Wrapper>
@@ -184,6 +191,11 @@ const LocationSearch = () => {
             placeholder='내 동네 검색 (동,읍,면)'
           />
           {search && !validSearch ? <p>2글자 이상 입력해주세요.</p> : <></>}
+          {search && validSearch && !foundSearch ? (
+            <p>입력하신 동네를 찾을 수 없어요.</p>
+          ) : (
+            <></>
+          )}
         </S.Field>
         <span>검색 결과</span>
         <S.SearchList>

@@ -8,6 +8,8 @@ import ButtonRound from '../components/asset/ButtonRound';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
+import { cosineDistanceBetweenPoints, distance } from '../utils/distance';
+import { getCityCode } from '../utils/ciryCode';
 
 declare global {
   interface Window {
@@ -118,6 +120,7 @@ interface CoordsType {
   latitude: number;
   longitude: number;
 }
+
 const Location = () => {
   const navigate = useNavigate();
   const setLocation = useSetRecoilState(locationState);
@@ -132,6 +135,8 @@ const Location = () => {
 
   const [addressList, setAddressList] = useState<string[]>([]);
 
+  const [sortState, setSortState] = useState<boolean>(false);
+
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -140,8 +145,8 @@ const Location = () => {
 
   /**
    * 1. 현재 위치의 위도 경도 값 추출(웹브라우저에서는 좌표값이 정확하지 않을수도 있음)
+   * 해당 페이지 마운트 되었을 대 바로 실행
    */
-
   const getCoords = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -149,20 +154,17 @@ const Location = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         });
-        // console.log('정확도', position.coords.accuracy);
       },
       (err) => console.log(err),
       options
     );
-
-    if (coords.latitude !== 0 && coords.longitude !== 0) {
-      // console.log('현재 위치의 위도 경도 반환', coords);
-      getRegionFirstName();
-    }
+    console.log('위도, 경도', coords);
+    // console.log('현재 위치의 위도 경도 반환', coords);
+    getRegionFirstName();
   };
 
   /**
-   * 2. 현재 위치의 도시 이름 추출
+   * 2. 현재 위치의 도시 이름만 추출(ex: 서울)
    * */
   const getRegionFirstName = () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
@@ -173,108 +175,24 @@ const Location = () => {
 
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
-        // console.log('현재 위치 주소', result[0]);
         setRegionFirstName(result[0].address.region_1depth_name);
+        console.log('현재 위치 도시 :', regionFirstName);
       }
     };
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-    if (regionFirstName) {
-      getAddressList(getDataCode(regionFirstName));
-    }
-  };
 
-  const getDataCode = (sido: string): string => {
-    if (sido === '서울') return '11';
-    else if (sido === '부산') return '21';
-    else if (sido === '대구') return '22';
-    else if (sido === '인천') return '23';
-    else if (sido === '광주') return '24';
-    else if (sido === '대전') return '25';
-    else if (sido === '울산') return '26';
-    else if (sido === '세종') return '29';
-    else if (sido === '경기') return '31';
-    else if (sido === '강원') return '32';
-    else if (sido === '충북') return '33';
-    else if (sido === '충남') return '34';
-    else if (sido === '전북') return '35';
-    else if (sido === '전남') return '36';
-    else if (sido === '경북') return '37';
-    else if (sido === '경남') return '38';
-    else if (sido === '제주') return '39';
-    else return '00';
+    const cityCode = getCityCode(regionFirstName);
+    console.log(cityCode);
+    getAddressList(cityCode);
+    getRegionThirdList();
   };
 
   /**
-   * 3. region first name으로 행정동 리스트 추출
+   * 3. 해당 도시의 모든 행정동 리스트를 반환
    * */
-  const getRegionThirdList = () => {
-    const geocoder = new window.kakao.maps.services.Geocoder();
-
-    const callback = function (result: any, status: any) {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const location = {
-          name: result[0].address.address_name,
-          distance: CosineDistanceBetweenPoints(
-            coords.latitude,
-            coords.longitude,
-            Number(result[0].y),
-            Number(result[0].x)
-          )
-        };
-
-        setRegionList((regionList) => {
-          return [...regionList, location];
-        });
-      }
-    };
-
-    addressList.forEach((item) => {
-      geocoder.addressSearch(item, callback);
-    });
-  };
-
-  function CosineDistanceBetweenPoints(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ) {
-    const R = 6371e3;
-    const p1 = (lat1 * Math.PI) / 180;
-    const p2 = (lat2 * Math.PI) / 180;
-    const deltaP = p2 - p1;
-    const deltaLon = lon2 - lon1;
-    const deltaLambda = (deltaLon * Math.PI) / 180;
-    const a =
-      Math.sin(deltaP / 2) * Math.sin(deltaP / 2) +
-      Math.cos(p1) *
-        Math.cos(p2) *
-        Math.sin(deltaLambda / 2) *
-        Math.sin(deltaLambda / 2);
-    const d = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * R;
-    return d;
-  }
-
-  const autoSearch = () => {
-    setRegionList([]);
-    getCoords();
-  };
-
-  const onSelectHandler = (e: React.MouseEvent) => {
-    const target = e.target as HTMLTextAreaElement;
-    setLocation(target.innerText);
-    navigate('/join');
-  };
-
-  useEffect(() => {
-    getCoords();
-    return () => {
-      setRegionList([]);
-    };
-  }, [coords.latitude, coords.longitude, regionFirstName]);
-
   const getAddressList = async (code: string) => {
+    // 인증키를 통해 accessToken 발급
     const response = await axios.get(
       'https://sgisapi.kostat.go.kr/OpenAPI3/auth/authentication.json',
       {
@@ -284,6 +202,10 @@ const Location = () => {
         }
       }
     );
+    // 해당 도시에 대한 주소 코드 반환
+    // 행정동에 대한 리스트가 아닌 구 단위의 코드를 반환.(강남구, 강서구, 강동구...)
+    // 구에 대한 코드를 입력해야 행정동 리스트가 나옴.
+
     const addressData = await axios.get(
       'https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json',
       {
@@ -294,31 +216,92 @@ const Location = () => {
         }
       }
     );
-    const valueArray = await addressData.data.result.map(
-      (item: any) => item.cd
-    );
+    // 서울 구 코드를 array로 반환
+    const guCodeArray =
+      (await addressData.data.result) &&
+      (await addressData.data.result.map((item: any) => item.cd));
 
-    await valueArray.forEach((item: any) => {
-      axios
-        .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
-          params: {
-            accessToken: response.data.result.accessToken,
-            cd: item,
-            pg_yn: '0'
-          }
-        })
-        .then((res) => {
-          const mapData = res.data.result.map((item: any) => item.addr_name);
-          const setData = () => {
-            mapData.forEach((item: any) => {
-              setAddressList((addressList) => [...addressList, item]);
-            });
-          };
-          setData();
-        });
-    });
-    await getRegionThirdList();
+    // 구코드를 반복문으로 돌려 다시 검색
+    (await guCodeArray) &&
+      (await guCodeArray.forEach((item: any) => {
+        axios
+          .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
+            params: {
+              accessToken: response.data.result.accessToken,
+              cd: item,
+              pg_yn: '0'
+            }
+          })
+          .then((res) => {
+            const mapData =
+              res.data.result &&
+              res.data.result.map((item: any) => item.addr_name);
+            const setData = () => {
+              mapData.forEach((item: any) => {
+                setAddressList((addressList) => [...addressList, item]);
+              });
+            };
+            setData();
+          });
+      }));
   };
+
+  /**
+   * 4. 현재 좌표값과 행정동들의 좌표값을 모두 비교해서 거리를 반환.*/
+  const getRegionThirdList = async () => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+
+    const callback = function (result: any, status: any) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        // 거리가 6km 미만 주소만 검색.
+        if (
+          distance(
+            coords.latitude,
+            coords.longitude,
+            Number(result[0].y),
+            Number(result[0].x),
+            'K'
+          ) < 6
+        ) {
+          const location = {
+            name: result[0].address.address_name,
+            distance: distance(
+              coords.latitude,
+              coords.longitude,
+              Number(result[0].y),
+              Number(result[0].x),
+              'K'
+            )
+          };
+          setRegionList((regionList) => {
+            return [...regionList, location];
+          });
+        }
+      }
+    };
+
+    const promised = addressList.map(async (value, index) => {
+      await geocoder.addressSearch(value, callback);
+    });
+
+    await Promise.all(promised);
+    console.log(regionList);
+  };
+
+  const autoSearch = () => {
+    setRegionList([]);
+    getRegionThirdList();
+  };
+
+  const onSelectHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLTextAreaElement;
+    setLocation(target.innerText);
+    navigate('/join');
+  };
+
+  useEffect(() => {
+    getCoords();
+  }, [coords.latitude, coords.longitude, regionFirstName]);
 
   return (
     <S.Wrapper>
@@ -340,8 +323,6 @@ const Location = () => {
                 {item.name}
               </li>
             ))}
-
-          {/*{}*/}
         </S.SearchList>
       </S.Content>
       <S.Bottom>
