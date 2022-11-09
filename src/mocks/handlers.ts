@@ -6,40 +6,52 @@ export const handlers = [
     const emailValue = req.body;
     return res(
       ctx.json({
-        check: true
+        check: emailValue === 'diddpwl80@naver.com' ? false : true
       }),
       ctx.status(200)
     );
   }),
+
   // 닉네임 중복 체크
   rest.post('/join/nick-check', (req, res, ctx) => {
-    const nickValue = req.body;
+    const { nickname, keyword }: any = req.body;
+    const check = `${keyword} ${nickname}`;
     return res(
       ctx.json({
-        check: true
+        check: check === '세젤귀 초코' ? false : true
       }),
       ctx.status(200)
     );
   }),
 
+  //회원가입
   rest.post('/join', (req, res, ctx) => {
     // const { user } = req.body;
+    const param = req.body;
     return res(
       ctx.json({
-        // user
+        param
       }),
       ctx.status(200)
     );
   }),
 
+  // 로그인
   rest.post('/login', (req, res, ctx) => {
     // Persist user's authentication in the session
-    sessionStorage.setItem('is-authenticated', 'true');
+    // sessionStorage.setItem('is-authenticated', 'true');
+    const { email, pwd }: any = req.body;
+    const accessToken = '1233577';
     return res(
       // Respond with a 200 status code
+      ctx.json({
+        accessToken,
+        user: email === 'diddpwl80@naver.com' && pwd === '123456' ? true : false
+      }),
       ctx.status(200)
     );
   }),
+
   rest.get('/user', (req, res, ctx) => {
     // Check if the user is authenticated in this session
     const isAuthenticated = sessionStorage.getItem('is-authenticated');
