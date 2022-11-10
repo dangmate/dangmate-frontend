@@ -234,7 +234,7 @@ const Login = () => {
                   onChange={(e) => setPwd(e.target.value)}
                   onFocus={() => setPwdFocus(true)}
                   onBlur={() => setPwdFocus(false)}
-                  placeholder='N자리 이상 입력해 주세요.'
+                  placeholder='6자리 이상 입력해 주세요.'
                   state={inputPwdState()}
                 />
                 {pwd && !validPwd ? (
