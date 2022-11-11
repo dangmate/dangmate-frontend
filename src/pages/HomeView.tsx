@@ -4,7 +4,7 @@ import { getVwValue } from '../styles/styleUtil';
 
 import { useNavigate } from 'react-router-dom';
 import FeedView from '../components/section/home/FeedView';
-import LikeAction from '../components/section/home/Like';
+import LikeAction from '../components/section/home/LikeAction';
 import ImageControl from '../components/section/home/ImageControl';
 import { Common } from '../styles/common';
 import CommentState from '../components/section/home/CommentState';

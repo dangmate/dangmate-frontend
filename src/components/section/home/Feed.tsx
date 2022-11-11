@@ -5,8 +5,8 @@ import { Common } from '../../../styles/common';
 import ImageControl from './ImageControl';
 import UserName from './UserName';
 import Category from './Category';
-import LikeAction from './Like';
-import CommentAction from './Comment';
+import LikeAction from './LikeAction';
+import CommentAction from './CommentAction';
 
 const S = {
   Container: styled.div`
