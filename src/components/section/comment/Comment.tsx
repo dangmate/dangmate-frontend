@@ -6,9 +6,12 @@ import { Common } from '../../../styles/common';
 import UserName from '../home/UserName';
 import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
+import CommentReply from './CommentReply';
 
 const S = {
-  Container: styled.div``,
+  Container: styled.div`
+    margin-bottom: ${getVwValue('32')};
+  `,
   Head: styled.div`
     display: flex;
     justify-content: space-between;
@@ -32,6 +35,7 @@ const S = {
     margin-left: ${getVwValue('15')};
     color: ${Common.colors.grey_sub};
     border-bottom: 1px solid ${Common.colors.grey_sub};
+    cursor: pointer;
   `
 };
 
@@ -75,6 +79,7 @@ const Comment = () => {
             <S.TextBtn>답글 4</S.TextBtn>
           </S.Column>
         </S.Foot>
+        <CommentReply />
       </S.Content>
     </S.Container>
   );

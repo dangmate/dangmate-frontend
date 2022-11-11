@@ -4,10 +4,7 @@ import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
 import FeedView from '../components/section/home/FeedView';
 import CommentState from '../components/section/comment/CommentState';
-import Comment from '../components/section/comment/Comment';
-import UserName from '../components/section/home/UserName';
-import PostTime from '../components/section/home/PostTime';
-import ButtonMore from '../components/asset/ButtonMore';
+import CommentArea from '../components/section/comment/CommentArea';
 
 const S = {
   Container: styled.div`
@@ -49,9 +46,7 @@ const HomeView = () => {
       <S.Container>
         <FeedView />
         <CommentState />
-        <div>
-          <Comment />
-        </div>
+        <CommentArea />
       </S.Container>
     </>
   );
