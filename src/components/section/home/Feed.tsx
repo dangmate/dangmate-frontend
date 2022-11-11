@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import ImageControl from './ImageControl';
 import UserName from './UserName';
 import Category from './Category';
 import LikeAction from './LikeAction';
