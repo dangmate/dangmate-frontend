@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-
 import { useNavigate } from 'react-router-dom';
 import FeedView from '../components/section/home/FeedView';
 import CommentState from '../components/section/comment/CommentState';
 import UserName from '../components/section/home/UserName';
+import PostTime from '../components/section/home/PostTime';
+import ButtonMore from '../components/asset/ButtonMore';
 
 const S = {
   Container: styled.div`
@@ -34,7 +35,7 @@ const S = {
   `
 };
 
-const View = () => {
+const HomeView = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -58,9 +59,14 @@ const S2 = {
   Head: styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: ${getVwValue('15')};
   `,
   Column: styled.div`
     display: flex;
+  `,
+  TimeWrap: styled.div`
+    margin-left: ${getVwValue('10')};
   `,
   Content: styled.div`
     padding: ${getVwValue('0 0 0 12')};
@@ -73,12 +79,22 @@ const CommentArea = () => {
     <>
       <S2.Container>
         <S2.Head>
-          <UserName
-            src={'/images/profile.png'}
-            alt={'profile'}
-            name={'소심쟁이 제이'}
-          ></UserName>
+          <S2.Column>
+            <UserName
+              src={'/images/profile.png'}
+              alt={'profile'}
+              name={'소심쟁이 제이'}
+            ></UserName>
+            <S2.TimeWrap>
+              <PostTime />
+            </S2.TimeWrap>
+          </S2.Column>
+
+          <S2.Column>
+            <ButtonMore />
+          </S2.Column>
         </S2.Head>
+
         <S2.Content>
           <span>
             OO동에 이사온지 얼마 되지 않아 아는 친구가 한 명도 없어요ㅜㅜ나이는
@@ -92,4 +108,4 @@ const CommentArea = () => {
   );
 };
 
-export default View;
+export default HomeView;
