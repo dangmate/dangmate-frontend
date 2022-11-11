@@ -57,3 +57,8 @@ input[type='number']::-webkit-outer-spin-button {
     appearance: none;
 }
 input:focus { outline: none; }
+
+button{
+    border:none;
+    background: none;
+}
