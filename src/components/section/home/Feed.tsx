@@ -3,7 +3,10 @@ import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
 import ImageControl from './ImageControl';
-import { a } from 'msw/lib/glossary-dc3fd077';
+import UserName from './UserName';
+import Category from './Category';
+import LikeAction from './Like';
+import CommentAction from './Comment';
 
 const S = {
   Container: styled.div`
@@ -24,22 +27,7 @@ const S = {
     justify-content: space-between;
     align-items: center;
   `,
-  Nick: styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `,
-  Text: styled.span`
-    margin-left: ${getVwValue('5')};
-  `,
-  Category: styled.div`
-    padding: ${getVwValue('3 10')};
-    border: 1px solid ${Common.colors.primary_emphasis};
-    border-radius: ${getVwValue('16')};
-    & > span {
-      color: ${Common.colors.primary_emphasis};
-    }
-  `,
+
   Content: styled.div`
     margin: ${getVwValue('30 0 35')};
     white-space: normal;
@@ -48,28 +36,32 @@ const S = {
     -webkit-box-orient: vertical;
     overflow: hidden;
   `,
-  Actions: styled.div``,
-  Location: styled.span``,
-  Time: styled.span``,
-  Comment: styled.div`
+  Actions: styled.div`
     display: flex;
-    align-items: center;
+    justify-content: space-between;
   `,
-  Like: styled.div`
+  Column: styled.div`
     display: flex;
-    align-items: center;
   `,
-  Count: styled.div`
-    margin-left: ${getVwValue('5')};
+  Location: styled.span`
+    margin-right: ${getVwValue('10')};
   `,
-  LikeWrap: styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: ${getVwValue('24')};
-    height: ${getVwValue('24')};
-  `
+  Time: styled.span``
 };
+interface IProps {
+  feedList: Feed[];
+}
+interface Feed {
+  id: number;
+  userName: string;
+  userProfile: string;
+  content: string;
+  location: string;
+  createTime: string;
+  comment: number;
+  like: number;
+  category: string;
+}
 
 const Feed = () => {
   return (
@@ -79,18 +71,12 @@ const Feed = () => {
       </S.Media>
 
       <S.FeedHead>
-        <S.Nick>
-          <ImageControl
-            width='18'
-            height='18'
-            src={'/images/profile.png'}
-            alt={'profile'}
-          />
-          <S.Text>토종그잡체 풍이</S.Text>
-        </S.Nick>
-        <S.Category>
-          <span>산책 메이트</span>
-        </S.Category>
+        <UserName
+          src={'/images/profile.png'}
+          alt={'profile'}
+          name={'소심쟁이 제이'}
+        />
+        <Category title='산책 메이트' />
       </S.FeedHead>
 
       <S.Content>
@@ -100,54 +86,16 @@ const Feed = () => {
       </S.Content>
 
       <S.Actions>
-        <div>
+        <S.Column>
           <S.Location>공덕동</S.Location>
           <S.Time>4분 전</S.Time>
-        </div>
-        <div>
+        </S.Column>
+        <S.Column>
           <CommentAction />
           <LikeAction />
-        </div>
+        </S.Column>
       </S.Actions>
     </S.Container>
-  );
-};
-
-const CommentAction = () => {
-  return (
-    <S.Comment>
-      <ImageControl
-        width='18'
-        height='17'
-        src={'/images/comment.svg'}
-        alt={'profile'}
-      ></ImageControl>
-      <S.Count>3</S.Count>
-    </S.Comment>
-  );
-};
-
-const LikeAction = () => {
-  return (
-    <S.Like>
-      <S.LikeWrap>
-        <ImageControl
-          width='16'
-          height='16'
-          src={'/images/like.svg'}
-          alt={'profile'}
-        ></ImageControl>
-      </S.LikeWrap>
-      <S.LikeWrap>
-        <ImageControl
-          width='22'
-          // height='24'
-          src={'/images/like_true.svg'}
-          alt={'profile'}
-        ></ImageControl>
-      </S.LikeWrap>
-      <S.Count>5</S.Count>
-    </S.Like>
   );
 };
 

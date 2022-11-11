@@ -24,8 +24,7 @@ const S = {
       padding: ${getVwValue('0 0 8')};
       border-bottom: ${(props) =>
         props.active ? '2px solid ' + Common.colors.primary : 'none'}
-  `,
-  Span: styled.span``
+  `
 };
 
 const TabMenu = () => {
