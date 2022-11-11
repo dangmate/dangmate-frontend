@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import ImageControl from './ImageControl';
 import UserName from './UserName';
 import Category from './Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
 import CountHits from './CountHit';
+import PostTime from './PostTime';
 
 const S = {
   Container: styled.div`
@@ -41,8 +41,7 @@ const S = {
   `,
   Location: styled.span`
     margin-right: ${getVwValue('10')};
-  `,
-  Time: styled.span``
+  `
 };
 
 const FeedDetail = () => {
@@ -71,7 +70,7 @@ const FeedDetail = () => {
       <S.Actions>
         <S.Column>
           <S.Location>공덕동</S.Location>
-          <S.Time>4분 전</S.Time>
+          <PostTime />
         </S.Column>
         <S.Column>
           <CommentAction />

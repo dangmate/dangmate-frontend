@@ -4,10 +4,8 @@ import { getVwValue } from '../styles/styleUtil';
 
 import { useNavigate } from 'react-router-dom';
 import FeedView from '../components/section/home/FeedView';
-import LikeAction from '../components/section/home/LikeAction';
-import ImageControl from '../components/section/home/ImageControl';
-import { Common } from '../styles/common';
-import CommentState from '../components/section/home/CommentState';
+import CommentState from '../components/section/comment/CommentState';
+import UserName from '../components/section/home/UserName';
 
 const S = {
   Container: styled.div`
@@ -49,7 +47,47 @@ const View = () => {
       <S.Container>
         <FeedView />
         <CommentState />
+        <CommentArea />
       </S.Container>
+    </>
+  );
+};
+
+const S2 = {
+  Container: styled.div``,
+  Head: styled.div`
+    display: flex;
+    justify-content: space-between;
+  `,
+  Column: styled.div`
+    display: flex;
+  `,
+  Content: styled.div`
+    padding: ${getVwValue('0 0 0 12')};
+  `,
+  Foot: styled.div``
+};
+
+const CommentArea = () => {
+  return (
+    <>
+      <S2.Container>
+        <S2.Head>
+          <UserName
+            src={'/images/profile.png'}
+            alt={'profile'}
+            name={'소심쟁이 제이'}
+          ></UserName>
+        </S2.Head>
+        <S2.Content>
+          <span>
+            OO동에 이사온지 얼마 되지 않아 아는 친구가 한 명도 없어요ㅜㅜ나이는
+            25살 여자입니다! 같이 밥먹고 운동 다닐 동네 친구 구해요! 또래에 산책
+            같이 마음 맞는 분 찾으면 좋겠어요!
+          </span>
+          <div>footer</div>
+        </S2.Content>
+      </S2.Container>
     </>
   );
 };
