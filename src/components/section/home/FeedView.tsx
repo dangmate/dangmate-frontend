@@ -6,7 +6,7 @@ import ImageControl from './ImageControl';
 import UserName from './UserName';
 import Category from './Category';
 import LikeAction from './LikeAction';
-import CommentAction from './CommentAction';
+import CommentAction from '../comment/CommentAction';
 import CountHits from './CountHit';
 
 const S = {

@@ -6,8 +6,7 @@ import ImageControl from './ImageControl';
 import UserName from './UserName';
 import Category from './Category';
 import LikeAction from './LikeAction';
-import CommentAction from './CommentAction';
-
+import CommentAction from '../comment/CommentAction';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};
