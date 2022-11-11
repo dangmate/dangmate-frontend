@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-import Header from '../components/section/home/Header';
-import { Common } from '../styles/common';
-import Feed from '../components/section/home/Feed';
-import axiosRequest from '../api/axios';
-import axios from 'axios';
+
 import { useNavigate } from 'react-router-dom';
 import FeedView from '../components/section/home/FeedView';
+import LikeAction from '../components/section/home/Like';
+import ImageControl from '../components/section/home/ImageControl';
+import { Common } from '../styles/common';
+import CommentState from '../components/section/home/CommentState';
 
 const S = {
-  FeedList: styled.div`
+  Container: styled.div`
     padding: ${getVwValue('0 20')};
   `,
   Arrow: styled.div`
@@ -46,9 +46,10 @@ const View = () => {
         </S.ImgWrap>
       </S.Arrow>
 
-      <S.FeedList>
+      <S.Container>
         <FeedView />
-      </S.FeedList>
+        <CommentState />
+      </S.Container>
     </>
   );
 };
