@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { getVwValue } from '../../../styles/styleUtil';
+import { getVwValue } from '../../styles/styleUtil';
 
 interface IProps {
   width: string;
