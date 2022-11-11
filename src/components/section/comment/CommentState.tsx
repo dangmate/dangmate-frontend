@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
-import ImageControl from '../home/ImageControl';
+import ImageControl from '../../asset/ImageControl';
 import React from 'react';
 
 const S = {

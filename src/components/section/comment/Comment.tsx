@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
-import ImageControl from '../home/ImageControl';
+import ImageControl from '../../asset/ImageControl';
 import { Common } from '../../../styles/common';
 import UserName from '../home/UserName';
 import PostTime from '../home/PostTime';

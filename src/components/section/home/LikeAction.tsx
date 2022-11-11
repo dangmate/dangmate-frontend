@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ImageControl from './ImageControl';
+import ImageControl from '../../asset/ImageControl';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 

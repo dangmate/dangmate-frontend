@@ -1,5 +1,5 @@
 import React from 'react';
-import ImageControl from '../section/home/ImageControl';
+import ImageControl from './ImageControl';
 
 const ButtonMore = () => {
   return (
