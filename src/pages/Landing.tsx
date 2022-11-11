@@ -32,7 +32,7 @@ const S = {
   `
 };
 
-const LoginStep1 = () => {
+const Landing = () => {
   const navigate = useNavigate();
 
   return (
@@ -54,4 +54,4 @@ const LoginStep1 = () => {
   );
 };
 
-export default LoginStep1;
+export default Landing;
