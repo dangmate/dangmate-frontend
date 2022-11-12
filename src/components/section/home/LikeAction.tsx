@@ -29,14 +29,14 @@ const LikeAction = () => {
           <ImageControl
             width='24'
             // height='24'
-            src={'/images/like_true.svg'}
+            src={'/svg/like_true.svg'}
             alt={'profile'}
           ></ImageControl>
         ) : (
           <ImageControl
             width='18'
             height='16'
-            src={'/images/like.svg'}
+            src={'/svg/like.svg'}
             alt={'profile'}
           ></ImageControl>
         )}

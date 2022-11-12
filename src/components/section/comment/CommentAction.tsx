@@ -27,7 +27,7 @@ const CommentAction = () => {
         <ImageControl
           width='18'
           height='17'
-          src={'/images/comment.svg'}
+          src={'/svg/comment.svg'}
           alt={'profile'}
         ></ImageControl>
       </S.CommentWrap>

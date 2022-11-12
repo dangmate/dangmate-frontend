@@ -48,7 +48,7 @@ const Landing = () => {
             시작하기
           </ButtonRound>
         </S.Button>
-        <S.Login>일단 구경할게요!</S.Login>
+        <S.Login onClick={() => navigate('/home')}>일단 구경할게요!</S.Login>
       </S.Bottom>
     </S.Wrapper>
   );

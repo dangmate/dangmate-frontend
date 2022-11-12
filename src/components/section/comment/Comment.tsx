@@ -72,7 +72,7 @@ const Comment = () => {
               <ImageControl
                 width={'24'}
                 height={'24'}
-                src={'/images/write_fill.svg'}
+                src={'/svg/write_fill.svg'}
                 alt={'write'}
               />
             </S.Write>
