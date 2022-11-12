@@ -10,11 +10,7 @@ const S = {
 };
 
 const CommentReply = () => {
-  return (
-    <S.Container>
-      <Comment />
-    </S.Container>
-  );
+  return <S.Container>{/*<Comment />*/}</S.Container>;
 };
 
 export default CommentReply;

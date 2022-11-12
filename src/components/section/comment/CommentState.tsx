@@ -35,7 +35,7 @@ const CommentState = () => {
         <ImageControl
           width='22'
           // height='20'
-          src={'/images/like_true.svg'}
+          src={'/svg/like_true.svg'}
           alt={'profile'}
         ></ImageControl>
       </S.LikeWrap>

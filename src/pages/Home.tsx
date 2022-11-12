@@ -7,6 +7,7 @@ import TabMenu from '../components/section/home/TabMenu';
 import Feed from '../components/section/home/Feed';
 import axiosRequest from '../api/axios';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   FeedList: styled.div`
@@ -15,20 +16,21 @@ const S = {
 };
 
 const Home = () => {
-  const [feedList, setFeedList] = useState([]);
+  // const [feedList, setFeedList] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const response = axios.get('/feed');
-    response
-      .then((res) => setFeedList(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  // useEffect(() => {
+  //   const response = axios.get('/feed');
+  //   response
+  //     .then((res) => setFeedList(res.data))
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   return (
     <>
       <Header />
       <TabMenu />
-      <S.FeedList>
+      <S.FeedList onClick={() => navigate('/view')}>
         <Feed />
       </S.FeedList>
     </>
