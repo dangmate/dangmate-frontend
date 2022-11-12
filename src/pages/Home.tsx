@@ -8,8 +8,19 @@ import Feed from '../components/section/home/Feed';
 import { useNavigate } from 'react-router-dom';
 
 const S = {
+  Container: styled.div`
+    position: relative;
+  `,
   FeedList: styled.div`
     padding: ${getVwValue('0 20')};
+  `,
+  WriteBtn: styled.div`
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: ${getVwValue('40')};
+    height: ${getVwValue('40')};
+    background: hotpink;
   `
 };
 
@@ -45,7 +56,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <S.Container>
       <Header />
       <TabMenu />
       <S.FeedList onClick={() => navigate('/view')}>
@@ -58,7 +69,8 @@ const Home = () => {
             );
           })}
       </S.FeedList>
-    </>
+      <S.WriteBtn></S.WriteBtn>
+    </S.Container>
   );
 };
 
