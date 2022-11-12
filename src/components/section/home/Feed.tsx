@@ -46,8 +46,9 @@ const S = {
   `,
   Time: styled.span``
 };
+
 interface IProps {
-  feedList: Feed[];
+  data: Feed;
 }
 interface Feed {
   id: number;
@@ -59,34 +60,31 @@ interface Feed {
   comment: number;
   like: number;
   category: string;
+  media: string;
 }
 
-const Feed = () => {
+const Feed = (props: IProps) => {
   return (
     <S.Container>
       <S.Media>
-        <img src='/images/feed_thumb.jpg' alt='thumb' />
+        <img src={props.data.media} alt='thumb' />
       </S.Media>
 
       <S.FeedHead>
         <UserName
-          src={'/images/profile.png'}
+          src={props.data.userProfile}
           alt={'profile'}
-          name={'소심쟁이 제이'}
+          name={props.data.userName}
         />
-        <Category title='산책 메이트' />
+        <Category title={props.data.category} />
       </S.FeedHead>
 
-      <S.Content>
-        나는 풍이. 부산을 대표하는 풍산개. 공놀이 좋아하고 터그도 기가 막히게 잘
-        하지. 근데 요즘 주인놈이 놀아주는게 영 맘에 안들어서 같이 놀 댕댕이
-        구한다. 만나서 냄새 맡을 때는 예의지켜
-      </S.Content>
+      <S.Content>{props.data.content}</S.Content>
 
       <S.Actions>
         <S.Column>
-          <S.Location>공덕동</S.Location>
-          <S.Time>4분 전</S.Time>
+          <S.Location>{props.data.location}</S.Location>
+          <S.Time>{props.data.createTime}</S.Time>
         </S.Column>
         <S.Column>
           <CommentAction />
