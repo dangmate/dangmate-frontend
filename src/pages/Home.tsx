@@ -64,7 +64,7 @@ const Home = () => {
     }
   ]);
   const navigate = useNavigate();
-  const [writeMode, setWriteMode] = useState<boolean>(true);
+  const [writeMode, setWriteMode] = useState<boolean>(false);
 
   return (
     <>
@@ -179,6 +179,18 @@ const S2 = {
       font-size: ${getVwValue('12')};
       margin-bottom: ${getVwValue('8')};
     }
+  `,
+  Wrapper: styled.div`
+    position: relative;
+    width: 100%;
+    height: 100%;
+  `,
+  Introduce: styled.h3`
+    padding: ${getVwValue('70 20 60')};
+    text-align: center;
+  `,
+  IntroduceImg: styled.h3`
+    text-align: center;
   `
 };
 
@@ -198,7 +210,7 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const [category, setCategory] = useState<string>('');
   const [toggleA, setToggleA] = useState<boolean>(false);
   const [toggleB, setToggleB] = useState<boolean>(false);
-  const [next, setNext] = useState<boolean>(true);
+  const [next, setNext] = useState<boolean>(false);
 
   const [text, setText] = useState<string>('');
   const [validText, setValidText] = useState<boolean>(false);
@@ -206,6 +218,11 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const [image, setImage] = useState<File | null>();
   const [preview, setPreview] = useState<string | null>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState({});
+  const [success, setSuccess] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const onClickToggleAHandler = () => {
     setToggleA(!toggleA);
@@ -236,8 +253,39 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   };
 
   const RemoveImageHandler = () => {
-    setImage(null);
-    setPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const UploadFeed = () => {
+    console.log(category);
+    console.log(image);
+    console.log(text);
+    setSuccess(true);
+    setTimeout(() => {
+      navigate('/home');
+      onClickWriteModeHandler();
+    }, 2000);
+    // if (image && text && category) {
+    //   const formData = new FormData();
+    //   formData.append('image', image);
+    //   formData.append('category', category);
+    //   formData.append('content', text);
+    // }
+
+    // const data = {
+    //   id: 3,
+    //   userName: '말괄량이 조이',
+    //   userProfile: '/images/profile.png',
+    //   content: text,
+    //   location: '화곡동',
+    //   createTime: '1분전',
+    //   comment: 0,
+    //   like: 0,
+    //   category,
+    //   media: '/images/feed_thumb.jpg'
+    // };
   };
 
   useEffect(() => {
@@ -259,120 +307,136 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   }, [image]);
   return (
     <>
-      {!next ? (
+      {!success ? (
         <>
-          <ArrowBack onClick={onClickWriteModeHandler} />
-          <S2.Container>
-            <S2.Row>
-              <S2.H2>우리 댕댕이가 말하고 싶은 주제는?</S2.H2>
-              <S2.P>언제든지 바꿀 수 있으니 걱정하지마세요.</S2.P>
-            </S2.Row>
-            <S2.Content>
-              <ImageControl
-                width={'280'}
-                height={'280'}
-                src={'/images/Frame.png'}
-                alt={''}
-              />
-              <S2.CategoryWrap>
-                <Category
-                  title={'산책 메이트'}
-                  active={toggleA}
-                  onClick={onClickToggleAHandler}
-                />
-                <Category
-                  title={'댕댕 이야기'}
-                  active={toggleB}
-                  onClick={onClickToggleBHandler}
-                />
-              </S2.CategoryWrap>
-            </S2.Content>
-          </S2.Container>
-          <S2.Bottom>
-            <S2.Button>
-              <ButtonRound
-                onClick={() => setNext(true)}
-                disabled={!((toggleA || toggleB) && category)}
-                type='button'
-              >
-                다음
-              </ButtonRound>
-            </S2.Button>
-          </S2.Bottom>
+          {!next ? (
+            <>
+              <ArrowBack onClick={onClickWriteModeHandler} />
+              <S2.Container>
+                <S2.Row>
+                  <S2.H2>우리 댕댕이가 말하고 싶은 주제는?</S2.H2>
+                  <S2.P>언제든지 바꿀 수 있으니 걱정하지마세요.</S2.P>
+                </S2.Row>
+                <S2.Content>
+                  <ImageControl
+                    width={'280'}
+                    height={'280'}
+                    src={'/images/Frame.png'}
+                    alt={''}
+                  />
+                  <S2.CategoryWrap>
+                    <Category
+                      title={'산책 메이트'}
+                      active={toggleA}
+                      onClick={onClickToggleAHandler}
+                    />
+                    <Category
+                      title={'댕댕 이야기'}
+                      active={toggleB}
+                      onClick={onClickToggleBHandler}
+                    />
+                  </S2.CategoryWrap>
+                </S2.Content>
+              </S2.Container>
+              <S2.Bottom>
+                <S2.Button>
+                  <ButtonRound
+                    onClick={() => setNext(true)}
+                    disabled={!((toggleA || toggleB) && category)}
+                    type='button'
+                  >
+                    다음
+                  </ButtonRound>
+                </S2.Button>
+              </S2.Bottom>
+            </>
+          ) : (
+            <>
+              <ArrowBack onClick={() => setNext(false)} />
+              <S2.Container>
+                <S2.Row>
+                  <S2.H2>
+                    {category === '산책 메이트'
+                      ? '소심쟁이 제이에게\n산책 메이트를 선물해 주세요!'
+                      : '댕댕이들이랑 복작복작 수다떨기!'}
+                  </S2.H2>
+                </S2.Row>
+                <S2.FormContent>
+                  <S2.UploadForm>
+                    <S2.Label htmlFor='image'>
+                      <S2.UploadImage onClick={uploadImage}>
+                        <ImageControl
+                          width={'90'}
+                          height={'45'}
+                          src={
+                            preview ? preview : '/images/attachment_false.png'
+                          }
+                          alt={'image'}
+                          fit={'cover'}
+                        />
+                      </S2.UploadImage>
+                      <S2.UploadName>
+                        <div>
+                          {image
+                            ? image.name
+                            : '최대 1장의 사진 등록이 가능해요'}
+                        </div>
+                        {image && (
+                          <S2.CloseBtn onClick={RemoveImageHandler}>
+                            <ImageControl
+                              width={'18'}
+                              height={'18'}
+                              src={'/svg/close.svg'}
+                              alt={'close'}
+                            />
+                          </S2.CloseBtn>
+                        )}
+                      </S2.UploadName>
+                    </S2.Label>
+                    <input
+                      type='file'
+                      style={{ display: 'none' }}
+                      ref={fileInputRef}
+                      accept={'image/*'}
+                      onChange={onChangeFileHandler}
+                    />
+                  </S2.UploadForm>
+                  <S2.TextForm>
+                    <label htmlFor='text'>내용 입력</label>
+                    <S2.Textarea
+                      name='text'
+                      id='text'
+                      autoComplete='off'
+                      required
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder='내 댕댕이를 소개해 주세요!&#10;많은 댕댕이 친구들이 기다리고 있어요.'
+                    />
+                  </S2.TextForm>
+                </S2.FormContent>
+              </S2.Container>
+              <S2.Bottom>
+                <S2.Button>
+                  <ButtonRound
+                    onClick={UploadFeed}
+                    disabled={!(text && validText && image && preview)}
+                    type='button'
+                  >
+                    업로드
+                  </ButtonRound>
+                </S2.Button>
+              </S2.Bottom>
+            </>
+          )}
         </>
       ) : (
-        <>
-          <ArrowBack onClick={() => setNext(false)} />
-          <S2.Container>
-            <S2.Row>
-              <S2.H2>
-                {category === '산책 메이트'
-                  ? '소심쟁이 제이에게\n산책 메이트를 선물해 주세요!'
-                  : '댕댕이들이랑 복작복작 수다떨기!'}
-              </S2.H2>
-            </S2.Row>
-            <S2.FormContent>
-              <S2.UploadForm>
-                <S2.Label htmlFor='image'>
-                  <S2.UploadImage onClick={uploadImage}>
-                    <ImageControl
-                      width={'90'}
-                      height={'45'}
-                      src={preview ? preview : '/images/attachment_false.png'}
-                      alt={'image'}
-                      fit={'cover'}
-                    />
-                  </S2.UploadImage>
-                  <S2.UploadName>
-                    <div>
-                      {image ? image.name : '최대 1장의 사진 등록이 가능해요'}
-                    </div>
-                    {image && (
-                      <S2.CloseBtn onClick={RemoveImageHandler}>
-                        <ImageControl
-                          width={'18'}
-                          height={'18'}
-                          src={'/svg/close.svg'}
-                          alt={'close'}
-                        />
-                      </S2.CloseBtn>
-                    )}
-                  </S2.UploadName>
-                </S2.Label>
-                <input
-                  type='file'
-                  style={{ display: 'none' }}
-                  ref={fileInputRef}
-                  accept={'image/*'}
-                  onChange={onChangeFileHandler}
-                />
-              </S2.UploadForm>
-              <S2.TextForm>
-                <label htmlFor='text'>내용 입력</label>
-                <S2.Textarea
-                  name='text'
-                  id='text'
-                  autoComplete='off'
-                  required
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder='내 댕댕이를 소개해 주세요!&#10;많은 댕댕이 친구들이 기다리고 있어요.'
-                />
-              </S2.TextForm>
-            </S2.FormContent>
-          </S2.Container>
-          <S2.Bottom>
-            <S2.Button>
-              <ButtonRound
-                // onClick={handleSubmit}
-                disabled={!(text && validText && image && preview)}
-                type='button'
-              >
-                업로드
-              </ButtonRound>
-            </S2.Button>
-          </S2.Bottom>
-        </>
+        <S2.Wrapper>
+          <S2.Introduce>
+            공덕동 댕댕이들에게 전달 완료!
+            <br /> 우리 제이에게 어떤 친구가 생길까요?
+          </S2.Introduce>
+          <S2.IntroduceImg>이미지</S2.IntroduceImg>
+        </S2.Wrapper>
       )}
     </>
   );
