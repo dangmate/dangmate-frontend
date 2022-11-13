@@ -16,7 +16,7 @@ const S = {
     height: ${(props) => (props.height ? getVwValue(props.height) : 'auto')};
     cursor: pointer;
     & > img {
-      object-fit: ${(props) => (props.fit ? 'contain' : props.fit)};
+      object-fit: ${(props) => (props.fit ? props.fit : 'contain')};
     }
   `
 };

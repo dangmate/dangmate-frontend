@@ -1,4 +1,10 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, {
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useRef
+} from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import Header from '../components/section/home/Header';
@@ -6,6 +12,10 @@ import { Common } from '../styles/common';
 import TabMenu from '../components/section/home/TabMenu';
 import Feed from '../components/section/home/Feed';
 import { useNavigate } from 'react-router-dom';
+import ArrowBack from '../components/asset/ArrowBack';
+import ImageControl from '../components/asset/ImageControl';
+import Category from '../components/section/home/Category';
+import ButtonRound from '../components/asset/ButtonRound';
 
 const S = {
   Container: styled.div`
@@ -54,23 +64,317 @@ const Home = () => {
     }
   ]);
   const navigate = useNavigate();
+  const [writeMode, setWriteMode] = useState<boolean>(true);
 
   return (
-    <S.Container>
-      <Header />
-      <TabMenu />
-      <S.FeedList onClick={() => navigate('/view')}>
-        {feed &&
-          feed.map((item) => {
-            return (
-              <React.Fragment key={item.id}>
-                <Feed data={item} />
-              </React.Fragment>
-            );
-          })}
-      </S.FeedList>
-      <S.WriteBtn></S.WriteBtn>
-    </S.Container>
+    <>
+      {writeMode ? (
+        <AddFeedForm setWriteMode={setWriteMode} />
+      ) : (
+        <S.Container>
+          <Header />
+          <TabMenu />
+          <S.FeedList onClick={() => navigate('/view')}>
+            {feed &&
+              feed.map((item) => {
+                return (
+                  <React.Fragment key={item.id}>
+                    <Feed data={item} />
+                  </React.Fragment>
+                );
+              })}
+          </S.FeedList>
+          <S.WriteBtn onClick={() => setWriteMode(true)}></S.WriteBtn>
+        </S.Container>
+      )}
+    </>
+  );
+};
+
+const S2 = {
+  Container: styled.div`
+    padding: ${getVwValue('0 20')};
+  `,
+  Row: styled.div`
+    display: block;
+  `,
+  Column: styled.div`
+    display: flex;
+  `,
+  Content: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: ${getVwValue('60 0 0')};
+  `,
+  FormContent: styled.div`
+    margin: ${getVwValue('60 0 0')};
+  `,
+  H2: styled.h2`
+    margin: ${getVwValue('8 0')};
+    font-size: ${getVwValue('20')};
+  `,
+  P: styled.p`
+    font-size: ${getVwValue('16')};
+  `,
+  CategoryWrap: styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: ${getVwValue('210')};
+    margin: ${getVwValue('65 0 0')};
+  `,
+  Button: styled.div`
+    width: 100%;
+    margin-top: ${getVwValue('20')};
+  `,
+  Bottom: styled.div`
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: ${getVwValue('0 20 16')};
+  `,
+  Textarea: styled.textarea`
+    display: block;
+    width: 100%;
+    padding: ${getVwValue('12')};
+    margin-top: ${getVwValue('5')};
+    border: none;
+    resize: none;
+    height: ${getVwValue('300')};
+    color: ${Common.colors.grey_headline};
+  `,
+  Label: styled.label`
+    display: flex;
+    align-items: center;
+  `,
+  UploadForm: styled.div`
+    position: relative;
+  `,
+  UploadImage: styled.div`
+    width: ${getVwValue('90')};
+    height: ${getVwValue('45')};
+    border-radius: ${getVwValue('8')};
+    overflow: hidden;
+  `,
+  UploadName: styled.div`
+    margin-left: ${getVwValue('12')};
+    font-size: ${getVwValue('12')};
+    width: ${getVwValue('200')};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+  CloseBtn: styled.div`
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  `,
+  TextForm: styled.div`
+    margin-top: ${getVwValue('36')};
+    padding-top: ${getVwValue('36')};
+    border-top: 1px solid ${Common.colors.line_medium};
+    & > label {
+      display: block;
+      font-size: ${getVwValue('12')};
+      margin-bottom: ${getVwValue('8')};
+    }
+  `
+};
+
+interface WriteProps {
+  setWriteMode?: Dispatch<SetStateAction<boolean>>;
+}
+
+const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{10,500}$/;
+
+const AddFeedForm = ({ setWriteMode }: WriteProps) => {
+  const onClickWriteModeHandler = () => {
+    if (setWriteMode) {
+      setWriteMode(false);
+    }
+  };
+
+  const [category, setCategory] = useState<string>('');
+  const [toggleA, setToggleA] = useState<boolean>(false);
+  const [toggleB, setToggleB] = useState<boolean>(false);
+  const [next, setNext] = useState<boolean>(true);
+
+  const [text, setText] = useState<string>('');
+  const [validText, setValidText] = useState<boolean>(false);
+
+  const [image, setImage] = useState<File | null>();
+  const [preview, setPreview] = useState<string | null>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const onClickToggleAHandler = () => {
+    setToggleA(!toggleA);
+    setToggleB(false);
+    setCategory('산책 메이트');
+  };
+  const onClickToggleBHandler = () => {
+    setToggleB(!toggleB);
+    setToggleA(false);
+    setCategory('댕댕 이야기');
+  };
+
+  const uploadImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const onChangeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+    console.log(file);
+    if (file && file.type.substring(0, 5) === 'image') {
+      setImage(file);
+    } else {
+      setImage(null);
+    }
+  };
+
+  const RemoveImageHandler = () => {
+    setImage(null);
+    setPreview(null);
+  };
+
+  useEffect(() => {
+    setValidText(TEXT_REGEX.test(text));
+  }, [text]);
+
+  useEffect(() => {
+    if (image) {
+      const reader = new FileReader();
+      console.log(reader);
+      console.log(preview);
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(image);
+    } else {
+      setPreview(null);
+    }
+  }, [image]);
+  return (
+    <>
+      {!next ? (
+        <>
+          <ArrowBack onClick={onClickWriteModeHandler} />
+          <S2.Container>
+            <S2.Row>
+              <S2.H2>우리 댕댕이가 말하고 싶은 주제는?</S2.H2>
+              <S2.P>언제든지 바꿀 수 있으니 걱정하지마세요.</S2.P>
+            </S2.Row>
+            <S2.Content>
+              <ImageControl
+                width={'280'}
+                height={'280'}
+                src={'/images/Frame.png'}
+                alt={''}
+              />
+              <S2.CategoryWrap>
+                <Category
+                  title={'산책 메이트'}
+                  active={toggleA}
+                  onClick={onClickToggleAHandler}
+                />
+                <Category
+                  title={'댕댕 이야기'}
+                  active={toggleB}
+                  onClick={onClickToggleBHandler}
+                />
+              </S2.CategoryWrap>
+            </S2.Content>
+          </S2.Container>
+          <S2.Bottom>
+            <S2.Button>
+              <ButtonRound
+                onClick={() => setNext(true)}
+                disabled={!((toggleA || toggleB) && category)}
+                type='button'
+              >
+                다음
+              </ButtonRound>
+            </S2.Button>
+          </S2.Bottom>
+        </>
+      ) : (
+        <>
+          <ArrowBack onClick={() => setNext(false)} />
+          <S2.Container>
+            <S2.Row>
+              <S2.H2>
+                {category === '산책 메이트'
+                  ? '소심쟁이 제이에게\n산책 메이트를 선물해 주세요!'
+                  : '댕댕이들이랑 복작복작 수다떨기!'}
+              </S2.H2>
+            </S2.Row>
+            <S2.FormContent>
+              <S2.UploadForm>
+                <S2.Label htmlFor='image'>
+                  <S2.UploadImage onClick={uploadImage}>
+                    <ImageControl
+                      width={'90'}
+                      height={'45'}
+                      src={preview ? preview : '/images/attachment_false.png'}
+                      alt={'image'}
+                      fit={'cover'}
+                    />
+                  </S2.UploadImage>
+                  <S2.UploadName>
+                    <div>
+                      {image ? image.name : '최대 1장의 사진 등록이 가능해요'}
+                    </div>
+                    {image && (
+                      <S2.CloseBtn onClick={RemoveImageHandler}>
+                        <ImageControl
+                          width={'18'}
+                          height={'18'}
+                          src={'/svg/close.svg'}
+                          alt={'close'}
+                        />
+                      </S2.CloseBtn>
+                    )}
+                  </S2.UploadName>
+                </S2.Label>
+                <input
+                  type='file'
+                  style={{ display: 'none' }}
+                  ref={fileInputRef}
+                  accept={'image/*'}
+                  onChange={onChangeFileHandler}
+                />
+              </S2.UploadForm>
+              <S2.TextForm>
+                <label htmlFor='text'>내용 입력</label>
+                <S2.Textarea
+                  name='text'
+                  id='text'
+                  autoComplete='off'
+                  required
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder='내 댕댕이를 소개해 주세요!&#10;많은 댕댕이 친구들이 기다리고 있어요.'
+                />
+              </S2.TextForm>
+            </S2.FormContent>
+          </S2.Container>
+          <S2.Bottom>
+            <S2.Button>
+              <ButtonRound
+                // onClick={handleSubmit}
+                disabled={!(text && validText && image && preview)}
+                type='button'
+              >
+                업로드
+              </ButtonRound>
+            </S2.Button>
+          </S2.Bottom>
+        </>
+      )}
+    </>
   );
 };
 
