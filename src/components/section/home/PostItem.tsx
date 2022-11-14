@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import UserName from './UserName';
-import Category from './Category';
+import UserName from '../../common/UserName';
+import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
 const S = {
@@ -46,55 +46,52 @@ const S = {
   `,
   Time: styled.span``
 };
-interface IProps {
-  feedList: Feed[];
+
+interface PostType {
+  data: IProps;
 }
-interface Feed {
-  id: number;
-  userName: string;
-  userProfile: string;
-  content: string;
-  location: string;
-  createTime: string;
-  comment: number;
-  like: number;
+interface IProps {
   category: string;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  location: string;
+  profile: string;
+  thumbnail: string;
+  comments: number;
+  likes: number;
 }
 
-const Feed = () => {
+const PostItem = (props: PostType) => {
   return (
     <S.Container>
       <S.Media>
-        <img src='/images/feed_thumb.jpg' alt='thumb' />
+        <img src={props.data.thumbnail} alt='thumb' />
       </S.Media>
 
       <S.FeedHead>
         <UserName
-          src={'/images/profile.png'}
-          alt={'profile'}
-          name={'소심쟁이 제이'}
+          src={props.data.profile}
+          alt={''}
+          name={props.data.fullName}
         />
-        <Category title='산책 메이트' />
+        <Category title={props.data.category} />
       </S.FeedHead>
 
-      <S.Content>
-        나는 풍이. 부산을 대표하는 풍산개. 공놀이 좋아하고 터그도 기가 막히게 잘
-        하지. 근데 요즘 주인놈이 놀아주는게 영 맘에 안들어서 같이 놀 댕댕이
-        구한다. 만나서 냄새 맡을 때는 예의지켜
-      </S.Content>
+      <S.Content>{props.data.content}</S.Content>
 
       <S.Actions>
         <S.Column>
-          <S.Location>공덕동</S.Location>
-          <S.Time>4분 전</S.Time>
+          <S.Location>{props.data.location}</S.Location>
+          <S.Time>{props.data.createdAt}</S.Time>
         </S.Column>
         <S.Column>
-          <CommentAction />
-          <LikeAction />
+          <CommentAction comment={props.data.comments} />
+          <LikeAction like={props.data.likes} />
         </S.Column>
       </S.Actions>
     </S.Container>
   );
 };
 
-export default Feed;
+export default PostItem;

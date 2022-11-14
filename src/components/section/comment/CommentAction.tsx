@@ -19,19 +19,22 @@ const S = {
     margin-left: ${getVwValue('5')};
   `
 };
+interface IProps {
+  comment?: number;
+}
 
-const CommentAction = () => {
+const CommentAction = (props: IProps) => {
   return (
     <S.Comment>
       <S.CommentWrap>
         <ImageControl
           width='18'
           height='17'
-          src={'/images/comment.svg'}
+          src={'/svg/comment.svg'}
           alt={'profile'}
         ></ImageControl>
       </S.CommentWrap>
-      <S.Count>3</S.Count>
+      <S.Count>{props.comment}</S.Count>
     </S.Comment>
   );
 };

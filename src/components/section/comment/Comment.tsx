@@ -3,10 +3,9 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import ImageControl from '../../asset/ImageControl';
 import { Common } from '../../../styles/common';
-import UserName from '../home/UserName';
+import UserName from '../../common/UserName';
 import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
-import CommentReply from './CommentReply';
 
 const S = {
   Container: styled.div`
@@ -27,7 +26,8 @@ const S = {
   Content: styled.div`
     padding: ${getVwValue('0 0 0 12')};
   `,
-  Foot: styled.div`
+  Foot: styled.div<IProps>`
+    display: ${(props) => (props.reply ? 'block' : 'none')};
     margin-top: ${getVwValue('15')};
   `,
   Write: styled.div``,
@@ -39,7 +39,11 @@ const S = {
   `
 };
 
-const Comment = () => {
+interface IProps {
+  reply: boolean;
+}
+
+const Comment = (props: IProps) => {
   return (
     <S.Container>
       <S.Head>
@@ -66,20 +70,19 @@ const Comment = () => {
           같이 마음 맞는 분 찾으면 좋겠어요!
         </S.Column>
 
-        <S.Foot>
+        <S.Foot reply={props.reply}>
           <S.Column>
             <S.Write>
               <ImageControl
                 width={'24'}
                 height={'24'}
-                src={'/images/write_fill.svg'}
+                src={'/svg/write_fill.svg'}
                 alt={'write'}
               />
             </S.Write>
             <S.TextBtn>답글 4</S.TextBtn>
           </S.Column>
         </S.Foot>
-        <CommentReply />
       </S.Content>
     </S.Container>
   );

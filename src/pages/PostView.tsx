@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
-import FeedView from '../components/section/home/FeedView';
+import FeedView from '../components/section/postView/PostViewItem';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 
@@ -33,7 +33,7 @@ const S = {
   `
 };
 
-const HomeView = () => {
+const PostView = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -52,4 +52,4 @@ const HomeView = () => {
   );
 };
 
-export default HomeView;
+export default PostView;

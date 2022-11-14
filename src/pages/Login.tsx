@@ -161,9 +161,9 @@ const Login = () => {
       if (response.data) {
         // const accessToken = response.data.accessToken;
         console.log(response.data);
-        const { email, fullName, location } = response.data;
-        if (email && fullName && location) {
-          setUserState({ email, fullName, location });
+        const { email, fullName, location, userId } = response.data;
+        if (email && fullName && location && userId) {
+          setUserState({ email, fullName, location, userId });
         }
         setEmail('');
         setPwd('');
