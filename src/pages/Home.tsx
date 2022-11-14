@@ -30,7 +30,8 @@ const S = {
     right: ${getVwValue('20')};
     width: auto;
     height: auto;
-    background: hotpink;
+    border-radius: ${getVwValue('12')};
+    box-shadow: 0 0 12px rgba(83, 55, 194, 0.5);
   `
 };
 
