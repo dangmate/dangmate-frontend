@@ -252,13 +252,31 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const onChangeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
-    console.log(file);
+
     if (file && file.type.substring(0, 5) === 'image') {
       setImage(file);
     } else {
       setImage(null);
     }
   };
+
+  // const fileSizeCheck = () => {
+  //   const maxSize = 1 * 1024 * 1024;
+  //   if (image) {
+  //     const fileSize = image.size;
+  //     if (fileSize > maxSize) {
+  //       // alert('첨부파일 사이즈는 5MB 이내로 등록 가능합니다.');
+  //       setImage(null);
+  //       setPreview(null);
+  //     }
+  //   }
+  //   // console.log(fileSize, maxSize);
+  //   // if (fileSize > maxSize) {
+  //   //   alert('첨부파일 사이즈는 5MB 이내로 등록 가능합니다.');
+  //   //   setImage(null);
+  //   //   setPreview(null);
+  //   // }
+  // };
 
   const RemoveImageHandler = () => {
     if (fileInputRef.current) {
@@ -303,8 +321,8 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
-      console.log(reader);
-      console.log(preview);
+      // console.log(reader);
+      // console.log(preview);
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
@@ -405,7 +423,7 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
                       type='file'
                       style={{ display: 'none' }}
                       ref={fileInputRef}
-                      accept={'image/*'}
+                      accept={'.jpg, .png'}
                       onChange={onChangeFileHandler}
                     />
                   </S2.UploadForm>
