@@ -19,8 +19,11 @@ const S = {
     margin-left: ${getVwValue('5')};
   `
 };
+interface IProps {
+  comment: number;
+}
 
-const CommentAction = () => {
+const CommentAction = (props: IProps) => {
   return (
     <S.Comment>
       <S.CommentWrap>
@@ -31,7 +34,7 @@ const CommentAction = () => {
           alt={'profile'}
         ></ImageControl>
       </S.CommentWrap>
-      <S.Count>3</S.Count>
+      <S.Count>{props.comment}</S.Count>
     </S.Comment>
   );
 };

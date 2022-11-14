@@ -47,34 +47,33 @@ const S = {
   Time: styled.span``
 };
 
-interface IProps {
-  data: Feed;
+interface PostType {
+  data: IProps;
 }
-interface Feed {
-  id: number;
-  userName: string;
-  userProfile: string;
-  content: string;
-  location: string;
-  createTime: string;
-  comment: number;
-  like: number;
+interface IProps {
   category: string;
-  media: string;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  location: string;
+  profile: string;
+  thumbnail: string;
+  comments: number;
+  likes: number;
 }
 
-const Feed = (props: IProps) => {
+const Feed = (props: PostType) => {
   return (
     <S.Container>
       <S.Media>
-        <img src={props.data.media} alt='thumb' />
+        <img src={props.data.thumbnail} alt='thumb' />
       </S.Media>
 
       <S.FeedHead>
         <UserName
-          src={props.data.userProfile}
-          alt={'profile'}
-          name={props.data.userName}
+          src={props.data.profile}
+          alt={''}
+          name={props.data.fullName}
         />
         <Category title={props.data.category} />
       </S.FeedHead>
@@ -84,11 +83,11 @@ const Feed = (props: IProps) => {
       <S.Actions>
         <S.Column>
           <S.Location>{props.data.location}</S.Location>
-          <S.Time>{props.data.createTime}</S.Time>
+          <S.Time>{props.data.createdAt}</S.Time>
         </S.Column>
         <S.Column>
-          <CommentAction />
-          <LikeAction />
+          <CommentAction comment={props.data.comments} />
+          <LikeAction like={props.data.likes} />
         </S.Column>
       </S.Actions>
     </S.Container>

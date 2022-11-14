@@ -27,18 +27,33 @@ const S = {
   `
 };
 
-const TabMenu = () => {
+interface IProps {
+  fetchPosts: (props: string) => void;
+}
+const TabMenu = (props: IProps) => {
   const [toggleState, setToggleState] = useState<number>(1);
+  const fetchAllPosts = () => {
+    setToggleState(1);
+    props.fetchPosts('all');
+  };
+  const fetchMatePosts = () => {
+    setToggleState(2);
+    props.fetchPosts('산책 메이트');
+  };
+  const fetchStoryPosts = () => {
+    setToggleState(3);
+    props.fetchPosts('댕댕 이야기');
+  };
 
   return (
     <S.Ul>
-      <S.Li active={toggleState === 1} onClick={() => setToggleState(1)}>
+      <S.Li active={toggleState === 1} onClick={fetchAllPosts}>
         <span>모두 보기</span>
       </S.Li>
-      <S.Li active={toggleState === 2} onClick={() => setToggleState(2)}>
+      <S.Li active={toggleState === 2} onClick={fetchMatePosts}>
         <span>산책 메이트</span>
       </S.Li>
-      <S.Li active={toggleState === 3} onClick={() => setToggleState(3)}>
+      <S.Li active={toggleState === 3} onClick={fetchStoryPosts}>
         <span>댕댕 이야기</span>
       </S.Li>
     </S.Ul>

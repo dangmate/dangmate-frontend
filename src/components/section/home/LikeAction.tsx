@@ -19,7 +19,11 @@ const S = {
     height: ${getVwValue('24')};
   `
 };
-const LikeAction = () => {
+interface IProps {
+  like: number;
+}
+
+const LikeAction = (props: IProps) => {
   const [like, setLike] = useState<boolean>(false);
 
   return (
@@ -41,7 +45,7 @@ const LikeAction = () => {
           ></ImageControl>
         )}
       </S.LikeWrap>
-      <S.Count onClick={() => setLike(!like)}>5</S.Count>
+      <S.Count onClick={() => setLike(!like)}>{props.like}</S.Count>
     </S.Like>
   );
 };

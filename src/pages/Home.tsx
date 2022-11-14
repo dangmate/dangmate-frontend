@@ -71,26 +71,24 @@ const Home = () => {
   const [writeMode, setWriteMode] = useState<boolean>(false);
   const userData = useRecoilValue(userState);
 
-  useEffect(() => {
+  const fetchPosts = async (category: string) => {
     const location = userData.location;
-    const category = 'all';
     const userId = userData.userId;
     const data = { location, category, userId };
+    try {
+      const response = await axiosRequest().post(
+        '/api/posts?size=5&lastPostId=10',
+        data
+      );
+      console.log(response.data);
+      setFeed(response.data.posts);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    const fetchPosts = async () => {
-      try {
-        const response = await axiosRequest().post(
-          '/api/posts?size=5&lastPostId=10',
-          data
-        );
-        // setFeed(response);
-        console.log(feed);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchPosts();
+  useEffect(() => {
+    fetchPosts('all');
   }, []);
 
   return (
@@ -100,16 +98,16 @@ const Home = () => {
       ) : (
         <S.Container>
           <Header />
-          <TabMenu />
+          <TabMenu fetchPosts={fetchPosts} />
           <S.FeedList>
-            {/*{feed &&*/}
-            {/*  feed.map((item) => {*/}
-            {/*    return (*/}
-            {/*      <React.Fragment key={item.id}>*/}
-            {/*        <Feed data={item} />*/}
-            {/*      </React.Fragment>*/}
-            {/*    );*/}
-            {/*  })}*/}
+            {feed &&
+              feed.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Feed data={item} />
+                  </React.Fragment>
+                );
+              })}
           </S.FeedList>
           <S.WriteBtn onClick={() => setWriteMode(true)}>
             <ImageControl
