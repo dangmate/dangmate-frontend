@@ -206,7 +206,7 @@ interface WriteProps {
   setWriteMode?: Dispatch<SetStateAction<boolean>>;
 }
 
-const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{10,500}$/;
+const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{2,500}$/;
 
 const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const onClickWriteModeHandler = () => {
