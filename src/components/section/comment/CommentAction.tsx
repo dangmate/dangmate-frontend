@@ -20,7 +20,7 @@ const S = {
   `
 };
 interface IProps {
-  comment: number;
+  comment?: number;
 }
 
 const CommentAction = (props: IProps) => {

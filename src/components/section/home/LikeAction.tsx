@@ -20,7 +20,7 @@ const S = {
   `
 };
 interface IProps {
-  like: number;
+  like?: number;
 }
 
 const LikeAction = (props: IProps) => {

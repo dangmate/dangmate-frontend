@@ -17,7 +17,7 @@ const S = {
   `
 };
 
-const Header = () => {
+const HomeHeader = () => {
   const userData = useRecoilValue(userState);
   return (
     <S.Container>
@@ -34,4 +34,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HomeHeader;

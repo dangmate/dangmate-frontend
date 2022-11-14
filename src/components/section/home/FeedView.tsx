@@ -3,7 +3,7 @@ import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
 import UserName from './UserName';
-import Category from './Category';
+import Category from '../../asset/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
 import CountHits from './CountHit';

@@ -7,14 +7,14 @@ import React, {
 } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-import Header from '../components/section/home/Header';
+import HomeHeader from '../components/section/home/HomeHeader';
 import { Common } from '../styles/common';
 import TabMenu from '../components/section/home/TabMenu';
 import Feed from '../components/section/home/Feed';
 import { useNavigate } from 'react-router-dom';
 import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
-import Category from '../components/section/home/Category';
+import Category from '../components/asset/Category';
 import ButtonRound from '../components/asset/ButtonRound';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
@@ -97,7 +97,7 @@ const Home = () => {
         <AddFeedForm setWriteMode={setWriteMode} />
       ) : (
         <S.Container>
-          <Header />
+          <HomeHeader />
           <TabMenu fetchPosts={fetchPosts} />
           <S.FeedList>
             {feed &&

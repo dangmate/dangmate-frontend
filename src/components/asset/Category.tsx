@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { getVwValue } from '../../../styles/styleUtil';
-import { Common } from '../../../styles/common';
+import { getVwValue } from '../../styles/styleUtil';
+import { Common } from '../../styles/common';
 
 interface IProps {
   title: string;
