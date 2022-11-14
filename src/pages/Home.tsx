@@ -16,6 +16,9 @@ import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
 import Category from '../components/section/home/Category';
 import ButtonRound from '../components/asset/ButtonRound';
+import axiosRequest from '../api/axios';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/user';
 
 const S = {
   Container: styled.div`
@@ -37,35 +40,58 @@ const S = {
 
 const Home = () => {
   const [feed, setFeed] = useState([
-    {
-      id: 1,
-      userName: '소심쟁이 제이',
-      userProfile: '/images/profile.png',
-      content:
-        '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-      location: '공덕동',
-      createTime: '1시간전',
-      comment: 0,
-      like: 4,
-      category: '댕댕 이야기',
-      media: '/images/feed_thumb.jpg'
-    },
-    {
-      id: 2,
-      userName: '말광량이 조이',
-      userProfile: '/images/profile.png',
-      content:
-        '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-      location: '공덕동',
-      createTime: '4분전',
-      comment: 0,
-      like: 4,
-      category: '산책 메이트',
-      media: '/images/feed_thumb.jpg'
-    }
+    // {
+    //   id: 1,
+    //   userName: '소심쟁이 제이',
+    //   userProfile: '/images/profile.png',
+    //   content:
+    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
+    //   location: '공덕동',
+    //   createTime: '1시간전',
+    //   comment: 0,
+    //   like: 4,
+    //   category: '댕댕 이야기',
+    //   media: '/images/feed_thumb.jpg'
+    // },
+    // {
+    //   id: 2,
+    //   userName: '말광량이 조이',
+    //   userProfile: '/images/profile.png',
+    //   content:
+    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
+    //   location: '공덕동',
+    //   createTime: '4분전',
+    //   comment: 0,
+    //   like: 4,
+    //   category: '산책 메이트',
+    //   media: '/images/feed_thumb.jpg'
+    // }
   ]);
   const navigate = useNavigate();
   const [writeMode, setWriteMode] = useState<boolean>(false);
+  const userData = useRecoilValue(userState);
+
+  useEffect(() => {
+    const location = userData.location;
+    const category = 'all';
+    const userId = userData.userId;
+    const data = { location, category, userId };
+
+    const fetchPosts = async () => {
+      try {
+        const response = await axiosRequest().post(
+          '/api/posts?size=5&lastPostId=10',
+          data
+        );
+        // setFeed(response);
+        console.log(feed);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <>
@@ -75,15 +101,15 @@ const Home = () => {
         <S.Container>
           <Header />
           <TabMenu />
-          <S.FeedList onClick={() => navigate('/view')}>
-            {feed &&
-              feed.map((item) => {
-                return (
-                  <React.Fragment key={item.id}>
-                    <Feed data={item} />
-                  </React.Fragment>
-                );
-              })}
+          <S.FeedList>
+            {/*{feed &&*/}
+            {/*  feed.map((item) => {*/}
+            {/*    return (*/}
+            {/*      <React.Fragment key={item.id}>*/}
+            {/*        <Feed data={item} />*/}
+            {/*      </React.Fragment>*/}
+            {/*    );*/}
+            {/*  })}*/}
           </S.FeedList>
           <S.WriteBtn onClick={() => setWriteMode(true)}>
             <ImageControl

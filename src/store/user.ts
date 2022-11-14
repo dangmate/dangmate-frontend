@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 
+const { persistAtom } = recoilPersist();
 interface UserType {
   email: string;
   fullName: string;
@@ -14,5 +16,6 @@ export const userState = atom({
     fullName: '',
     location: '',
     userId: 0
-  } as UserType
+  } as UserType,
+  effects_UNSTABLE: [persistAtom]
 });
