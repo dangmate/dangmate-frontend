@@ -1,4 +1,4 @@
-import ImageControl from './ImageControl';
+import ImageControl from '../asset/ImageControl';
 import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../styles/styleUtil';

@@ -33,7 +33,7 @@ const S = {
   `
 };
 
-const PostViewl = () => {
+const PostView = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -52,4 +52,4 @@ const PostViewl = () => {
   );
 };
 
-export default PostViewl;
+export default PostView;

@@ -14,7 +14,7 @@ import PostItem from '../components/section/home/PostItem';
 import { useNavigate } from 'react-router-dom';
 import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
-import Category from '../components/asset/Category';
+import Category from '../components/common/Category';
 import ButtonRound from '../components/asset/ButtonRound';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';

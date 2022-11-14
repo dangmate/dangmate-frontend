@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import UserName from '../../asset/UserName';
-import Category from '../../asset/Category';
+import UserName from '../../common/UserName';
+import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
 const S = {
