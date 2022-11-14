@@ -30,7 +30,7 @@ const S = {
 interface IProps {
   fetchPosts: (props: string) => void;
 }
-const TabMenu = (props: IProps) => {
+const HomeTabMenu = (props: IProps) => {
   const [toggleState, setToggleState] = useState<number>(1);
   const fetchAllPosts = () => {
     setToggleState(1);
@@ -60,4 +60,4 @@ const TabMenu = (props: IProps) => {
   );
 };
 
-export default TabMenu;
+export default HomeTabMenu;

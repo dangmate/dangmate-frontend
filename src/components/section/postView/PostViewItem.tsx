@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import UserName from './UserName';
+import UserName from '../../asset/UserName';
 import Category from '../../asset/Category';
-import LikeAction from './LikeAction';
+import LikeAction from '../home/LikeAction';
 import CommentAction from '../comment/CommentAction';
-import CountHits from './CountHit';
-import PostTime from './PostTime';
+import CountHits from './PostCountHit';
+import PostTime from '../home/PostTime';
 
 const S = {
   Container: styled.div`

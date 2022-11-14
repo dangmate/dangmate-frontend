@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import UserName from './UserName';
+import UserName from '../../asset/UserName';
 import Category from '../../asset/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
@@ -62,7 +62,7 @@ interface IProps {
   likes: number;
 }
 
-const Feed = (props: PostType) => {
+const PostItem = (props: PostType) => {
   return (
     <S.Container>
       <S.Media>
@@ -94,4 +94,4 @@ const Feed = (props: PostType) => {
   );
 };
 
-export default Feed;
+export default PostItem;

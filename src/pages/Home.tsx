@@ -9,8 +9,8 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeHeader from '../components/section/home/HomeHeader';
 import { Common } from '../styles/common';
-import TabMenu from '../components/section/home/TabMenu';
-import Feed from '../components/section/home/Feed';
+import HomeTabMenu from '../components/section/home/HomeTabMenu';
+import PostItem from '../components/section/home/PostItem';
 import { useNavigate } from 'react-router-dom';
 import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
@@ -98,13 +98,13 @@ const Home = () => {
       ) : (
         <S.Container>
           <HomeHeader />
-          <TabMenu fetchPosts={fetchPosts} />
+          <HomeTabMenu fetchPosts={fetchPosts} />
           <S.FeedList>
             {feed &&
               feed.map((item, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Feed data={item} />
+                    <PostItem data={item} />
                   </React.Fragment>
                 );
               })}
