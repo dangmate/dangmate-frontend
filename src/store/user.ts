@@ -4,6 +4,7 @@ interface UserType {
   email: string;
   fullName: string;
   location: string;
+  userId: number;
 }
 
 export const userState = atom({
@@ -11,6 +12,7 @@ export const userState = atom({
   default: {
     email: '',
     fullName: '',
-    location: ''
+    location: '',
+    userId: 0
   } as UserType
 });
