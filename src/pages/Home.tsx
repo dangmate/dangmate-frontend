@@ -26,10 +26,10 @@ const S = {
   `,
   WriteBtn: styled.div`
     position: fixed;
-    bottom: 0;
-    right: 0;
-    width: ${getVwValue('40')};
-    height: ${getVwValue('40')};
+    bottom: ${getVwValue('24')};
+    right: ${getVwValue('20')};
+    width: auto;
+    height: auto;
     background: hotpink;
   `
 };
@@ -84,7 +84,14 @@ const Home = () => {
                 );
               })}
           </S.FeedList>
-          <S.WriteBtn onClick={() => setWriteMode(true)}></S.WriteBtn>
+          <S.WriteBtn onClick={() => setWriteMode(true)}>
+            <ImageControl
+              width={'44'}
+              height={'44'}
+              src={'/svg/write_btn.svg'}
+              alt={''}
+            />
+          </S.WriteBtn>
         </S.Container>
       )}
     </>
