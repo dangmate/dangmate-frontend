@@ -20,6 +20,7 @@ const S = {
     height: ${getVwValue('180')};
     margin: ${getVwValue('30 0')};
     border-radius: ${getVwValue('12')};
+    overflow: hidden;
     & > img {
       object-fit: cover;
     }
@@ -44,22 +45,6 @@ const S = {
     margin-right: ${getVwValue('10')};
   `
 };
-
-interface PostType {
-  category: string;
-  comments: number;
-  content: string;
-  createdAt: string;
-  fullName: string;
-  isLike?: boolean;
-  isPost?: boolean;
-  likes: number;
-  location: string;
-  postId: number | null;
-  profile: string | null;
-  thumbnail: string;
-  views?: number;
-}
 
 interface IProps {
   data: any;
