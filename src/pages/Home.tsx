@@ -40,7 +40,6 @@ const S = {
 
 const Home = () => {
   const [feed, setFeed] = useState([]);
-  const navigate = useNavigate();
   const [writeMode, setWriteMode] = useState<boolean>(false);
   const userData = useRecoilValue(userState);
 
@@ -62,7 +61,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchPosts('all');
-  }, []);
+  }, [writeMode]);
 
   return (
     <>
@@ -224,8 +223,9 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const [preview, setPreview] = useState<string | null>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({});
   const [success, setSuccess] = useState<boolean>(false);
+
+  const userData = useRecoilValue(userState);
 
   const navigate = useNavigate();
 
@@ -282,33 +282,30 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   };
 
   const UploadFeed = async () => {
+    const formData = new FormData();
     if (image && text && category) {
-      const formData = new FormData();
       formData.append('multipartFile', image);
-    } else {
-      alert('값을 입력해주세요');
     }
+    const response = await axiosMultiRequest().post('/api/gallery', formData);
+    if (response.data) {
+      const thumbnail = response.data.imagePath;
 
-    const response = axiosMultiRequest().post('/api/gallery', formData);
-    console.log(response);
-    // setSuccess(true);
-    // setTimeout(() => {
-    //   navigate('/home');
-    //   onClickWriteModeHandler();
-    // }, 2000);
-
-    // const data = {
-    //   id: 3,
-    //   userName: '말괄량이 조이',
-    //   userProfile: '/images/profile.png',
-    //   content: text,
-    //   location: '화곡동',
-    //   createTime: '1분전',
-    //   comment: 0,
-    //   like: 0,
-    //   category,
-    //   media: '/images/feed_thumb.jpg'
-    // };
+      const data = {
+        userId: userData.userId,
+        location: userData.location,
+        category,
+        thumbnail,
+        content: text
+      };
+      const uploadResponse = await axiosRequest().post('/api/post', data);
+      if (uploadResponse.data) {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/home');
+          onClickWriteModeHandler();
+        }, 2000);
+      }
+    }
   };
 
   useEffect(() => {
@@ -318,8 +315,6 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
-      // console.log(reader);
-      // console.log(preview);
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
@@ -380,7 +375,7 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
                 <S2.Row>
                   <S2.H2>
                     {category === '산책 메이트'
-                      ? '소심쟁이 제이에게\n산책 메이트를 선물해 주세요!'
+                      ? userData.fullName + '에게\n산책 메이트를 선물해 주세요!'
                       : '댕댕이들이랑 복작복작 수다떨기!'}
                   </S2.H2>
                 </S2.Row>
@@ -455,8 +450,8 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
       ) : (
         <S2.Wrapper>
           <S2.Introduce>
-            공덕동 댕댕이들에게 전달 완료!
-            <br /> 우리 제이에게 어떤 친구가 생길까요?
+            {userData.location} 댕댕이들에게 전달 완료!
+            <br /> 우리 {userData.fullName}에게 어떤 친구가 생길까요?
           </S2.Introduce>
           <S2.IntroduceImg>이미지</S2.IntroduceImg>
         </S2.Wrapper>
