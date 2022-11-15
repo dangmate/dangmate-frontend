@@ -30,7 +30,7 @@ const App = () => {
         { path: 'location', element: <Location /> },
         { path: 'location-search', element: <LocationSearch /> },
         { path: 'home', element: <Home /> },
-        { path: 'view', element: <PostView /> },
+        { path: 'view/:postId', element: <PostView /> },
         { path: 'favorite', element: <Favorite /> },
         { path: 'story', element: <Story /> },
         { path: 'profile', element: <Profile /> },

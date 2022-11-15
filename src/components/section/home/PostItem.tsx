@@ -6,6 +6,11 @@ import UserName from '../../common/UserName';
 import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
+import axiosRequest from '../../../api/axios';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../store/user';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};
@@ -60,26 +65,28 @@ interface IProps {
   thumbnail: string;
   comments: number;
   likes: number;
+  postId: number;
 }
 
 const PostItem = (props: PostType) => {
   return (
     <S.Container>
-      <S.Media>
-        <img src={props.data.thumbnail} alt='thumb' />
-      </S.Media>
+      <Link to={`/view/${props.data.postId}`}>
+        <S.Media>
+          <img src={props.data.thumbnail} alt='thumb' />
+        </S.Media>
 
-      <S.FeedHead>
-        <UserName
-          src={props.data.profile}
-          alt={''}
-          name={props.data.fullName}
-        />
-        <Category title={props.data.category} />
-      </S.FeedHead>
+        <S.FeedHead>
+          <UserName
+            src={props.data.profile}
+            alt={''}
+            name={props.data.fullName}
+          />
+          <Category title={props.data.category} />
+        </S.FeedHead>
 
-      <S.Content>{props.data.content}</S.Content>
-
+        <S.Content>{props.data.content}</S.Content>
+      </Link>
       <S.Actions>
         <S.Column>
           <S.Location>{props.data.location}</S.Location>

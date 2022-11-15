@@ -39,34 +39,7 @@ const S = {
 };
 
 const Home = () => {
-  const [feed, setFeed] = useState([
-    // {
-    //   id: 1,
-    //   userName: '소심쟁이 제이',
-    //   userProfile: '/images/profile.png',
-    //   content:
-    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-    //   location: '공덕동',
-    //   createTime: '1시간전',
-    //   comment: 0,
-    //   like: 4,
-    //   category: '댕댕 이야기',
-    //   media: '/images/feed_thumb.jpg'
-    // },
-    // {
-    //   id: 2,
-    //   userName: '말광량이 조이',
-    //   userProfile: '/images/profile.png',
-    //   content:
-    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-    //   location: '공덕동',
-    //   createTime: '4분전',
-    //   comment: 0,
-    //   like: 4,
-    //   category: '산책 메이트',
-    //   media: '/images/feed_thumb.jpg'
-    // }
-  ]);
+  const [feed, setFeed] = useState([]);
   const navigate = useNavigate();
   const [writeMode, setWriteMode] = useState<boolean>(false);
   const userData = useRecoilValue(userState);
