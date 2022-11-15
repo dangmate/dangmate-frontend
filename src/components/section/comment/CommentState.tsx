@@ -28,7 +28,11 @@ const S = {
     border-radius: ${getVwValue('12')};
   `
 };
-const CommentState = () => {
+
+interface IProps {
+  comments?: number;
+}
+const CommentState = (props: IProps) => {
   return (
     <S.Container>
       <S.LikeWrap>
@@ -39,7 +43,11 @@ const CommentState = () => {
           alt={'profile'}
         ></ImageControl>
       </S.LikeWrap>
-      <S.Count>6마리 댕댕이들 대화 중</S.Count>
+      <S.Count>
+        {props.comments
+          ? `${props.comments}마리 댕댕이들 대화 중`
+          : '댕댕이한테 말을 걸어보세요!'}
+      </S.Count>
     </S.Container>
   );
 };

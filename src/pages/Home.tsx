@@ -16,7 +16,7 @@ import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
 import Category from '../components/common/Category';
 import ButtonRound from '../components/asset/ButtonRound';
-import axiosRequest from '../api/axios';
+import axiosRequest, { axiosMultiRequest } from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 
@@ -39,35 +39,7 @@ const S = {
 };
 
 const Home = () => {
-  const [feed, setFeed] = useState([
-    // {
-    //   id: 1,
-    //   userName: '소심쟁이 제이',
-    //   userProfile: '/images/profile.png',
-    //   content:
-    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-    //   location: '공덕동',
-    //   createTime: '1시간전',
-    //   comment: 0,
-    //   like: 4,
-    //   category: '댕댕 이야기',
-    //   media: '/images/feed_thumb.jpg'
-    // },
-    // {
-    //   id: 2,
-    //   userName: '말광량이 조이',
-    //   userProfile: '/images/profile.png',
-    //   content:
-    //     '강아지 주인 찾아요.\n 여기 공덕동이고, 갈색 진돗개 빨간색 목줄 암컷입니다. 강아지 산책하다 발견',
-    //   location: '공덕동',
-    //   createTime: '4분전',
-    //   comment: 0,
-    //   like: 4,
-    //   category: '산책 메이트',
-    //   media: '/images/feed_thumb.jpg'
-    // }
-  ]);
-  const navigate = useNavigate();
+  const [feed, setFeed] = useState([]);
   const [writeMode, setWriteMode] = useState<boolean>(false);
   const userData = useRecoilValue(userState);
 
@@ -89,7 +61,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchPosts('all');
-  }, []);
+  }, [writeMode]);
 
   return (
     <>
@@ -251,8 +223,9 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   const [preview, setPreview] = useState<string | null>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({});
   const [success, setSuccess] = useState<boolean>(false);
+
+  const userData = useRecoilValue(userState);
 
   const navigate = useNavigate();
 
@@ -308,34 +281,32 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
     }
   };
 
-  const UploadFeed = () => {
-    console.log(category);
-    console.log(image);
-    console.log(text);
-    setSuccess(true);
-    setTimeout(() => {
-      navigate('/home');
-      onClickWriteModeHandler();
-    }, 2000);
-    // if (image && text && category) {
-    //   const formData = new FormData();
-    //   formData.append('image', image);
-    //   formData.append('category', category);
-    //   formData.append('content', text);
-    // }
+  const UploadFeed = async () => {
+    const formData = new FormData();
+    if (image && text && category) {
+      formData.append('multipartFile', image);
+    }
+    const response = await axiosMultiRequest().post('/api/gallery', formData);
+    if (response.data) {
+      const thumbnail = response.data.imagePath;
 
-    // const data = {
-    //   id: 3,
-    //   userName: '말괄량이 조이',
-    //   userProfile: '/images/profile.png',
-    //   content: text,
-    //   location: '화곡동',
-    //   createTime: '1분전',
-    //   comment: 0,
-    //   like: 0,
-    //   category,
-    //   media: '/images/feed_thumb.jpg'
-    // };
+      const data = {
+        userId: userData.userId,
+        location: userData.location,
+        category,
+        thumbnail,
+        content: text
+      };
+
+      const uploadResponse = await axiosRequest().post('/api/post', data);
+      if (uploadResponse.data) {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/home');
+          onClickWriteModeHandler();
+        }, 2000);
+      }
+    }
   };
 
   useEffect(() => {
@@ -345,8 +316,6 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
-      // console.log(reader);
-      // console.log(preview);
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
@@ -407,7 +376,7 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
                 <S2.Row>
                   <S2.H2>
                     {category === '산책 메이트'
-                      ? '소심쟁이 제이에게\n산책 메이트를 선물해 주세요!'
+                      ? userData.fullName + '에게\n산책 메이트를 선물해 주세요!'
                       : '댕댕이들이랑 복작복작 수다떨기!'}
                   </S2.H2>
                 </S2.Row>
@@ -482,8 +451,8 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
       ) : (
         <S2.Wrapper>
           <S2.Introduce>
-            공덕동 댕댕이들에게 전달 완료!
-            <br /> 우리 제이에게 어떤 친구가 생길까요?
+            {userData.location} 댕댕이들에게 전달 완료!
+            <br /> 우리 {userData.fullName}에게 어떤 친구가 생길까요?
           </S2.Introduce>
           <S2.IntroduceImg>이미지</S2.IntroduceImg>
         </S2.Wrapper>

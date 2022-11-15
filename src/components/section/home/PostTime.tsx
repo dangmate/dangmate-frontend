@@ -8,8 +8,11 @@ const S = {
   `
 };
 
-const PostTime = () => {
-  return <S.Time>4분 전</S.Time>;
+interface IProps {
+  data: string;
+}
+const PostTime = (props: IProps) => {
+  return <S.Time>{props.data}</S.Time>;
 };
 
 export default PostTime;

@@ -20,4 +20,20 @@ const axiosRequest = () => {
   return instance;
 };
 
+export const axiosMultiRequest = () => {
+  const instance = axios.create({
+    baseURL: import.meta.env.VITE_SERVER,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+
+  // instance.interceptors.request.use((config) => {
+  //   if (!config.headers) return config;
+  //   config.headers.Authorization = `Bearer ${JSON.parse(ACCESS_TOKEN)}`;
+  //   return config;
+  // });
+  return instance;
+};
+
 export default axiosRequest;
