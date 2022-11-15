@@ -297,6 +297,7 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
         thumbnail,
         content: text
       };
+
       const uploadResponse = await axiosRequest().post('/api/post', data);
       if (uploadResponse.data) {
         setSuccess(true);
