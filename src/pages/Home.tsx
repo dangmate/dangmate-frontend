@@ -16,7 +16,7 @@ import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
 import Category from '../components/common/Category';
 import ButtonRound from '../components/asset/ButtonRound';
-import axiosRequest from '../api/axios';
+import axiosRequest, { axiosMultiRequest } from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 
@@ -281,21 +281,21 @@ const AddFeedForm = ({ setWriteMode }: WriteProps) => {
     }
   };
 
-  const UploadFeed = () => {
-    console.log(category);
-    console.log(image);
-    console.log(text);
-    setSuccess(true);
-    setTimeout(() => {
-      navigate('/home');
-      onClickWriteModeHandler();
-    }, 2000);
-    // if (image && text && category) {
-    //   const formData = new FormData();
-    //   formData.append('image', image);
-    //   formData.append('category', category);
-    //   formData.append('content', text);
-    // }
+  const UploadFeed = async () => {
+    if (image && text && category) {
+      const formData = new FormData();
+      formData.append('multipartFile', image);
+    } else {
+      alert('값을 입력해주세요');
+    }
+
+    const response = axiosMultiRequest().post('/api/gallery', formData);
+    console.log(response);
+    // setSuccess(true);
+    // setTimeout(() => {
+    //   navigate('/home');
+    //   onClickWriteModeHandler();
+    // }, 2000);
 
     // const data = {
     //   id: 3,
