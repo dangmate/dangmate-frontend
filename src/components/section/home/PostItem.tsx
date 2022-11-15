@@ -78,7 +78,7 @@ const PostItem = (props: PostType) => {
 
         <S.FeedHead>
           <UserName
-            src={props.data.profile}
+            src={props.data.profile ? props.data.profile : 'images/profile.png'}
             alt={''}
             name={props.data.fullName}
           />

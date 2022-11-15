@@ -71,7 +71,9 @@ const FeedDetail = (props: IProps) => {
     <S.Container>
       <S.FeedHead>
         <UserName
-          src={props.data?.profile ? '' : '/images/profile.png'}
+          src={
+            props.data?.profile ? props.data?.profile : '/images/profile.png'
+          }
           alt={''}
           name={props.data?.fullName}
         />
