@@ -54,7 +54,7 @@ const Comment = (props: IProps) => {
             name={'소심쟁이 제이'}
           ></UserName>
           <S.TimeWrap>
-            <PostTime />
+            <PostTime data={'1분 전'} />
           </S.TimeWrap>
         </S.Column>
 
