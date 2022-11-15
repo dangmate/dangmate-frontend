@@ -77,7 +77,7 @@ const FeedDetail = (props: IProps) => {
         />
         <Category title={props.data?.category} />
       </S.FeedHead>
-      <CountHits />
+      <CountHits views={props.data?.views} />
 
       <S.Media>
         <img src={props.data?.thumbnail} alt='thumb' />

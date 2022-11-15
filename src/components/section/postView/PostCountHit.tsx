@@ -12,11 +12,14 @@ const S = {
     }
   `
 };
+interface IProps {
+  views: number;
+}
 
-const CountHits = () => {
+const CountHits = (props: IProps) => {
   return (
     <S.Text>
-      <strong>586</strong> 마리 댕댕이가 보고 갔어요
+      <strong>{props.views}</strong> 마리 댕댕이가 보고 갔어요
     </S.Text>
   );
 };
