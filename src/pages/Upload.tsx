@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosRequest, { axiosMultiRequest } from '../api/axios';
 import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
@@ -114,6 +114,23 @@ const S = {
     text-align: center;
   `
 };
+
+interface PostType {
+  category: string;
+  comments: number;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  isLike?: boolean;
+  isPost?: boolean;
+  likes: number;
+  location: string;
+  postId: number | null;
+  profile: string | null;
+  thumbnail: string;
+  views?: number;
+}
+
 const UploadForm = () => {
   const [category, setCategory] = useState<string>('');
   const [toggleA, setToggleA] = useState<boolean>(false);
@@ -122,6 +139,8 @@ const UploadForm = () => {
 
   const [text, setText] = useState<string>('');
   const [validText, setValidText] = useState<boolean>(false);
+
+  const [thumbnail, setThumbnail] = useState<string>('');
 
   const [image, setImage] = useState<File | null>();
   const [preview, setPreview] = useState<string | null>();
@@ -132,6 +151,10 @@ const UploadForm = () => {
   const userData = useRecoilValue(userState);
 
   const navigate = useNavigate();
+  const { postId } = useParams();
+
+  const [isUpdate, setUpdate] = useState<boolean>(false);
+  const [data, setData] = useState<PostType>();
 
   const onClickToggleAHandler = () => {
     setToggleA(!toggleA);
@@ -194,6 +217,48 @@ const UploadForm = () => {
     }
   };
 
+  const UpdateFeed = async () => {
+    // 이미지 수정을 했을 때
+    // image가 생김
+    if (image) {
+      const formData = new FormData();
+      formData.append('multipartFile', image);
+      const response = await axiosMultiRequest().post('/api/gallery', formData);
+      if (response.data) {
+        setThumbnail(response.data.imagePath);
+      }
+    }
+
+    const data = {
+      location: userData.location,
+      category,
+      thumbnail,
+      content: text
+    };
+
+    const uploadResponse = await axiosRequest().put(
+      `/api/post/${postId}/user/${userData.userId}`,
+      data
+    );
+    if (uploadResponse.data) {
+      navigate(`/view/${postId}`);
+    }
+  };
+
+  const fetchPostView = async () => {
+    try {
+      const { data } = await axiosRequest().get(
+        `/api/post/${postId}/user/${userData.userId}`
+      );
+      console.log(data);
+      setCategory(data.category);
+      setThumbnail(data.thumbnail);
+      setText(data.content);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     setValidText(TEXT_REGEX.test(text));
   }, [text]);
@@ -209,6 +274,15 @@ const UploadForm = () => {
       setPreview(null);
     }
   }, [image]);
+
+  useEffect(() => {
+    if (postId) {
+      setUpdate(true);
+      setNext(true);
+      fetchPostView();
+    }
+  }, []);
+
   return (
     <>
       {!success ? (
@@ -256,35 +330,63 @@ const UploadForm = () => {
             </>
           ) : (
             <>
-              <ArrowBack onClick={() => setNext(false)} />
+              {isUpdate ? (
+                <ArrowBack onClick={() => navigate(-1)} />
+              ) : (
+                <ArrowBack onClick={() => setNext(false)} />
+              )}
               <S.Container>
                 <S.Row>
-                  <S.H2>
-                    {category === '산책 메이트'
-                      ? userData.fullName + '에게\n산책 메이트를 선물해 주세요!'
-                      : '댕댕이들이랑 복작복작 수다떨기!'}
-                  </S.H2>
+                  {isUpdate ? (
+                    <S.H2>내가 쓴 글 수정하기</S.H2>
+                  ) : (
+                    <S.H2>
+                      {category === '산책 메이트'
+                        ? userData.fullName +
+                          '에게\n산책 메이트를 선물해 주세요!'
+                        : '댕댕이들이랑 복작복작 수다떨기!'}
+                    </S.H2>
+                  )}
                 </S.Row>
                 <S.FormContent>
                   <S.UploadForm>
                     <S.Label htmlFor='image'>
                       <S.UploadImage onClick={uploadImage}>
-                        <ImageControl
-                          width={'90'}
-                          height={'45'}
-                          src={
-                            preview ? preview : '/images/attachment_false.png'
-                          }
-                          alt={'image'}
-                          fit={'cover'}
-                        />
+                        {isUpdate ? (
+                          <ImageControl
+                            width={'90'}
+                            height={'45'}
+                            src={thumbnail}
+                            alt={'image'}
+                            fit={'cover'}
+                          />
+                        ) : (
+                          <ImageControl
+                            width={'90'}
+                            height={'45'}
+                            src={
+                              preview ? preview : '/images/attachment_false.png'
+                            }
+                            alt={'image'}
+                            fit={'cover'}
+                          />
+                        )}
                       </S.UploadImage>
                       <S.UploadName>
-                        <div>
-                          {image
-                            ? image.name
-                            : '최대 1장의 사진 등록이 가능해요'}
-                        </div>
+                        {isUpdate ? (
+                          <div>
+                            {image
+                              ? image.name
+                              : '이미지를 클릭해서 수정이 가능해요'}
+                          </div>
+                        ) : (
+                          <div>
+                            {image
+                              ? image.name
+                              : '최대 1장의 사진 등록이 가능해요'}
+                          </div>
+                        )}
+
                         {image && (
                           <S.CloseBtn onClick={RemoveImageHandler}>
                             <ImageControl
@@ -321,13 +423,23 @@ const UploadForm = () => {
               </S.Container>
               <S.Bottom>
                 <S.Button>
-                  <ButtonRound
-                    onClick={UploadFeed}
-                    disabled={!(text && validText && image && preview)}
-                    type='button'
-                  >
-                    업로드
-                  </ButtonRound>
+                  {isUpdate ? (
+                    <ButtonRound
+                      onClick={UpdateFeed}
+                      disabled={!(text && validText && thumbnail)}
+                      type='button'
+                    >
+                      수정하기ㅍ
+                    </ButtonRound>
+                  ) : (
+                    <ButtonRound
+                      onClick={UploadFeed}
+                      disabled={!(text && validText && image && preview)}
+                      type='button'
+                    >
+                      업로드
+                    </ButtonRound>
+                  )}
                 </S.Button>
               </S.Bottom>
             </>

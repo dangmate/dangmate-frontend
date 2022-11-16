@@ -141,8 +141,8 @@ const PostView = () => {
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
 
   const [isMenu, setIsMenu] = useState<boolean>(false);
-  const setDeemState = useSetRecoilState(deemState);
-  const isDeem = useRecoilValue(deemState);
+
+  const [isDeem, setIsDeem] = useState(false);
 
   const fetchPostView = async () => {
     try {
@@ -158,19 +158,22 @@ const PostView = () => {
 
   const onClickShowMenu = () => {
     setIsMenu(true);
-    setDeemState(true);
+    setIsDeem(true);
   };
 
   const onClickDeem = () => {
     setIsMenu(false);
-    setDeemState(false);
+    setIsDeem(false);
   };
 
-  const onClickUpdatePost = () => {};
+  const onClickUpdatePost = () => {
+    const postId = data?.postId;
+    navigate(`/upload/${postId}`);
+  };
   const onClickDeletePost = () => {};
 
   useEffect(() => {
-    // fetchPostView();
+    fetchPostView();
   }, []);
 
   useEffect(() => {
@@ -180,7 +183,7 @@ const PostView = () => {
   return (
     <>
       <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
+        <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
         <S.Column onClick={onClickShowMenu}>
