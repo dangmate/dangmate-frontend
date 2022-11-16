@@ -6,16 +6,20 @@ import FeedView from '../components/section/postView/PostViewItem';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
+import ButtonMore from '../components/asset/ButtonMore';
+import { deemState } from '../store/deem';
 
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20')};
   `,
   Arrow: styled.div`
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     height: ${getVwValue('64')};
   `,
@@ -78,6 +82,35 @@ const S = {
     background: ${(props) =>
       props.valid ? Common.colors.primary : Common.colors.grey_disabled};
     pointer-events: ${(props) => (props.valid ? 'initial' : 'none')};
+  `,
+  Column: styled.div`
+    display: flex;
+    align-items: center;
+    padding-right: ${getVwValue('24')};
+  `,
+  BottomMenu: styled.div`
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+  `,
+  Row: styled.div`
+    display: flex;
+    align-items: center;
+    height: ${getVwValue('56')};
+    padding-left: ${getVwValue('20')};
+    background: ${Common.colors.grey_white};
+    & > span {
+      display: flex;
+      margin-left: ${getVwValue('35')};
+    }
+  `,
+  Deem: styled.div`
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
   `
 };
 
@@ -107,6 +140,10 @@ const PostView = () => {
   const [validComment, setValidComment] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
 
+  const [isMenu, setIsMenu] = useState<boolean>(false);
+  const setDeemState = useSetRecoilState(deemState);
+  const isDeem = useRecoilValue(deemState);
+
   const fetchPostView = async () => {
     try {
       const response = await axiosRequest().get(
@@ -118,9 +155,22 @@ const PostView = () => {
       console.log(err);
     }
   };
-  /* 왜 댓글을 적을때마다 리렌더링이 되는걸까요?*/
+
+  const onClickShowMenu = () => {
+    setIsMenu(true);
+    setDeemState(true);
+  };
+
+  const onClickDeem = () => {
+    setIsMenu(false);
+    setDeemState(false);
+  };
+
+  const onClickUpdatePost = () => {};
+  const onClickDeletePost = () => {};
+
   useEffect(() => {
-    fetchPostView();
+    // fetchPostView();
   }, []);
 
   useEffect(() => {
@@ -133,6 +183,9 @@ const PostView = () => {
         <S.ImgWrap onClick={() => navigate(-1)}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
+        <S.Column onClick={onClickShowMenu}>
+          <ButtonMore />
+        </S.Column>
       </S.Arrow>
 
       <S.Container>
@@ -167,6 +220,30 @@ const PostView = () => {
           </S.SvgWrap>
         </S.Field>
       </S.Bottom>
+
+      {isMenu && (
+        <S.BottomMenu>
+          <S.Row onClick={onClickUpdatePost}>
+            <ImageControl
+              src={'/svg/update.svg'}
+              width={'18'}
+              height={'18'}
+              alt={'update'}
+            />
+            <span>수정하기</span>
+          </S.Row>
+          <S.Row onClick={onClickDeletePost}>
+            <ImageControl
+              src={'/svg/delete.svg'}
+              width={'14'}
+              height={'18'}
+              alt={'delete'}
+            />
+            <span>삭제하기</span>
+          </S.Row>
+        </S.BottomMenu>
+      )}
+      {isDeem && <S.Deem onClick={onClickDeem} />}
     </>
   );
 };
