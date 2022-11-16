@@ -16,6 +16,7 @@ import ButtonRound from '../../asset/ButtonRound';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
+import { TEXT_REGEX } from '../../../utils/Regex';
 
 const S = {
   Container: styled.div`
@@ -123,8 +124,6 @@ const S = {
 interface WriteProps {
   setWriteMode?: Dispatch<SetStateAction<boolean>>;
 }
-
-const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{2,500}$/;
 
 const UploadForm = ({ setWriteMode }: WriteProps) => {
   const onClickWriteModeHandler = () => {

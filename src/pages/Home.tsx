@@ -1,22 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useRef
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeHeader from '../components/section/home/HomeHeader';
-import { Common } from '../styles/common';
 import HomeTabMenu from '../components/section/home/HomeTabMenu';
 import PostItem from '../components/section/home/PostItem';
-import { useNavigate } from 'react-router-dom';
-import ArrowBack from '../components/asset/ArrowBack';
 import ImageControl from '../components/asset/ImageControl';
-import Category from '../components/common/Category';
-import ButtonRound from '../components/asset/ButtonRound';
-import axiosRequest, { axiosMultiRequest } from '../api/axios';
+import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import UploadForm from '../components/section/home/UploadForm';
