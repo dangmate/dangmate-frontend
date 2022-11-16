@@ -20,7 +20,6 @@ const CommentArea = () => {
       <S.Reply>
         <Comment reply={false} />
       </S.Reply>
-      {/*<CommentReply />*/}
     </S.Container>
   );
 };
