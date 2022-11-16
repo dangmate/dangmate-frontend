@@ -21,6 +21,7 @@ const S = {
     height: ${getVwValue('180')};
     margin-bottom: ${getVwValue('23')};
     border-radius: ${getVwValue('12')};
+    overflow: hidden;
     & > img {
       object-fit: cover;
     }
