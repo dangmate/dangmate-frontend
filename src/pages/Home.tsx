@@ -39,7 +39,7 @@ const Home = () => {
     const data = { location, category, userId };
     try {
       const response = await axiosRequest().post(
-        '/api/posts?size=5&lastPostId=10',
+        '/api/posts?size=10&lastPostId=100',
         data
       );
       console.log(response.data);
