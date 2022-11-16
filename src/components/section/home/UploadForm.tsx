@@ -16,7 +16,7 @@ import ButtonRound from '../../asset/ButtonRound';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
-import { TEXT_REGEX } from '../../../utils/Regex';
+import { TEXT_REGEX } from '../../../utils/regex';
 
 const S = {
   Container: styled.div`
@@ -137,8 +137,8 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
   const [toggleB, setToggleB] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
 
-  const [text, setText] = useState<string>('');
-  const [validText, setValidText] = useState<boolean>(false);
+  const [content, setContent] = useState<string>('');
+  const [validContent, setValidContent] = useState<boolean>(false);
 
   const [image, setImage] = useState<File | null>();
   const [preview, setPreview] = useState<string | null>();
@@ -178,24 +178,6 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
     }
   };
 
-  // const fileSizeCheck = () => {
-  //   const maxSize = 1 * 1024 * 1024;
-  //   if (image) {
-  //     const fileSize = image.size;
-  //     if (fileSize > maxSize) {
-  //       // alert('첨부파일 사이즈는 5MB 이내로 등록 가능합니다.');
-  //       setImage(null);
-  //       setPreview(null);
-  //     }
-  //   }
-  //   // console.log(fileSize, maxSize);
-  //   // if (fileSize > maxSize) {
-  //   //   alert('첨부파일 사이즈는 5MB 이내로 등록 가능합니다.');
-  //   //   setImage(null);
-  //   //   setPreview(null);
-  //   // }
-  // };
-
   const RemoveImageHandler = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -204,35 +186,38 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
 
   const UploadFeed = async () => {
     const formData = new FormData();
-    if (image && text && category) {
+    if (image && content && category) {
       formData.append('multipartFile', image);
     }
-    const response = await axiosMultiRequest().post('/api/gallery', formData);
-    if (response.data) {
-      const thumbnail = response.data.imagePath;
+    const {
+      data: { imagePath }
+    } = await axiosMultiRequest().post('/api/gallery', formData);
+    console.log(imagePath);
+    // if (resData) {
+    //   const thumbnail = resData.imagePath;
 
-      const data = {
-        userId: userData.userId,
-        location: userData.location,
-        category,
-        thumbnail,
-        content: text
-      };
-
-      const uploadResponse = await axiosRequest().post('/api/post', data);
-      if (uploadResponse.data) {
-        setSuccess(true);
-        setTimeout(() => {
-          navigate('/home');
-          onClickWriteModeHandler();
-        }, 2000);
-      }
-    }
+    // const data = {
+    //   userId: userData.userId,
+    //   location: userData.location,
+    //   category,
+    //   thumbnail,
+    //   content
+    // };
+    //
+    // const uploadResponse = await axiosRequest().post('/api/post', data);
+    // if (uploadResponse.data) {
+    //   setSuccess(true);
+    //   setTimeout(() => {
+    //     navigate('/home');
+    //     onClickWriteModeHandler();
+    //   }, 2000);
+    // }
+    // }
   };
 
   useEffect(() => {
-    setValidText(TEXT_REGEX.test(text));
-  }, [text]);
+    setValidContent(TEXT_REGEX.test(content));
+  }, [content]);
 
   useEffect(() => {
     if (image) {
@@ -245,6 +230,7 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
       setPreview(null);
     }
   }, [image]);
+
   return (
     <>
       {!success ? (
@@ -348,8 +334,8 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
                       id='text'
                       autoComplete='off'
                       required
-                      value={text}
-                      onChange={(e) => setText(e.target.value)}
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
                       placeholder='내 댕댕이를 소개해 주세요!&#10;많은 댕댕이 친구들이 기다리고 있어요.'
                     />
                   </S.TextForm>
@@ -359,7 +345,7 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
                 <S.Button>
                   <ButtonRound
                     onClick={UploadFeed}
-                    disabled={!(text && validText && image && preview)}
+                    disabled={!(content && validContent && image && preview)}
                     type='button'
                   >
                     업로드
