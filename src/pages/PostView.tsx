@@ -6,12 +6,11 @@ import FeedView from '../components/section/postView/PostViewItem';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
-import { deemState } from '../store/deem';
 
 const S = {
   Container: styled.div`
@@ -144,7 +143,7 @@ const PostView = () => {
 
   const [isDeem, setIsDeem] = useState(false);
 
-  const fetchPostView = async () => {
+  const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
@@ -156,7 +155,7 @@ const PostView = () => {
     }
   };
 
-  const DeletePost = async () => {
+  const deletePost = async () => {
     try {
       const response = await axiosRequest().delete(
         `/api/post/${postId}/user/${userData.userId}`
@@ -185,12 +184,12 @@ const PostView = () => {
   };
   const onClickDeletePost = () => {
     if (window.confirm('삭제하나요?')) {
-      DeletePost();
+      deletePost();
     }
   };
 
   useEffect(() => {
-    fetchPostView();
+    fetchPost();
   }, []);
 
   useEffect(() => {
@@ -203,9 +202,11 @@ const PostView = () => {
         <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
-        <S.Column onClick={onClickShowMenu}>
-          <ButtonMore />
-        </S.Column>
+        {data?.isPost && (
+          <S.Column onClick={onClickShowMenu}>
+            <ButtonMore />
+          </S.Column>
+        )}
       </S.Arrow>
 
       <S.Container>

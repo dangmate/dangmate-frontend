@@ -429,7 +429,7 @@ const UploadForm = () => {
                       disabled={!(text && validText && thumbnail)}
                       type='button'
                     >
-                      수정하기ㅍ
+                      수정하기
                     </ButtonRound>
                   ) : (
                     <ButtonRound

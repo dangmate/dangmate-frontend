@@ -6,10 +6,6 @@ import UserName from '../../common/UserName';
 import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
-import axiosRequest from '../../../api/axios';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../store/user';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 const S = {
   Container: styled.div`
