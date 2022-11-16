@@ -184,6 +184,7 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
     }
   };
 
+  // Refactoring
   const UploadFeed = async () => {
     const formData = new FormData();
     if (image && content && category) {
@@ -192,27 +193,32 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
     const {
       data: { imagePath }
     } = await axiosMultiRequest().post('/api/gallery', formData);
-    console.log(imagePath);
-    // if (resData) {
-    //   const thumbnail = resData.imagePath;
 
-    // const data = {
-    //   userId: userData.userId,
-    //   location: userData.location,
-    //   category,
-    //   thumbnail,
-    //   content
-    // };
-    //
-    // const uploadResponse = await axiosRequest().post('/api/post', data);
-    // if (uploadResponse.data) {
-    //   setSuccess(true);
-    //   setTimeout(() => {
-    //     navigate('/home');
-    //     onClickWriteModeHandler();
-    //   }, 2000);
-    // }
-    // }
+    if (imagePath) {
+      const param = {
+        userId: userData.userId,
+        location: userData.location,
+        category,
+        imagePath,
+        content
+      };
+
+      // 여기까지는 데이터가 잘 찍힘.
+      console.log(param);
+
+      // post api 가 실행이 안됨.
+      const {
+        data: { statusCode }
+      } = await axiosRequest().post('/api/post', param);
+
+      if (statusCode === 200) {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/home');
+          onClickWriteModeHandler();
+        }, 2000);
+      }
+    }
   };
 
   useEffect(() => {
