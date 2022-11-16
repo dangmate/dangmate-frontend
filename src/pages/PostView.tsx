@@ -156,6 +156,19 @@ const PostView = () => {
     }
   };
 
+  const DeletePost = async () => {
+    try {
+      const response = await axiosRequest().delete(
+        `/api/post/${postId}/user/${userData.userId}`
+      );
+      if (response) {
+        navigate('/home');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const onClickShowMenu = () => {
     setIsMenu(true);
     setIsDeem(true);
@@ -170,7 +183,11 @@ const PostView = () => {
     const postId = data?.postId;
     navigate(`/upload/${postId}`);
   };
-  const onClickDeletePost = () => {};
+  const onClickDeletePost = () => {
+    if (window.confirm('삭제하나요?')) {
+      DeletePost();
+    }
+  };
 
   useEffect(() => {
     fetchPostView();
