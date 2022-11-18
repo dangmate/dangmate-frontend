@@ -204,13 +204,11 @@ const Join = () => {
 
   useEffect(() => {
     setValidKeyword(NICK_REGEX.test(keyword));
-
-    console.log(fullName);
-  }, [keyword, fullName]);
+  }, [keyword]);
 
   useEffect(() => {
     checkNickname();
-  }, [keyword, fullName]);
+  }, [nickname, keyword, fullName]);
 
   /**
    * email uniq check
@@ -233,25 +231,35 @@ const Join = () => {
    * nickname uniq check
    * */
   const checkNickname = async () => {
-    if (nickname && validNick && keyword && validKeyword) {
+    console.log('nick - ', nickname);
+    console.log('keyword - ', keyword);
+    if (nickname && keyword) {
       setFullName(`${keyword} ${nickname}`);
       console.log(fullName);
       try {
-        const response = await axiosRequest().post(
+        const { data } = await axiosRequest().post(
           '/api/user/full-name',
           fullName
         );
         setCheckUniqNick(true);
-        console.log(response);
+        console.log(data);
+        console.log(checkUniqNick);
       } catch (err) {
         console.log(err);
+        console.log(checkUniqNick);
         setCheckUniqNick(false);
       }
     }
   };
 
   const handleSubmit = async () => {
-    const data: SubmitType = { email, password, fullName, location };
+    const shortLocation = location.split(' ')[2];
+    const data = {
+      email,
+      password,
+      fullName,
+      location: shortLocation
+    };
     try {
       const res = await axiosRequest().post('/api/user/signin', data);
       alert(`${res.data.fullName}님 회원가입 성공!`);
@@ -434,14 +442,10 @@ const Join = () => {
                     <></>
                   )}
 
-                  {nickname &&
-                  validNick &&
-                  keyword &&
-                  validKeyword &&
-                  !checkUniqNick ? (
-                    <p>동일한 이름의 반려견이 이미 사용 중이에요.</p>
-                  ) : (
+                  {checkUniqNick ? (
                     <></>
+                  ) : (
+                    <p>동일한 이름의 반려견이 이미 사용 중이에요.</p>
                   )}
                 </S.Field>
               </div>
