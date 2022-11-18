@@ -14,7 +14,7 @@ import ButtonMore from '../components/asset/ButtonMore';
 
 const S = {
   Container: styled.div`
-    padding: ${getVwValue('0 20 80')};
+    padding: ${getVwValue('0 20 110')};
   `,
   Arrow: styled.div`
     display: flex;
@@ -80,7 +80,7 @@ const S = {
     border-radius: ${getVwValue('24')};
     background: ${(props) =>
       props.valid ? Common.colors.primary : Common.colors.grey_disabled};
-    pointer-events: ${(props) => (props.valid ? 'initial' : 'none')};
+    pointer-events: ${(props) => (props.valid ? 'auto' : 'none')};
   `,
   Column: styled.div`
     display: flex;
@@ -143,12 +143,14 @@ const PostView = () => {
 
   const [isDeem, setIsDeem] = useState(false);
 
+  const [commentData, setCommentData] = useState([]);
+
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      // console.log(response.data);
+      console.log(response.data);
       setData(response.data);
     } catch (err) {
       console.log(err);
@@ -163,6 +165,35 @@ const PostView = () => {
       if (response) {
         navigate('/home');
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const { data } = await axiosRequest().get(
+        `/api/post/${postId}/comments?userId=${userData.userId}`
+      );
+      // console.log(data.comments);
+      setCommentData(data.comments);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const writeComment = async () => {
+    const data = { userId: userData.userId, content: comment };
+    console.log(data);
+    try {
+      const response = await axiosRequest().post(
+        `/api/post/${postId}/comment`,
+        data
+      );
+      console.log(response.data);
+      await fetchComments();
+      setComment('');
+      setCommentFocus(false);
     } catch (err) {
       console.log(err);
     }
@@ -188,13 +219,32 @@ const PostView = () => {
     }
   };
 
+  const onScrollHandler = () => {
+    if (commentFocus) {
+      setCommentFocus(false);
+    }
+  };
+
+  const onChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+    setCommentFocus(true);
+  };
+
   useEffect(() => {
     fetchPost();
+    fetchComments();
   }, []);
 
   useEffect(() => {
     setValidComment(TEXT_REGEX.test(comment));
   }, [comment]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHandler);
+    return () => {
+      window.removeEventListener('scroll', onScrollHandler);
+    };
+  });
 
   return (
     <>
@@ -212,7 +262,7 @@ const PostView = () => {
       <S.Container>
         <FeedView data={data} />
         <CommentState comments={data?.comments} />
-        <CommentArea postId={postId} />
+        <CommentArea postId={postId} commentData={commentData} />
       </S.Container>
 
       <S.Bottom>
@@ -223,16 +273,16 @@ const PostView = () => {
             id='comment'
             required
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={onChangeComment}
             onFocus={() => setCommentFocus(true)}
-            onBlur={() => setCommentFocus(false)}
+            // onBlur={() => setCommentFocus(false)}
             placeholder='댓글을 작성해 주세요.'
             // state={inputEmailState()}
           />
         </S.InputWrap>
         <S.Field focus={commentFocus}>
-          <S.P>소심쟁이 제이에게 댓글 작성</S.P>
-          <S.SvgWrap valid={validComment}>
+          <S.P>{data?.fullName}에게 댓글 작성</S.P>
+          <S.SvgWrap valid={validComment} onClick={writeComment}>
             <ImageControl
               src={'/svg/upload.svg'}
               width={'10'}

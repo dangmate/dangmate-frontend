@@ -66,7 +66,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
           `/api/post/${props.postId}/comment/${props.data.commentId}/replies?userId=${userData.userId}`
         );
         setReplyData(data.replies);
-        console.log(data.replies);
+        // console.log(data.replies);
       } catch (err) {
         console.log(err);
       }
