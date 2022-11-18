@@ -14,7 +14,7 @@ import ButtonMore from '../components/asset/ButtonMore';
 
 const S = {
   Container: styled.div`
-    padding: ${getVwValue('0 20')};
+    padding: ${getVwValue('0 20 80')};
   `,
   Arrow: styled.div`
     display: flex;
@@ -148,7 +148,7 @@ const PostView = () => {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      console.log(response.data);
+      // console.log(response.data);
       setData(response.data);
     } catch (err) {
       console.log(err);
@@ -212,8 +212,9 @@ const PostView = () => {
       <S.Container>
         <FeedView data={data} />
         <CommentState comments={data?.comments} />
-        <CommentArea />
+        <CommentArea postId={postId} />
       </S.Container>
+
       <S.Bottom>
         <S.InputWrap>
           <S.Input

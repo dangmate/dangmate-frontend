@@ -52,7 +52,7 @@ interface IProps {
 }
 
 const FeedDetail = (props: IProps) => {
-  console.log(props.data);
+  // console.log(props.data);
   return (
     <S.Container>
       <S.FeedHead>
