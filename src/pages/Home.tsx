@@ -8,7 +8,7 @@ import ImageControl from '../components/asset/ImageControl';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
-import UploadForm from '../components/section/home/UploadForm';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   Container: styled.div`
@@ -30,8 +30,8 @@ const S = {
 
 const Home = () => {
   const [feed, setFeed] = useState([]);
-  const [writeMode, setWriteMode] = useState<boolean>(false);
   const userData = useRecoilValue(userState);
+  const navigate = useNavigate();
 
   const fetchPosts = async (category: string) => {
     const location = userData.location;
@@ -51,36 +51,32 @@ const Home = () => {
 
   useEffect(() => {
     fetchPosts('all');
-  }, [writeMode]);
+  }, []);
 
   return (
     <>
-      {writeMode ? (
-        <UploadForm setWriteMode={setWriteMode} />
-      ) : (
-        <S.Container>
-          <HomeHeader />
-          <HomeTabMenu fetchPosts={fetchPosts} />
-          <S.FeedList>
-            {feed &&
-              feed.map((item, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <PostItem data={item} />
-                  </React.Fragment>
-                );
-              })}
-          </S.FeedList>
-          <S.WriteBtn onClick={() => setWriteMode(true)}>
-            <ImageControl
-              width={'44'}
-              height={'44'}
-              src={'/svg/write_btn.svg'}
-              alt={''}
-            />
-          </S.WriteBtn>
-        </S.Container>
-      )}
+      <S.Container>
+        <HomeHeader />
+        <HomeTabMenu fetchPosts={fetchPosts} />
+        <S.FeedList>
+          {feed &&
+            feed.map((item, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <PostItem data={item} />
+                </React.Fragment>
+              );
+            })}
+        </S.FeedList>
+        <S.WriteBtn onClick={() => navigate('/upload')}>
+          <ImageControl
+            width={'44'}
+            height={'44'}
+            src={'/svg/write_btn.svg'}
+            alt={''}
+          />
+        </S.WriteBtn>
+      </S.Container>
     </>
   );
 };

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { useRecoilValue } from 'recoil';
+import { deemState } from '../../store/deem';
 
 // const Nav = styled.nav`
 //   position: fixed;
@@ -12,6 +14,7 @@ import styled from '@emotion/styled';
 //     justify-content: space-around;
 //   }
 // `;
+const S = {};
 
 const Layout = () => {
   return (
@@ -19,6 +22,7 @@ const Layout = () => {
       {/*<div>*/}
       {/*  <Link to={'/'}>멍메이트</Link>*/}
       {/*</div>*/}
+
       <Outlet />
       {/*<Nav>*/}
       {/*  <ul>*/}

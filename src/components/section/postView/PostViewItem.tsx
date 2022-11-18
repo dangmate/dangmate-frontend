@@ -9,6 +9,7 @@ import CommentAction from '../comment/CommentAction';
 import CountHits from './PostCountHit';
 import PostTime from '../home/PostTime';
 import { b } from 'msw/lib/glossary-dc3fd077';
+import ButtonMore from '../../asset/ButtonMore';
 
 const S = {
   Container: styled.div`

@@ -10,12 +10,15 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
+import ButtonMore from '../components/asset/ButtonMore';
 
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20')};
   `,
   Arrow: styled.div`
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     height: ${getVwValue('64')};
   `,
@@ -78,6 +81,35 @@ const S = {
     background: ${(props) =>
       props.valid ? Common.colors.primary : Common.colors.grey_disabled};
     pointer-events: ${(props) => (props.valid ? 'initial' : 'none')};
+  `,
+  Column: styled.div`
+    display: flex;
+    align-items: center;
+    padding-right: ${getVwValue('24')};
+  `,
+  BottomMenu: styled.div`
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+  `,
+  Row: styled.div`
+    display: flex;
+    align-items: center;
+    height: ${getVwValue('56')};
+    padding-left: ${getVwValue('20')};
+    background: ${Common.colors.grey_white};
+    & > span {
+      display: flex;
+      margin-left: ${getVwValue('35')};
+    }
+  `,
+  Deem: styled.div`
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
   `
 };
 
@@ -107,7 +139,11 @@ const PostView = () => {
   const [validComment, setValidComment] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
 
-  const fetchPostView = async () => {
+  const [isMenu, setIsMenu] = useState<boolean>(false);
+
+  const [isDeem, setIsDeem] = useState(false);
+
+  const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
@@ -118,9 +154,42 @@ const PostView = () => {
       console.log(err);
     }
   };
-  /* 왜 댓글을 적을때마다 리렌더링이 되는걸까요?*/
+
+  const deletePost = async () => {
+    try {
+      const response = await axiosRequest().delete(
+        `/api/post/${postId}/user/${userData.userId}`
+      );
+      if (response) {
+        navigate('/home');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onClickShowMenu = () => {
+    setIsMenu(true);
+    setIsDeem(true);
+  };
+
+  const onClickDeem = () => {
+    setIsMenu(false);
+    setIsDeem(false);
+  };
+
+  const onClickUpdatePost = () => {
+    const postId = data?.postId;
+    navigate(`/upload/${postId}`);
+  };
+  const onClickDeletePost = () => {
+    if (window.confirm('삭제하나요?')) {
+      deletePost();
+    }
+  };
+
   useEffect(() => {
-    fetchPostView();
+    fetchPost();
   }, []);
 
   useEffect(() => {
@@ -130,9 +199,14 @@ const PostView = () => {
   return (
     <>
       <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
+        <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
+        {data?.isPost && (
+          <S.Column onClick={onClickShowMenu}>
+            <ButtonMore />
+          </S.Column>
+        )}
       </S.Arrow>
 
       <S.Container>
@@ -167,6 +241,30 @@ const PostView = () => {
           </S.SvgWrap>
         </S.Field>
       </S.Bottom>
+
+      {isMenu && (
+        <S.BottomMenu>
+          <S.Row onClick={onClickUpdatePost}>
+            <ImageControl
+              src={'/svg/update.svg'}
+              width={'18'}
+              height={'18'}
+              alt={'update'}
+            />
+            <span>수정하기</span>
+          </S.Row>
+          <S.Row onClick={onClickDeletePost}>
+            <ImageControl
+              src={'/svg/delete.svg'}
+              width={'14'}
+              height={'18'}
+              alt={'delete'}
+            />
+            <span>삭제하기</span>
+          </S.Row>
+        </S.BottomMenu>
+      )}
+      {isDeem && <S.Deem onClick={onClickDeem} />}
     </>
   );
 };
