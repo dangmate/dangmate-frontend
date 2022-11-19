@@ -125,7 +125,7 @@ interface WriteProps {
   setWriteMode?: Dispatch<SetStateAction<boolean>>;
 }
 
-const UploadForm = ({ setWriteMode }: WriteProps) => {
+const PostUploadForm = ({ setWriteMode }: WriteProps) => {
   const onClickWriteModeHandler = () => {
     if (setWriteMode) {
       setWriteMode(false);
@@ -382,4 +382,4 @@ const UploadForm = ({ setWriteMode }: WriteProps) => {
   );
 };
 
-export default UploadForm;
+export default PostUploadForm;

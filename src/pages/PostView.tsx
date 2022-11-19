@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate, useParams } from 'react-router-dom';
-import FeedView from '../components/section/postView/PostViewItem';
+import PostViewDetail from '../components/section/PostView/PostViewDetail';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
@@ -177,7 +177,7 @@ const PostView = () => {
       </S.Arrow>
 
       <S.Container>
-        <FeedView data={data} commentCount={commentCount} />
+        <PostViewDetail data={data} commentCount={commentCount} />
         <CommentState comments={commentCount} />
         <CommentArea postId={postId} commentData={commentData} />
       </S.Container>

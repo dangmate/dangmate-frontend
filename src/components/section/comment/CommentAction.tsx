@@ -2,6 +2,8 @@ import ImageControl from '../../asset/ImageControl';
 import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
+import { Button_Btn2 } from '../../../styles/style.font';
+import { Common } from '../../../styles/common';
 const S = {
   Comment: styled.div`
     display: flex;
@@ -17,6 +19,8 @@ const S = {
   `,
   Count: styled.div`
     margin-left: ${getVwValue('5')};
+    color: ${Common.colors.grey_body};
+    ${Button_Btn2}
   `
 };
 interface IProps {

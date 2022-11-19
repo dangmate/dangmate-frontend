@@ -10,11 +10,14 @@ import CountHits from './PostCountHit';
 import PostTime from '../home/PostTime';
 import { b } from 'msw/lib/glossary-dc3fd077';
 import ButtonMore from '../../asset/ButtonMore';
+import { CardViewType } from '../../../api/type';
+import { Body_B2 } from '../../../styles/style.font';
+import UserLocation from './UserLocation';
 
 const S = {
   Container: styled.div`
     padding: ${getVwValue('20 0 40')};
-    border-bottom: 1px solid ${Common.colors.grey_sub};
+    border-bottom: 1px solid ${Common.colors.line_dark};
   `,
   Media: styled.div`
     width: 100%;
@@ -33,7 +36,9 @@ const S = {
   `,
 
   Content: styled.div`
-    margin: ${getVwValue('30 0 60')};
+    margin: ${getVwValue('30 0 65')};
+    color: ${Common.colors.grey_sub};
+    ${Body_B2};
   `,
   Actions: styled.div`
     display: flex;
@@ -68,15 +73,19 @@ const FeedDetail = (props: IProps) => {
       </S.FeedHead>
       <CountHits views={props.data?.views} />
 
-      <S.Media>
-        <img src={props.data?.thumbnail} alt='thumb' />
-      </S.Media>
+      {props.data?.thumbnail ? (
+        <S.Media>
+          <img src={props.data?.thumbnail} alt='thumb' />
+        </S.Media>
+      ) : (
+        <></>
+      )}
 
       <S.Content>{props.data?.content}</S.Content>
 
       <S.Actions>
         <S.Column>
-          <S.Location>{props.data?.location}</S.Location>
+          <UserLocation location={props.data?.location} />
           <PostTime data={props.data?.createdAt} />
         </S.Column>
         <S.Column>

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ImageControl from '../../asset/ImageControl';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
+import { Button_Btn2 } from '../../../styles/style.font';
+import { Common } from '../../../styles/common';
 
 const S = {
   Like: styled.div`
@@ -10,6 +12,8 @@ const S = {
   `,
   Count: styled.div`
     margin-left: ${getVwValue('5')};
+    color: ${Common.colors.grey_body};
+    ${Button_Btn2}
   `,
   LikeWrap: styled.div`
     display: flex;

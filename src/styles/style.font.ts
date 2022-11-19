@@ -23,9 +23,9 @@ export const Title_T3 = `
 `;
 export const Title_T4 = `
   font-family: Pretendard-Bold, sans-serif;
-  font-size: ${getVwValue('22')};
-  line-height: 130%;
-  letter-spacing: ${getVwValue('-0.1')};
+  font-size: ${getVwValue('16')};
+  line-height: 140%;
+  letter-spacing: ${getVwValue('0.16')};
 `;
 
 export const Body_B1 = `
@@ -76,13 +76,13 @@ export const Button_Btn1 = `
 export const Button_Btn2 = `
   font-family: Pretendard-Medium, sans-serif;
   font-size: ${getVwValue('14')};
-  line-height: 130%;
+  line-height: 140%;
   letter-spacing: ${getVwValue('-0.1')};
 `;
 
 export const Button_Btn3 = `
-  font-family: Pretendard-Bold, sans-serif;
-  font-size: ${getVwValue('22')};
-  line-height: 130%;
-  letter-spacing: ${getVwValue('-0.1')};
+  font-family: Pretendard-Medium, sans-serif;
+  font-size: ${getVwValue('13')};
+  line-height: 140%;
+  letter-spacing: ${getVwValue('-0.08')};
 `;

@@ -3,14 +3,14 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeHeader from '../components/section/home/HomeHeader';
 import HomeTabMenu from '../components/section/home/HomeTabMenu';
-import PostItem from '../components/section/home/PostItem';
+import PostCard from '../components/section/home/PostCard';
 import ImageControl from '../components/asset/ImageControl';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import { useNavigate } from 'react-router-dom';
 import { Body_B2 } from '../styles/style.font';
-import EmptyFeed from '../components/section/home/EmptyFeed';
+import PostEmpty from '../components/section/home/PostEmpty';
 
 const S = {
   Container: styled.div`
@@ -65,12 +65,12 @@ const Home = () => {
             feed.map((item, index) => {
               return (
                 <React.Fragment key={index}>
-                  <PostItem data={item} />
+                  <PostCard data={item} />
                 </React.Fragment>
               );
             })
           ) : (
-            <EmptyFeed />
+            <PostEmpty />
           )}
         </S.FeedList>
 

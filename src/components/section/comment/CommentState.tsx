@@ -3,6 +3,7 @@ import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
 import ImageControl from '../../asset/ImageControl';
 import React from 'react';
+import { Label_L2 } from '../../../styles/style.font';
 
 const S = {
   Container: styled.div`
@@ -17,6 +18,7 @@ const S = {
   `,
   Count: styled.div`
     margin-top: ${getVwValue('10')};
+    ${Label_L2}
   `,
   LikeWrap: styled.div`
     display: flex;

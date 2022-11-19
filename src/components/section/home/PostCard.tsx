@@ -7,6 +7,10 @@ import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
 import { Link } from 'react-router-dom';
+import { Body_B2, Button_Btn2 } from '../../../styles/style.font';
+import { CardType } from '../../../api/type';
+import UserLocation from '../PostView/UserLocation';
+import PostTime from './PostTime';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};
@@ -35,6 +39,8 @@ const S = {
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: ${Common.colors.grey_headline};
+    ${Body_B2};
   `,
   Actions: styled.div`
     display: flex;
@@ -42,31 +48,20 @@ const S = {
   `,
   Column: styled.div`
     display: flex;
+    align-items: center;
   `,
-  Location: styled.span`
+  Location: styled.div`
     margin-right: ${getVwValue('10')};
-  `,
-  Time: styled.span``
+    color: ${Common.colors.grey_body};
+    ${Button_Btn2}
+  `
 };
 
 interface PostType {
-  data: IProps;
-}
-interface IProps {
-  category: string;
-  content: string;
-  createdAt: string;
-  fullName: string;
-  location: string;
-  profile: string;
-  thumbnail: string;
-  comments: number;
-  likes: number;
-  postId: number;
+  data: CardType;
 }
 
-const PostItem = (props: PostType) => {
-  console.log(props);
+const PostCard = (props: PostType) => {
   return (
     <S.Container>
       <Link to={`/view/${props.data.postId}`}>
@@ -89,11 +84,13 @@ const PostItem = (props: PostType) => {
 
         <S.Content>{props.data.content}</S.Content>
       </Link>
+
       <S.Actions>
         <S.Column>
-          <S.Location>{props.data.location}</S.Location>
-          <S.Time>{props.data.createdAt}</S.Time>
+          <UserLocation location={props.data.location} />
+          <PostTime data={props.data.createdAt} />
         </S.Column>
+
         <S.Column>
           <CommentAction comment={props.data.comments} />
           <LikeAction like={props.data.likes} />
@@ -103,4 +100,4 @@ const PostItem = (props: PostType) => {
   );
 };
 
-export default PostItem;
+export default PostCard;

@@ -2,6 +2,7 @@ import ImageControl from '../asset/ImageControl';
 import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../styles/styleUtil';
+import { Title_T4 } from '../../styles/style.font';
 
 const S = {
   Nick: styled.div`
@@ -11,6 +12,7 @@ const S = {
   `,
   Text: styled.span`
     margin-left: ${getVwValue('5')};
+    ${Title_T4}
   `
 };
 

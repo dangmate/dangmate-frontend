@@ -12,7 +12,7 @@ const S = {
     ${Body_B2}
   `
 };
-const EmptyFeed = () => {
+const PostEmpty = () => {
   return (
     <S.EmptyFeed>
       <S.Text>댕댕이들에게 말을 걸어보세요!</S.Text>
@@ -20,4 +20,4 @@ const EmptyFeed = () => {
   );
 };
 
-export default EmptyFeed;
+export default PostEmpty;

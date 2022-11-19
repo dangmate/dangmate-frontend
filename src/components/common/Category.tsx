@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../styles/styleUtil';
 import { Common } from '../../styles/common';
+import { Button_Btn3 } from '../../styles/style.font';
 
 interface IProps {
   title: string;
@@ -26,8 +27,9 @@ const S = {
     background: ${(props) =>
       props.active ? Common.colors.primary_light : 'none'};
     & > span {
+      display: block;
       color: ${Common.colors.primary_emphasis};
-      font-size: ${getVwValue('13')};
+      ${Button_Btn3}
     }
   `
 };
