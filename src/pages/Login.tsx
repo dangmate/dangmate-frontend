@@ -14,6 +14,11 @@ interface InputProps {
 }
 
 const S = {
+  SuccessWrapper: styled.div`
+    position: relative;
+    width: 100%;
+    height: 100%;
+  `,
   Wrapper: styled.div`
     position: relative;
     display: flex;
@@ -26,9 +31,13 @@ const S = {
   Introduce: styled.h3`
     padding: ${getVwValue('70 20 60')};
     text-align: center;
+    ${Title_T1}
   `,
   IntroduceImg: styled.h3`
-    text-align: center;
+    width: ${getVwValue('280')};
+    height: ${getVwValue('280')};
+    margin: 0 auto;
+    background: #f8f8f8;
   `,
   Content: styled.div`
     display: flex;
@@ -198,13 +207,13 @@ const Login = () => {
   return (
     <>
       {success ? (
-        <S.Wrapper>
+        <S.SuccessWrapper>
           <S.Introduce>
             {userData.fullName}에게
             <br /> {userData.location} 친구들을 소개할게요!
           </S.Introduce>
-          <S.IntroduceImg>이미지</S.IntroduceImg>
-        </S.Wrapper>
+          <S.IntroduceImg></S.IntroduceImg>
+        </S.SuccessWrapper>
       ) : (
         <S.Wrapper>
           <S.Row>
