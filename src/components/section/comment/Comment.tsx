@@ -16,10 +16,11 @@ import {
   ReplyMode
 } from '../../../store/comment';
 import { fetchCommentReply } from '../../../api/request';
+import { Body_B2, Body_B3 } from '../../../styles/style.font';
 
 const S = {
   Container: styled.div`
-    margin-bottom: ${getVwValue('32')};
+    //margin-bottom: ${getVwValue('32')};
   `,
   Head: styled.div`
     display: flex;
@@ -29,16 +30,24 @@ const S = {
   `,
   Column: styled.div`
     display: flex;
+    align-items: center;
+  `,
+  CommentContent: styled.div`
+    color: ${Common.colors.grey_sub};
+    ${Body_B2}
   `,
   TimeWrap: styled.div`
     margin-left: ${getVwValue('10')};
   `,
   Content: styled.div`
-    padding: ${getVwValue('0 0 0 12')};
+    padding: ${getVwValue('0 0 30 8')};
+  `,
+  ReplyContent: styled.div`
+    padding: ${getVwValue('0 0 25 16')};
   `,
   Foot: styled.div`
     display: block;
-    margin-top: ${getVwValue('15')};
+    margin-top: ${getVwValue('18')};
   `,
   Write: styled.div``,
   TextBtn: styled.button`
@@ -46,6 +55,7 @@ const S = {
     color: ${Common.colors.grey_sub};
     border-bottom: 1px solid ${Common.colors.grey_sub};
     cursor: pointer;
+    ${Body_B3}
   `,
   Reply: styled.div`
     padding: ${getVwValue('0 0 0 12')};
@@ -121,7 +131,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
       </S.Head>
 
       <S.Content>
-        <S.Column>{props.data.content}</S.Column>
+        <S.CommentContent>{props.data.content}</S.CommentContent>
 
         <S.Foot>
           <S.Column>
@@ -162,9 +172,9 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
               </S.Column>
             </S.Head>
 
-            <S.Content>
-              <S.Column>{reply['content']}</S.Column>
-            </S.Content>
+            <S.ReplyContent>
+              <S.CommentContent>{reply['content']}</S.CommentContent>
+            </S.ReplyContent>
           </S.Reply>
         ))}
     </S.Container>
