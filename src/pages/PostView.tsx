@@ -11,7 +11,7 @@ import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
-
+import CommentInput from '../components/section/comment/CommentInput';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20 110')};
@@ -38,49 +38,6 @@ const S = {
       height: ${getVwValue('20')};
       object-fit: contain;
     }
-  `,
-  Bottom: styled.div`
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: ${Common.colors.grey_white};
-    padding: ${getVwValue('16 20 24')};
-    border-top: 1px solid ${Common.colors.line_medium};
-  `,
-  Field: styled.div<{ focus: boolean }>`
-    display: ${(props) => (props.focus ? 'flex' : 'none')};
-    justify-content: space-between;
-    align-items: center;
-    height: ${getVwValue('28')};
-    margin-top: ${getVwValue('12')};
-  ,
-  `,
-  InputWrap: styled.div`
-    display: flex;
-    ,
-  `,
-  Input: styled.input`
-    display: block;
-    width: 100%;
-    padding: ${getVwValue('12')};
-    margin-top: ${getVwValue('5')};
-    border-radius: ${getVwValue('16')};
-    background: #f9f9fc;
-  `,
-  P: styled.p`
-    color: ${Common.colors.grey_disabled};
-    font-size: ${getVwValue('12')};
-  `,
-  SvgWrap: styled.div<{ valid: boolean }>`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: ${getVwValue('28')};
-    height: ${getVwValue('28')};
-    border-radius: ${getVwValue('24')};
-    background: ${(props) =>
-      props.valid ? Common.colors.primary : Common.colors.grey_disabled};
-    pointer-events: ${(props) => (props.valid ? 'auto' : 'none')};
   `,
   Column: styled.div`
     display: flex;
@@ -128,16 +85,12 @@ interface PostType {
   thumbnail: string;
   views?: number;
 }
-const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{2,500}$/;
 
 const PostView = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const userData = useRecoilValue(userState);
   const [data, setData] = useState<PostType>();
-  const [comment, setComment] = useState<string>('');
-  const [validComment, setValidComment] = useState<boolean>(false);
-  const [commentFocus, setCommentFocus] = useState<boolean>(false);
 
   const [isMenu, setIsMenu] = useState<boolean>(false);
 
@@ -182,23 +135,6 @@ const PostView = () => {
     }
   };
 
-  const writeComment = async () => {
-    const data = { userId: userData.userId, content: comment };
-    console.log(data);
-    try {
-      const response = await axiosRequest().post(
-        `/api/post/${postId}/comment`,
-        data
-      );
-      console.log(response.data);
-      await fetchComments();
-      setComment('');
-      setCommentFocus(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const onClickShowMenu = () => {
     setIsMenu(true);
     setIsDeem(true);
@@ -219,32 +155,10 @@ const PostView = () => {
     }
   };
 
-  const onScrollHandler = () => {
-    if (commentFocus) {
-      setCommentFocus(false);
-    }
-  };
-
-  const onChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
-    setCommentFocus(true);
-  };
-
   useEffect(() => {
     fetchPost();
     fetchComments();
   }, []);
-
-  useEffect(() => {
-    setValidComment(TEXT_REGEX.test(comment));
-  }, [comment]);
-
-  useEffect(() => {
-    window.addEventListener('scroll', onScrollHandler);
-    return () => {
-      window.removeEventListener('scroll', onScrollHandler);
-    };
-  });
 
   return (
     <>
@@ -265,33 +179,7 @@ const PostView = () => {
         <CommentArea postId={postId} commentData={commentData} />
       </S.Container>
 
-      <S.Bottom>
-        <S.InputWrap>
-          <S.Input
-            type='text'
-            name='comment'
-            id='comment'
-            required
-            value={comment}
-            onChange={onChangeComment}
-            onFocus={() => setCommentFocus(true)}
-            // onBlur={() => setCommentFocus(false)}
-            placeholder='댓글을 작성해 주세요.'
-            // state={inputEmailState()}
-          />
-        </S.InputWrap>
-        <S.Field focus={commentFocus}>
-          <S.P>{data?.fullName}에게 댓글 작성</S.P>
-          <S.SvgWrap valid={validComment} onClick={writeComment}>
-            <ImageControl
-              src={'/svg/upload.svg'}
-              width={'10'}
-              height={'12'}
-              alt={'arrow'}
-            />
-          </S.SvgWrap>
-        </S.Field>
-      </S.Bottom>
+      <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />
 
       {isMenu && (
         <S.BottomMenu>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import ImageControl from '../../asset/ImageControl';
@@ -7,8 +7,15 @@ import UserName from '../../common/UserName';
 import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
 import axiosRequest from '../../../api/axios';
-import { useRecoilValue } from 'recoil';
+import { ReplyType } from '../../../api/type';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
+import {
+  CommentIdState,
+  CommentUserState,
+  ReplyMode
+} from '../../../store/comment';
+import { fetchCommentReply } from '../../../api/request';
 
 const S = {
   Container: styled.div`
@@ -58,24 +65,42 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const userData = useRecoilValue(userState);
   const [replyData, setReplyData] = useState([]);
   const [isShowReply, setIsShowReply] = useState(false);
+  const [replyCount, setReplyCount] = useState(0);
 
-  const fetchCommentReply = async () => {
+  const setReply = useSetRecoilState(ReplyMode);
+  const commentUser = useSetRecoilState(CommentUserState);
+  const setCommentId = useSetRecoilState(CommentIdState);
+
+  const fetchReplyList = async () => {
     if (props.data.reply > 0) {
       try {
-        const { data } = await axiosRequest().get(
-          `/api/post/${props.postId}/comment/${props.data.commentId}/replies?userId=${userData.userId}`
+        const res = await fetchCommentReply(
+          props.postId,
+          props.data.commentId,
+          userData.userId
         );
-        setReplyData(data.replies);
-        // console.log(data.replies);
+        setReplyData(res.data.replies);
+        // console.log(res.data.replies);
       } catch (err) {
         console.log(err);
       }
     }
   };
 
+  const setReplyMode = () => {
+    setReply(true);
+    commentUser(props.data.fullName);
+    setCommentId(props.data.commentId);
+  };
+
   useEffect(() => {
-    fetchCommentReply();
+    fetchReplyList();
   }, []);
+
+  useEffect(() => {
+    setReplyCount(props.data.reply);
+  }, []);
+  console.log(replyData);
 
   return (
     <S.Container>
@@ -101,7 +126,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
 
         <S.Foot>
           <S.Column>
-            <S.Write>
+            <S.Write onClick={setReplyMode}>
               <ImageControl
                 width={'24'}
                 height={'24'}
@@ -110,7 +135,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
               />
             </S.Write>
             <S.TextBtn onClick={() => setIsShowReply(!isShowReply)}>
-              답글 {props.data.reply}
+              답글 {replyCount}
             </S.TextBtn>
           </S.Column>
         </S.Foot>
