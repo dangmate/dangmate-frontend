@@ -63,14 +63,14 @@ const S = {
   `,
   Form: styled.form``,
   Bottom: styled.div`
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
-    padding: ${getVwValue('0 20 16')};
+    //padding: ${getVwValue('0 20 16')};
   `,
   Button: styled.div`
     width: 100%;
-    margin-top: ${getVwValue('20')};
+    //margin-top: ${getVwValue('20')};
   `,
   Join: styled.div`
     cursor: pointer;
@@ -387,12 +387,12 @@ const Join = () => {
           </S.Row>
           <S.Row>
             <S.Bottom>
-              <S.Join onClick={() => navigate('/location')}>
-                <span>내 지역이 잘못 입력됐나요?</span>
-                <S.ArrowImg>
-                  <img src='/images/join_arrow.png' alt='arrow' />
-                </S.ArrowImg>
-              </S.Join>
+              {/*<S.Join onClick={() => navigate('/location')}>*/}
+              {/*  <span>내 지역이 잘못 입력됐나요?</span>*/}
+              {/*  <S.ArrowImg>*/}
+              {/*    <img src='/images/join_arrow.png' alt='arrow' />*/}
+              {/*  </S.ArrowImg>*/}
+              {/*</S.Join>*/}
               <S.Button onClick={() => setStep(!firstStep)}>
                 <ButtonRound
                   disabled={!(validEmail && validPwd && validMatch)}
