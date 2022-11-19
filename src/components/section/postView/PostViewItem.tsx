@@ -49,6 +49,7 @@ const S = {
 
 interface IProps {
   data: any;
+  commentCount: number;
 }
 
 const FeedDetail = (props: IProps) => {
@@ -79,7 +80,7 @@ const FeedDetail = (props: IProps) => {
           <PostTime data={props.data?.createdAt} />
         </S.Column>
         <S.Column>
-          <CommentAction comment={props.data?.comments} />
+          <CommentAction comment={props.commentCount} />
           <LikeAction like={props.data?.likes} />
         </S.Column>
       </S.Actions>

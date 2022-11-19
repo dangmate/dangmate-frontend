@@ -100,7 +100,6 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   useEffect(() => {
     setReplyCount(props.data.reply);
   }, []);
-  console.log(replyData);
 
   return (
     <S.Container>

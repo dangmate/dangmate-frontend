@@ -98,6 +98,8 @@ const PostView = () => {
 
   const [commentData, setCommentData] = useState([]);
 
+  const [commentCount, setCommentCount] = useState(0);
+
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
@@ -128,7 +130,8 @@ const PostView = () => {
       const { data } = await axiosRequest().get(
         `/api/post/${postId}/comments?userId=${userData.userId}`
       );
-      // console.log(data.comments);
+      console.log(data.comments);
+      setCommentCount(data.comments.length);
       setCommentData(data.comments);
     } catch (err) {
       console.log(err);
@@ -150,7 +153,7 @@ const PostView = () => {
     navigate(`/upload/${postId}`);
   };
   const onClickDeletePost = () => {
-    if (window.confirm('삭제하나요?')) {
+    if (window.confirm('정말로 게시글을 삭제할까요?')) {
       deletePost();
     }
   };
@@ -174,8 +177,8 @@ const PostView = () => {
       </S.Arrow>
 
       <S.Container>
-        <FeedView data={data} />
-        <CommentState comments={data?.comments} />
+        <FeedView data={data} commentCount={commentCount} />
+        <CommentState comments={commentCount} />
         <CommentArea postId={postId} commentData={commentData} />
       </S.Container>
 
