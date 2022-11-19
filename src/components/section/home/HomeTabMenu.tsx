@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Common } from '../../../styles/common';
 import { getVwValue } from '../../../styles/styleUtil';
 import React, { useState } from 'react';
+import { Button_Btn2 } from '../../../styles/style.font';
 
 interface tabType {
   active: boolean;
@@ -15,15 +16,27 @@ const S = {
   `,
   Li: styled.li<tabType>`
     width: 30%;
-    padding: ${getVwValue('10 0')};
+    padding: ${getVwValue('8 0')};
     text-align: center;
-    font-size: ${getVwValue('14')};
     color: ${(props) =>
-      props.active ? Common.colors.primary : Common.colors.grey_disabled};
+      props.active
+        ? Common.colors.primary_emphasis
+        : Common.colors.grey_disabled};
+    ${Button_Btn2}
     & > span {
-      padding: ${getVwValue('0 0 8')};
-      border-bottom: ${(props) =>
-        props.active ? '2px solid ' + Common.colors.primary : 'none'}
+      position: relative;
+      &:after {
+        position: absolute;
+        bottom: ${getVwValue('-9')};
+        left: 50%;
+        transform: translate3d(-50%, 0, 0);
+        content: '';
+        display: ${(props) => (props.active ? 'block' : 'none')};
+        width: ${getVwValue('48')};
+        height: ${getVwValue('2')};
+        background-color: ${Common.colors.primary};
+      }
+    }
   `
 };
 
