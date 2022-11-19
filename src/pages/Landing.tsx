@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
+import { Body_B3, Title_T1 } from '../styles/style.font';
 
 const S = {
   Wrapper: styled.div`
@@ -18,6 +19,9 @@ const S = {
   Title: styled.div`
     padding-top: ${getVwValue('100')};
   `,
+  H2: styled.div`
+    ${Title_T1}
+  `,
   Bottom: styled.div`
     padding-bottom: ${getVwValue('70')};
   `,
@@ -26,22 +30,26 @@ const S = {
   `,
   Login: styled.div`
     padding: 5vw;
+    ${Body_B3}
     & > span {
       cursor: pointer;
     }
+  `,
+  ImageWrap: styled.div`
+    width: 100%;
+    height: ${getVwValue('282')};
+    background: #f8f8f8;
   `
 };
-
 const Landing = () => {
   const navigate = useNavigate();
 
   return (
     <S.Wrapper>
       <S.Title>
-        <div>댕댕이 동네친구 만들기 대작전!</div>
-        {/*<h3>멍메이트</h3>*/}
+        <S.H2>댕댕이 동네친구 만들기 대작전!</S.H2>
       </S.Title>
-      <div>이미지</div>
+      <S.ImageWrap></S.ImageWrap>
       <S.Bottom>
         <S.Button onClick={() => navigate('/login')}>
           <ButtonRound disabled={false} type='button'>

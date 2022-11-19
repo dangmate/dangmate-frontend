@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../styles/styleUtil';
 import { Common } from '../../styles/common';
+import { Button_Btn1 } from '../../styles/style.font';
 
 interface IProps {
   type: 'button' | 'submit' | 'reset' | undefined;
@@ -18,6 +19,7 @@ const Button = styled.button<IProps>`
   border: none;
   border-radius: ${getVwValue('6')};
   color: #fff;
+  ${Button_Btn1}
   &:disabled {
     background-color: ${Common.colors.grey_disabled};
   }
