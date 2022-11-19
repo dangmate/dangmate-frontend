@@ -11,6 +11,7 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { Common } from '../styles/common';
 import { TEXT_REGEX } from '../utils/regex';
+import { Body_B2, Label_L3, Title_T1 } from '../styles/style.font';
 
 const S = {
   Container: styled.div`
@@ -33,10 +34,12 @@ const S = {
   `,
   H2: styled.h2`
     margin: ${getVwValue('8 0')};
-    font-size: ${getVwValue('20')};
+    color: ${Common.colors.grey_headline};
+    ${Title_T1}
   `,
   P: styled.p`
-    font-size: ${getVwValue('16')};
+    color: ${Common.colors.grey_sub};
+    ${Body_B2}
   `,
   CategoryWrap: styled.div`
     display: flex;
@@ -57,12 +60,16 @@ const S = {
   Textarea: styled.textarea`
     display: block;
     width: 100%;
-    padding: ${getVwValue('12')};
+    padding: ${getVwValue('12 0')};
     margin-top: ${getVwValue('5')};
     border: none;
     resize: none;
     height: ${getVwValue('300')};
     color: ${Common.colors.grey_headline};
+    ${Body_B2}
+    &::placeholder {
+      color: ${Common.colors.grey_disabled};
+    }
   `,
   Label: styled.label`
     display: flex;
@@ -84,6 +91,10 @@ const S = {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  `,
+  TextSub: styled.div`
+    color: ${Common.colors.grey_body};
+    ${Label_L3}
   `,
   CloseBtn: styled.div`
     position: absolute;
@@ -392,17 +403,15 @@ const UploadForm = () => {
                       </S.UploadImage>
                       <S.UploadName>
                         {isUpdate ? (
-                          <div>
-                            {image
-                              ? image.name
-                              : '이미지를 클릭해서 수정이 가능해요'}
-                          </div>
+                          <S.TextSub>
+                            {image ? image.name : '이미지 업로드 완료!'}
+                          </S.TextSub>
                         ) : (
-                          <div>
+                          <S.TextSub>
                             {image
-                              ? image.name
+                              ? '이미지 업로드 완료!'
                               : '최대 1장의 사진 등록이 가능해요'}
-                          </div>
+                          </S.TextSub>
                         )}
 
                         {image && (
@@ -426,12 +435,13 @@ const UploadForm = () => {
                     />
                   </S.UploadForm>
                   <S.TextForm>
-                    <label htmlFor='text'>내용 입력</label>
+                    <S.TextSub>내용 입력</S.TextSub>
                     <S.Textarea
                       name='text'
                       id='text'
                       autoComplete='off'
                       required
+                      maxLength={250}
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       placeholder='내 댕댕이를 소개해 주세요!&#10;많은 댕댕이 친구들이 기다리고 있어요.'
