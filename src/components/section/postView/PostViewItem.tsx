@@ -9,6 +9,7 @@ import CommentAction from '../comment/CommentAction';
 import CountHits from './PostCountHit';
 import PostTime from '../home/PostTime';
 import { b } from 'msw/lib/glossary-dc3fd077';
+import ButtonMore from '../../asset/ButtonMore';
 
 const S = {
   Container: styled.div`
@@ -48,10 +49,11 @@ const S = {
 
 interface IProps {
   data: any;
+  commentCount: number;
 }
 
 const FeedDetail = (props: IProps) => {
-  console.log(props.data);
+  // console.log(props.data);
   return (
     <S.Container>
       <S.FeedHead>
@@ -78,7 +80,7 @@ const FeedDetail = (props: IProps) => {
           <PostTime data={props.data?.createdAt} />
         </S.Column>
         <S.Column>
-          <CommentAction comment={props.data?.comments} />
+          <CommentAction comment={props.commentCount} />
           <LikeAction like={props.data?.likes} />
         </S.Column>
       </S.Actions>

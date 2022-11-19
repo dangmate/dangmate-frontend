@@ -6,10 +6,6 @@ import UserName from '../../common/UserName';
 import Category from '../../common/Category';
 import LikeAction from './LikeAction';
 import CommentAction from '../comment/CommentAction';
-import axiosRequest from '../../../api/axios';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../store/user';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 const S = {
   Container: styled.div`
@@ -21,6 +17,7 @@ const S = {
     height: ${getVwValue('180')};
     margin-bottom: ${getVwValue('23')};
     border-radius: ${getVwValue('12')};
+    overflow: hidden;
     & > img {
       object-fit: cover;
     }

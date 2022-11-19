@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import Comment from './Comment';
-import CommentReply from './CommentReply';
+import { ReplyType } from '../../../api/type';
 
 const S = {
   Container: styled.div`
@@ -13,14 +13,15 @@ const S = {
   `
 };
 
-const CommentArea = () => {
+const CommentArea = (props: {
+  commentData: any[];
+  postId: string | undefined;
+}) => {
   return (
     <S.Container>
-      <Comment reply={true} />
-      <S.Reply>
-        <Comment reply={false} />
-      </S.Reply>
-      {/*<CommentReply />*/}
+      {props.commentData.map((comment, index) => (
+        <Comment key={index} data={comment} postId={props.postId} />
+      ))}
     </S.Container>
   );
 };

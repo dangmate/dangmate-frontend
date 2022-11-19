@@ -16,6 +16,7 @@ import MobileGuide from './components/common/MobileGuide';
 import LocationSearch from './pages/LocationSearch';
 import { RecoilRoot } from 'recoil';
 import PostView from './pages/PostView';
+import Upload from './pages/Upload';
 
 const App = () => {
   // router
@@ -31,6 +32,8 @@ const App = () => {
         { path: 'location-search', element: <LocationSearch /> },
         { path: 'home', element: <Home /> },
         { path: 'view/:postId', element: <PostView /> },
+        { path: 'upload', element: <Upload /> },
+        { path: 'upload/:postId', element: <Upload /> },
         { path: 'favorite', element: <Favorite /> },
         { path: 'story', element: <Story /> },
         { path: 'profile', element: <Profile /> },

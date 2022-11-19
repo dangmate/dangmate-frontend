@@ -10,12 +10,15 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
-
+import ButtonMore from '../components/asset/ButtonMore';
+import CommentInput from '../components/section/comment/CommentInput';
 const S = {
   Container: styled.div`
-    padding: ${getVwValue('0 20')};
+    padding: ${getVwValue('0 20 110')};
   `,
   Arrow: styled.div`
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     height: ${getVwValue('64')};
   `,
@@ -36,48 +39,34 @@ const S = {
       object-fit: contain;
     }
   `,
-  Bottom: styled.div`
+  Column: styled.div`
+    display: flex;
+    align-items: center;
+    padding-right: ${getVwValue('24')};
+  `,
+  BottomMenu: styled.div`
     position: fixed;
     bottom: 0;
+    z-index: 10;
     width: 100%;
+  `,
+  Row: styled.div`
+    display: flex;
+    align-items: center;
+    height: ${getVwValue('56')};
+    padding-left: ${getVwValue('20')};
     background: ${Common.colors.grey_white};
-    padding: ${getVwValue('16 20 24')};
-    border-top: 1px solid ${Common.colors.line_medium};
+    & > span {
+      display: flex;
+      margin-left: ${getVwValue('35')};
+    }
   `,
-  Field: styled.div<{ focus: boolean }>`
-    display: ${(props) => (props.focus ? 'flex' : 'none')};
-    justify-content: space-between;
-    align-items: center;
-    height: ${getVwValue('28')};
-    margin-top: ${getVwValue('12')};
-  ,
-  `,
-  InputWrap: styled.div`
-    display: flex;
-    ,
-  `,
-  Input: styled.input`
-    display: block;
+  Deem: styled.div`
+    position: fixed;
+    top: 0;
     width: 100%;
-    padding: ${getVwValue('12')};
-    margin-top: ${getVwValue('5')};
-    border-radius: ${getVwValue('16')};
-    background: #f9f9fc;
-  `,
-  P: styled.p`
-    color: ${Common.colors.grey_disabled};
-    font-size: ${getVwValue('12')};
-  `,
-  SvgWrap: styled.div<{ valid: boolean }>`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: ${getVwValue('28')};
-    height: ${getVwValue('28')};
-    border-radius: ${getVwValue('24')};
-    background: ${(props) =>
-      props.valid ? Common.colors.primary : Common.colors.grey_disabled};
-    pointer-events: ${(props) => (props.valid ? 'initial' : 'none')};
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
   `
 };
 
@@ -96,18 +85,22 @@ interface PostType {
   thumbnail: string;
   views?: number;
 }
-const TEXT_REGEX = /^[A-Za-z가-힣ㄱ-ㅎ!() ]{2,500}$/;
 
 const PostView = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const userData = useRecoilValue(userState);
   const [data, setData] = useState<PostType>();
-  const [comment, setComment] = useState<string>('');
-  const [validComment, setValidComment] = useState<boolean>(false);
-  const [commentFocus, setCommentFocus] = useState<boolean>(false);
 
-  const fetchPostView = async () => {
+  const [isMenu, setIsMenu] = useState<boolean>(false);
+
+  const [isDeem, setIsDeem] = useState(false);
+
+  const [commentData, setCommentData] = useState([]);
+
+  const [commentCount, setCommentCount] = useState(0);
+
+  const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
@@ -118,55 +111,102 @@ const PostView = () => {
       console.log(err);
     }
   };
-  /* 왜 댓글을 적을때마다 리렌더링이 되는걸까요?*/
-  useEffect(() => {
-    fetchPostView();
-  }, []);
+
+  const deletePost = async () => {
+    try {
+      const response = await axiosRequest().delete(
+        `/api/post/${postId}/user/${userData.userId}`
+      );
+      if (response) {
+        navigate('/home');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const { data } = await axiosRequest().get(
+        `/api/post/${postId}/comments?userId=${userData.userId}`
+      );
+      console.log(data.comments);
+      setCommentCount(data.comments.length);
+      setCommentData(data.comments);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onClickShowMenu = () => {
+    setIsMenu(true);
+    setIsDeem(true);
+  };
+
+  const onClickDeem = () => {
+    setIsMenu(false);
+    setIsDeem(false);
+  };
+
+  const onClickUpdatePost = () => {
+    const postId = data?.postId;
+    navigate(`/upload/${postId}`);
+  };
+  const onClickDeletePost = () => {
+    if (window.confirm('정말로 게시글을 삭제할까요?')) {
+      deletePost();
+    }
+  };
 
   useEffect(() => {
-    setValidComment(TEXT_REGEX.test(comment));
-  }, [comment]);
+    fetchPost();
+    fetchComments();
+  }, []);
 
   return (
     <>
       <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
+        <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
+        {data?.isPost && (
+          <S.Column onClick={onClickShowMenu}>
+            <ButtonMore />
+          </S.Column>
+        )}
       </S.Arrow>
 
       <S.Container>
-        <FeedView data={data} />
-        <CommentState comments={data?.comments} />
-        <CommentArea />
+        <FeedView data={data} commentCount={commentCount} />
+        <CommentState comments={commentCount} />
+        <CommentArea postId={postId} commentData={commentData} />
       </S.Container>
-      <S.Bottom>
-        <S.InputWrap>
-          <S.Input
-            type='text'
-            name='comment'
-            id='comment'
-            required
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            onFocus={() => setCommentFocus(true)}
-            onBlur={() => setCommentFocus(false)}
-            placeholder='댓글을 작성해 주세요.'
-            // state={inputEmailState()}
-          />
-        </S.InputWrap>
-        <S.Field focus={commentFocus}>
-          <S.P>소심쟁이 제이에게 댓글 작성</S.P>
-          <S.SvgWrap valid={validComment}>
+
+      <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />
+
+      {isMenu && (
+        <S.BottomMenu>
+          <S.Row onClick={onClickUpdatePost}>
             <ImageControl
-              src={'/svg/upload.svg'}
-              width={'10'}
-              height={'12'}
-              alt={'arrow'}
+              src={'/svg/update.svg'}
+              width={'18'}
+              height={'18'}
+              alt={'update'}
             />
-          </S.SvgWrap>
-        </S.Field>
-      </S.Bottom>
+            <span>수정하기</span>
+          </S.Row>
+          <S.Row onClick={onClickDeletePost}>
+            <ImageControl
+              src={'/svg/delete.svg'}
+              width={'14'}
+              height={'18'}
+              alt={'delete'}
+            />
+            <span>삭제하기</span>
+          </S.Row>
+        </S.BottomMenu>
+      )}
+      {isDeem && <S.Deem onClick={onClickDeem} />}
     </>
   );
 };

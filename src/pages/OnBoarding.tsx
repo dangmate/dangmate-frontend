@@ -15,7 +15,7 @@ const Section = styled.div`
 const OnBoarding = () => {
   return (
     <Section>
-      <h2>MUNGMATE</h2>
+      <h2>DANGMATE</h2>
     </Section>
   );
 };
