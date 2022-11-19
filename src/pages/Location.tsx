@@ -68,7 +68,6 @@ const S = {
     & > p {
       margin-top: ${getVwValue('8')};
       color: ${Common.colors.grey_sub};
-
       ${Body_B2}
     }
   `,

@@ -7,6 +7,7 @@ import ButtonRound from '../components/asset/ButtonRound';
 import { p } from 'msw/lib/glossary-dc3fd077';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
+import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
 
 declare global {
   interface Window {
@@ -53,11 +54,14 @@ const S = {
       object-fit: contain;
     }
   `,
-  Title: styled.h3`
-    padding: ${getVwValue('10 0 68')};
+  Title: styled.div`
+    padding: ${getVwValue('10 0 40')};
+    color: ${Common.colors.grey_headline};
+    ${Title_T1}
     & > p {
-      margin-top: ${getVwValue('10')};
-      font-size: ${getVwValue('16')};
+      margin-top: ${getVwValue('8')};
+      color: ${Common.colors.grey_sub};
+      ${Body_B2}
     }
   `,
   SearchList: styled.ul`
@@ -85,12 +89,16 @@ const S = {
     display: flex;
     align-items: center;
     justify-content: center;
+    & > span {
+      color: ${Common.colors.grey_sub};
+      ${Label_L2};
+    }
   `,
   ArrowImg: styled.div`
     display: inline-block;
-    width: ${getVwValue('10')};
-    height: ${getVwValue('20')};
-    margin-left: ${getVwValue('15')};
+    width: ${getVwValue('8')};
+    height: ${getVwValue('14')};
+    margin-left: ${getVwValue('10')};
   `,
   Field: styled.div`
     margin-bottom: ${getVwValue('28')};
@@ -106,6 +114,11 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
+    color: ${Common.colors.grey_headline};
+    ${Label_L2};
+    &::placeholder {
+      color: ${Common.colors.grey_disabled};
+    }
   `
 };
 
@@ -152,6 +165,10 @@ const LocationSearch = () => {
 
   const onSelectHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLTextAreaElement;
+    if (target.innerText.split(' ').length !== 3) {
+      alert('동,읍,면인 주소를 선택해주세요!');
+      return;
+    }
     setLocation(target.innerText);
     navigate('/join');
   };
@@ -197,7 +214,6 @@ const LocationSearch = () => {
             <></>
           )}
         </S.Field>
-        <span>검색 결과</span>
         <S.SearchList>
           {searchList.map((item, index) => (
             <li key={index} onClick={onSelectHandler}>
