@@ -20,7 +20,7 @@ const S = {
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     min-height: ${getVwValue('550')};
   `,
   Introduce: styled.h3`
@@ -65,7 +65,7 @@ const S = {
   `,
   Form: styled.form``,
   Bottom: styled.div`
-    position: fixed;
+    position: absolute;
     bottom: 0;
     width: 100%;
     padding: ${getVwValue('0 20 16')};

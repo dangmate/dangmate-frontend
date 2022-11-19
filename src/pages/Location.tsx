@@ -8,8 +8,9 @@ import ButtonRound from '../components/asset/ButtonRound';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
-import { cosineDistanceBetweenPoints, distance } from '../utils/distance';
+import { distance } from '../utils/distance';
 import { getCityCode } from '../utils/ciryCode';
+import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
 
 declare global {
   interface Window {
@@ -25,8 +26,12 @@ interface InputProps {
 const S = {
   Wrapper: styled.div`
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    min-height: ${getVwValue('550')};
   `,
   Content: styled.div`
     display: flex;
@@ -56,11 +61,15 @@ const S = {
       object-fit: contain;
     }
   `,
-  Title: styled.h3`
-    padding: ${getVwValue('10 0 68')};
+  Title: styled.div`
+    padding: ${getVwValue('10 0 40')};
+    color: ${Common.colors.grey_headline};
+    ${Title_T1}
     & > p {
-      margin-top: ${getVwValue('10')};
-      font-size: ${getVwValue('16')};
+      margin-top: ${getVwValue('8')};
+      color: ${Common.colors.grey_sub};
+
+      ${Body_B2}
     }
   `,
   RegionContent: styled.div`
@@ -68,7 +77,7 @@ const S = {
     overflow-y: scroll;
   `,
   SearchList: styled.ul`
-    height: ${getVwValue('400')};
+    height: ${getVwValue('350')};
     overflow: scroll;
     & > li {
       padding: ${getVwValue('12 0')};
@@ -78,7 +87,7 @@ const S = {
     }
   `,
   Bottom: styled.div`
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
     padding: ${getVwValue('0 20 16')};
@@ -92,12 +101,16 @@ const S = {
     display: flex;
     align-items: center;
     justify-content: center;
+    & > span {
+      color: ${Common.colors.grey_sub};
+      ${Label_L2};
+    }
   `,
   ArrowImg: styled.div`
     display: inline-block;
-    width: ${getVwValue('10')};
-    height: ${getVwValue('20')};
-    margin-left: ${getVwValue('15')};
+    width: ${getVwValue('8')};
+    height: ${getVwValue('14')};
+    margin-left: ${getVwValue('10')};
   `,
   Field: styled.div`
     margin-bottom: ${getVwValue('28')};
@@ -113,7 +126,8 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
-  `
+  `,
+  Row: styled.div``
 };
 
 interface CoordsType {
@@ -134,8 +148,6 @@ const Location = () => {
   const [regionList, setRegionList] = useState<object[]>([]);
 
   const [addressList, setAddressList] = useState<string[]>([]);
-
-  const [sortState, setSortState] = useState<boolean>(false);
 
   const options = {
     enableHighAccuracy: true,
@@ -305,43 +317,50 @@ const Location = () => {
 
   return (
     <S.Wrapper>
-      <S.Arrow onClick={() => navigate(-1)}>
-        <S.ImgWrap>
-          <img src='/images/back_arrow.png' alt='arrow' />
-        </S.ImgWrap>
-      </S.Arrow>
-      <S.Content>
-        <S.Title>
-          내 동네 찾기
-          <p>내 반려견에게 동네친구를 선물해 주세요!</p>
-        </S.Title>
-        <S.SearchList>
-          {regionList
-            .sort((a: any, b: any) => a.distance - b.distance)
-            .map((item: any, index) => (
-              <li onClick={onSelectHandler} key={index}>
-                {item.name}
-              </li>
-            ))}
-        </S.SearchList>
-      </S.Content>
-      <S.Bottom>
-        <S.Join onClick={() => navigate('/location-search')}>
-          <span>내 위치 직접 검색</span>
-          <S.ArrowImg>
-            <img src='/images/join_arrow.png' alt='arrow' />
-          </S.ArrowImg>
-        </S.Join>
-        <S.Button>
-          <ButtonRound
-            onClick={() => autoSearch()}
-            disabled={false}
-            type='button'
-          >
-            자동 검색
-          </ButtonRound>
-        </S.Button>
-      </S.Bottom>
+      <S.Row>
+        <S.Arrow onClick={() => navigate(-1)}>
+          <S.ImgWrap>
+            <img src='/images/back_arrow.png' alt='arrow' />
+          </S.ImgWrap>
+        </S.Arrow>
+        <S.Content>
+          <S.Title>
+            내 동네 자동 검색
+            <p>
+              수집된 정보는 게시물 정보를 불러오는 용도 <br />
+              이외의 목적으로 사용하지 않아요.
+            </p>
+          </S.Title>
+          <S.SearchList>
+            {regionList
+              .sort((a: any, b: any) => a.distance - b.distance)
+              .map((item: any, index) => (
+                <li onClick={onSelectHandler} key={index}>
+                  {item.name}
+                </li>
+              ))}
+          </S.SearchList>
+        </S.Content>
+      </S.Row>
+      <S.Row>
+        <S.Bottom>
+          <S.Join onClick={() => navigate('/location-search')}>
+            <span>내 위치 직접 검색</span>
+            <S.ArrowImg>
+              <img src='/images/join_arrow.png' alt='arrow' />
+            </S.ArrowImg>
+          </S.Join>
+          <S.Button>
+            <ButtonRound
+              onClick={() => autoSearch()}
+              disabled={false}
+              type='button'
+            >
+              간편한 자동 검색
+            </ButtonRound>
+          </S.Button>
+        </S.Bottom>
+      </S.Row>
     </S.Wrapper>
   );
 };
