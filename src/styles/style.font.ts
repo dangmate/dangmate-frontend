@@ -56,17 +56,15 @@ export const Label_L1 = `
 `;
 
 export const Label_L2 = `
-  font-family: Pretendard-Bold, serif;
-  font-size: ${getVwValue('22')};
+  font-family: Pretendard-Medium, serif;
+  font-size: ${getVwValue('14')};
   line-height: 130%;
-  letter-spacing: ${getVwValue('-0.1')};
 `;
 
 export const Label_L3 = `
-  font-family: Pretendard-Bold, serif;
-  font-size: ${getVwValue('22')};
+  font-family: Pretendard-Medium, serif;
+  font-size: ${getVwValue('12')};
   line-height: 130%;
-  letter-spacing: ${getVwValue('-0.1')};
 `;
 
 export const Button_Btn1 = `

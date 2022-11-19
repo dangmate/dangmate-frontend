@@ -4,10 +4,10 @@ import { Common } from '../styles/common';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
-import AuthContext from '../context/AuthProvider';
 import axiosRequest from '../api/axios';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
+import { Label_L2, Label_L3, Title_T1 } from '../styles/style.font';
 
 interface InputProps {
   state?: string;
@@ -16,8 +16,11 @@ interface InputProps {
 const S = {
   Wrapper: styled.div`
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
-    height: 100%;
+    height: 100vh;
   `,
   Introduce: styled.h3`
     padding: ${getVwValue('70 20 60')};
@@ -54,12 +57,14 @@ const S = {
       object-fit: contain;
     }
   `,
-  Title: styled.h3`
+  Title: styled.div`
     padding: ${getVwValue('10 0 68')};
+    color: ${Common.colors.grey_headline};
+    ${Title_T1}
   `,
   Form: styled.form``,
   Bottom: styled.div`
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
     padding: ${getVwValue('0 20 16')};
@@ -73,12 +78,16 @@ const S = {
     display: flex;
     align-items: center;
     justify-content: center;
+    & > span {
+      color: ${Common.colors.grey_sub};
+      ${Label_L2};
+    }
   `,
   ArrowImg: styled.div`
     display: inline-block;
-    width: ${getVwValue('10')};
-    height: ${getVwValue('20')};
-    margin-left: ${getVwValue('15')};
+    width: ${getVwValue('8')};
+    height: ${getVwValue('14')};
+    margin-left: ${getVwValue('10')};
   `,
   Field: styled.div`
     margin-bottom: ${getVwValue('28')};
@@ -94,7 +103,14 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
-  `
+    color: ${Common.colors.grey_disabled};
+    ${Label_L2}
+  `,
+  Label: styled.label`
+    color: ${Common.colors.grey_body};
+    ${Label_L3};
+  `,
+  Row: styled.div``
 };
 
 const EMAIL_REGEX =
@@ -103,9 +119,7 @@ const PWD_REGEX = /^[A-Za-z0-9]{6,12}$/;
 
 const Login = () => {
   const navigate = useNavigate();
-  // const { setAuth } = useContext(AuthContext);
   const setUserState = useSetRecoilState(userState);
-  // const [userData, setUserData] = useRecoilState(userState);
   const userData = useRecoilValue(userState);
 
   const userRef = useRef<HTMLInputElement>(null);
@@ -189,80 +203,84 @@ const Login = () => {
         </S.Wrapper>
       ) : (
         <S.Wrapper>
-          <S.Arrow>
-            <S.ImgWrap onClick={() => navigate(-1)}>
-              <img src='/images/back_arrow.png' alt='arrow' />
-            </S.ImgWrap>
-          </S.Arrow>
-          <S.Content>
-            <S.Title>
-              로그인하고
-              <br /> 내 동네 댕댕이들 만나기
-            </S.Title>
+          <S.Row>
+            <S.Arrow>
+              <S.ImgWrap onClick={() => navigate(-1)}>
+                <img src='/images/back_arrow.png' alt='arrow' />
+              </S.ImgWrap>
+            </S.Arrow>
+            <S.Content>
+              <S.Title>
+                로그인하고
+                <br />내 동네 댕댕이들 만나기
+              </S.Title>
 
-            <S.Form>
-              <S.Field>
-                <label htmlFor='email'>이메일</label>
-                <S.Input
-                  type='email'
-                  name='email'
-                  id='email'
-                  ref={userRef}
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setEmailFocus(true)}
-                  onBlur={() => setEmailFocus(false)}
-                  placeholder='올바른 이메일 형식을 입력해주세요.'
-                  state={inputEmailState()}
-                />
-                {email && !validEmail ? (
-                  <p>올바른 이메일 형식을 입력해 주세요.</p>
-                ) : (
-                  <></>
-                )}
-              </S.Field>
-              <S.Field>
-                <label htmlFor='password'>비밀번호</label>
-                <S.Input
-                  type='password'
-                  name='password'
-                  id='password'
-                  autoComplete='off'
-                  required
-                  value={pwd}
-                  onChange={(e) => setPwd(e.target.value)}
-                  onFocus={() => setPwdFocus(true)}
-                  onBlur={() => setPwdFocus(false)}
-                  placeholder='6자리 이상 입력해 주세요.'
-                  state={inputPwdState()}
-                />
-                {pwd && !validPwd ? (
-                  <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
-                ) : (
-                  <></>
-                )}
-                {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
-              </S.Field>
-            </S.Form>
-          </S.Content>
-          <S.Bottom>
-            <S.Join onClick={() => navigate('/location')}>
-              <span>초간단 회원가입</span>
-              <S.ArrowImg>
-                <img src='/images/join_arrow.png' alt='arrow' />
-              </S.ArrowImg>
-            </S.Join>
-            <S.Button>
-              <ButtonRound
-                onClick={handleSubmit}
-                disabled={!(validEmail && validPwd)}
-                type='button'
-              >
-                로그인
-              </ButtonRound>
-            </S.Button>
-          </S.Bottom>
+              <S.Form>
+                <S.Field>
+                  <S.Label htmlFor='email'>이메일</S.Label>
+                  <S.Input
+                    type='email'
+                    name='email'
+                    id='email'
+                    ref={userRef}
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setEmailFocus(true)}
+                    onBlur={() => setEmailFocus(false)}
+                    placeholder='올바른 이메일 형식을 입력해주세요.'
+                    state={inputEmailState()}
+                  />
+                  {email && !validEmail ? (
+                    <p>올바른 이메일 형식을 입력해 주세요.</p>
+                  ) : (
+                    <></>
+                  )}
+                </S.Field>
+                <S.Field>
+                  <S.Label htmlFor='password'>비밀번호</S.Label>
+                  <S.Input
+                    type='password'
+                    name='password'
+                    id='password'
+                    autoComplete='off'
+                    required
+                    value={pwd}
+                    onChange={(e) => setPwd(e.target.value)}
+                    onFocus={() => setPwdFocus(true)}
+                    onBlur={() => setPwdFocus(false)}
+                    placeholder='6자리 이상 입력해 주세요.'
+                    state={inputPwdState()}
+                  />
+                  {pwd && !validPwd ? (
+                    <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+                  ) : (
+                    <></>
+                  )}
+                  {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
+                </S.Field>
+              </S.Form>
+            </S.Content>
+          </S.Row>
+          <S.Row>
+            <S.Bottom>
+              <S.Join onClick={() => navigate('/location')}>
+                <span>초간단 회원가입</span>
+                <S.ArrowImg>
+                  <img src='/images/join_arrow.png' alt='arrow' />
+                </S.ArrowImg>
+              </S.Join>
+              <S.Button>
+                <ButtonRound
+                  onClick={handleSubmit}
+                  disabled={!(validEmail && validPwd)}
+                  type='button'
+                >
+                  로그인
+                </ButtonRound>
+              </S.Button>
+            </S.Bottom>
+          </S.Row>
         </S.Wrapper>
       )}
     </>
