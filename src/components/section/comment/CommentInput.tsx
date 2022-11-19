@@ -13,6 +13,7 @@ import {
   CommentUserState,
   ReplyMode
 } from '../../../store/comment';
+import { Label_L2 } from '../../../styles/style.font';
 
 const S = {
   Bottom: styled.div`
@@ -42,6 +43,11 @@ const S = {
     margin-top: ${getVwValue('5')};
     border-radius: ${getVwValue('16')};
     background: #f9f9fc;
+    color: ${Common.colors.grey_headline};
+    ${Label_L2}
+    &::placeholder {
+      color: ${Common.colors.grey_disabled};
+    }
   `,
   P: styled.p`
     color: ${Common.colors.grey_disabled};
