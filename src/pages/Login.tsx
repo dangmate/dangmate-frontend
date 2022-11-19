@@ -21,6 +21,7 @@ const S = {
     justify-content: space-between;
     width: 100%;
     height: 100vh;
+    min-height: ${getVwValue('550')};
   `,
   Introduce: styled.h3`
     padding: ${getVwValue('70 20 60')};
@@ -64,7 +65,7 @@ const S = {
   `,
   Form: styled.form``,
   Bottom: styled.div`
-    position: relative;
+    position: absolute;
     bottom: 0;
     width: 100%;
     padding: ${getVwValue('0 20 16')};
