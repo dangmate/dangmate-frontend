@@ -9,6 +9,8 @@ import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import { useNavigate } from 'react-router-dom';
+import { Body_B2 } from '../styles/style.font';
+import EmptyFeed from '../components/section/home/EmptyFeed';
 
 const S = {
   Container: styled.div`
@@ -59,15 +61,19 @@ const Home = () => {
         <HomeHeader />
         <HomeTabMenu fetchPosts={fetchPosts} />
         <S.FeedList>
-          {feed &&
+          {feed ? (
             feed.map((item, index) => {
               return (
                 <React.Fragment key={index}>
                   <PostItem data={item} />
                 </React.Fragment>
               );
-            })}
+            })
+          ) : (
+            <EmptyFeed />
+          )}
         </S.FeedList>
+
         <S.WriteBtn onClick={() => navigate('/upload')}>
           <ImageControl
             width={'44'}
