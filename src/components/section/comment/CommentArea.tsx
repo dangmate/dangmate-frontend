@@ -1,8 +1,7 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import Comment from './Comment';
-import { ReplyType } from '../../../api/type';
 
 const S = {
   Container: styled.div`
