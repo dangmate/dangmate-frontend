@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { Common } from '../../../styles/common';
 import { getVwValue } from '../../../styles/styleUtil';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button_Btn2 } from '../../../styles/style.font';
+import { FeedCategory } from '../../../context/FeedCategory';
 
 interface tabType {
   active: boolean;
@@ -27,7 +28,7 @@ const S = {
       position: relative;
       &:after {
         position: absolute;
-        bottom: ${getVwValue('-9')};
+        bottom: ${getVwValue('-10')};
         left: 50%;
         transform: translate3d(-50%, 0, 0);
         content: '';
@@ -44,19 +45,29 @@ interface IProps {
   fetchPosts: (props: string) => void;
 }
 const HomeTabMenu = (props: IProps) => {
+  const categoryContext = useContext(FeedCategory);
   const [toggleState, setToggleState] = useState<number>(1);
   const fetchAllPosts = () => {
     setToggleState(1);
+    categoryContext.setCategory('all');
     props.fetchPosts('all');
   };
   const fetchMatePosts = () => {
     setToggleState(2);
+    categoryContext.setCategory('산책 메이트');
     props.fetchPosts('산책 메이트');
   };
   const fetchStoryPosts = () => {
     setToggleState(3);
+    categoryContext.setCategory('댕댕 이야기');
     props.fetchPosts('댕댕 이야기');
   };
+
+  useEffect(() => {
+    if (categoryContext.isCategory === 'all') setToggleState(1);
+    else if (categoryContext.isCategory === '산책 메이트') setToggleState(2);
+    else if (categoryContext.isCategory === '댕댕 이야기') setToggleState(3);
+  }, []);
 
   return (
     <S.Ul>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeHeader from '../components/section/home/HomeHeader';
@@ -11,6 +11,7 @@ import { userState } from '../store/user';
 import { useNavigate } from 'react-router-dom';
 import { Body_B2 } from '../styles/style.font';
 import PostEmpty from '../components/section/home/PostEmpty';
+import { FeedCategory } from '../context/FeedCategory';
 
 const S = {
   Container: styled.div`
@@ -34,6 +35,7 @@ const Home = () => {
   const [feed, setFeed] = useState([]);
   const userData = useRecoilValue(userState);
   const navigate = useNavigate();
+  const categoryContext = useContext(FeedCategory);
 
   const fetchPosts = async (category: string) => {
     const location = userData.location;
@@ -52,7 +54,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchPosts('all');
+    fetchPosts(categoryContext.isCategory);
+    console.log(categoryContext.isCategory);
   }, []);
 
   return (
