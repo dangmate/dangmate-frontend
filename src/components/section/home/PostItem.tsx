@@ -66,12 +66,17 @@ interface IProps {
 }
 
 const PostItem = (props: PostType) => {
+  console.log(props);
   return (
     <S.Container>
       <Link to={`/view/${props.data.postId}`}>
-        <S.Media>
-          <img src={props.data.thumbnail} alt='thumb' />
-        </S.Media>
+        {props.data.thumbnail ? (
+          <S.Media>
+            <img src={props.data.thumbnail} alt='thumb' />
+          </S.Media>
+        ) : (
+          <></>
+        )}
 
         <S.FeedHead>
           <UserName

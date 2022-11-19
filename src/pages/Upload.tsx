@@ -190,7 +190,7 @@ const UploadForm = () => {
     }
   };
 
-  const UploadFeed = async () => {
+  const uploadFeedImage = async () => {
     const formData = new FormData();
     if (image && text && category) {
       formData.append('multipartFile', image);
@@ -214,6 +214,24 @@ const UploadForm = () => {
           navigate('/home');
         }, 2000);
       }
+    }
+  };
+
+  const uploadFeedText = async () => {
+    const data = {
+      userId: userData.userId,
+      location: userData.location,
+      category,
+      thumbnail: null,
+      content: text
+    };
+
+    const uploadResponse = await axiosRequest().post('/api/post', data);
+    if (uploadResponse.data) {
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/home');
+      }, 2000);
     }
   };
 
@@ -433,8 +451,8 @@ const UploadForm = () => {
                     </ButtonRound>
                   ) : (
                     <ButtonRound
-                      onClick={UploadFeed}
-                      disabled={!(text && validText && image && preview)}
+                      onClick={image ? uploadFeedImage : uploadFeedText}
+                      disabled={!(text && validText)}
                       type='button'
                     >
                       업로드
