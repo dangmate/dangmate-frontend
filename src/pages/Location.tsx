@@ -11,6 +11,7 @@ import { locationState } from '../store/locationState';
 import { distance } from '../utils/distance';
 import { getCityCode } from '../utils/ciryCode';
 import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
+import { C } from '../styles/emotionStyle';
 
 declare global {
   interface Window {
@@ -24,19 +25,9 @@ interface InputProps {
 }
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100vh;
-    min-height: ${getVwValue('550')};
-  `,
   Content: styled.div`
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
     padding: ${getVwValue('0 20')};
   `,
@@ -85,16 +76,6 @@ const S = {
       border-bottom: 1px solid ${Common.colors.line_medium};
     }
   `,
-  Bottom: styled.div`
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    padding: ${getVwValue('0 20 16')};
-  `,
-  Button: styled.div`
-    width: 100%;
-    margin-top: ${getVwValue('20')};
-  `,
   Join: styled.div`
     cursor: pointer;
     display: flex;
@@ -125,8 +106,7 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
-  `,
-  Row: styled.div``
+  `
 };
 
 interface CoordsType {
@@ -315,52 +295,48 @@ const Location = () => {
   }, [coords.latitude, coords.longitude, regionFirstName]);
 
   return (
-    <S.Wrapper>
-      <S.Row>
-        <S.Arrow onClick={() => navigate(-1)}>
-          <S.ImgWrap>
-            <img src='/images/back_arrow.png' alt='arrow' />
-          </S.ImgWrap>
-        </S.Arrow>
-        <S.Content>
-          <S.Title>
-            내 동네 자동 검색
-            <p>
-              수집된 정보는 게시물 정보를 불러오는 용도 <br />
-              이외의 목적으로 사용하지 않아요.
-            </p>
-          </S.Title>
-          <S.SearchList>
-            {regionList
-              .sort((a: any, b: any) => a.distance - b.distance)
-              .map((item: any, index) => (
-                <li onClick={onSelectHandler} key={index}>
-                  {item.name}
-                </li>
-              ))}
-          </S.SearchList>
-        </S.Content>
-      </S.Row>
-      <S.Row>
-        <S.Bottom>
-          <S.Join onClick={() => navigate('/location-search')}>
-            <span>내 위치 직접 검색</span>
-            <S.ArrowImg>
-              <img src='/images/join_arrow.png' alt='arrow' />
-            </S.ArrowImg>
-          </S.Join>
-          <S.Button>
-            <ButtonRound
-              onClick={() => autoSearch()}
-              disabled={false}
-              type='button'
-            >
-              간편한 자동 검색
-            </ButtonRound>
-          </S.Button>
-        </S.Bottom>
-      </S.Row>
-    </S.Wrapper>
+    <C.Wrapper>
+      <S.Arrow onClick={() => navigate(-1)}>
+        <S.ImgWrap>
+          <img src='/images/back_arrow.png' alt='arrow' />
+        </S.ImgWrap>
+      </S.Arrow>
+      <S.Content>
+        <S.Title>
+          내 동네 자동 검색
+          <p>
+            수집된 정보는 게시물 정보를 불러오는 용도 <br />
+            이외의 목적으로 사용하지 않아요.
+          </p>
+        </S.Title>
+        <S.SearchList>
+          {regionList
+            .sort((a: any, b: any) => a.distance - b.distance)
+            .map((item: any, index) => (
+              <li onClick={onSelectHandler} key={index}>
+                {item.name}
+              </li>
+            ))}
+        </S.SearchList>
+      </S.Content>
+      <C.Bottom>
+        <S.Join onClick={() => navigate('/location-search')}>
+          <span>내 위치 직접 검색</span>
+          <S.ArrowImg>
+            <img src='/images/join_arrow.png' alt='arrow' />
+          </S.ArrowImg>
+        </S.Join>
+        <C.Button>
+          <ButtonRound
+            onClick={() => autoSearch()}
+            disabled={false}
+            type='button'
+          >
+            간편한 자동 검색
+          </ButtonRound>
+        </C.Button>
+      </C.Bottom>
+    </C.Wrapper>
   );
 };
 

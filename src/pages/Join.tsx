@@ -8,25 +8,16 @@ import { useRecoilValue } from 'recoil';
 import { locationState } from '../store/locationState';
 import axiosRequest from '../api/axios';
 import { Body_B2, Label_L2, Label_L3, Title_T1 } from '../styles/style.font';
+import { C } from '../styles/emotionStyle';
 
 interface InputProps {
   state?: string;
 }
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100vh;
-    min-height: ${getVwValue('550')};
-  `,
   Content: styled.div`
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
     padding: ${getVwValue('0 20')};
   `,
@@ -62,16 +53,6 @@ const S = {
     }
   `,
   Form: styled.form``,
-  Bottom: styled.div`
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    //padding: ${getVwValue('0 20 16')};
-  `,
-  Button: styled.div`
-    width: 100%;
-    //margin-top: ${getVwValue('20')};
-  `,
   Join: styled.div`
     cursor: pointer;
     display: flex;
@@ -111,8 +92,7 @@ const S = {
   Label: styled.label`
     color: ${Common.colors.grey_body};
     ${Label_L3};
-  `,
-  Row: styled.div``
+  `
 };
 
 const EMAIL_REGEX =
@@ -296,207 +276,200 @@ const Join = () => {
   };
 
   return (
-    <S.Wrapper>
+    <C.Wrapper>
       {firstStep ? (
         <>
-          <S.Row>
-            <S.Arrow>
-              <S.ImgWrap onClick={() => navigate(-1)}>
-                <img src='/images/back_arrow.png' alt='arrow' />
-              </S.ImgWrap>
-            </S.Arrow>
-            <S.Content>
-              <S.Title>
-                내 정보 입력 (1/2)
-                <p>{location}</p>
-              </S.Title>
-              <S.Form>
-                <div>
-                  <S.Field>
-                    <S.Label htmlFor='email'>이메일</S.Label>
-                    <S.Input
-                      type='email'
-                      name='email'
-                      id='email'
-                      ref={userRef}
-                      autoComplete='off'
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onFocus={() => setEmailFocus(true)}
-                      onBlur={() => setEmailFocus(false)}
-                      placeholder='올바른 이메일 형식을 입력해주세요.'
-                      state={inputEmailState()}
-                    />
-                    {email && !validEmail ? (
-                      <p>올바른 이메일 형식을 입력해 주세요.</p>
-                    ) : (
-                      <></>
-                    )}
-                    {email && validEmail && !checkUniqEmail ? (
-                      <p>이미 사용중인 이메일입니다.</p>
-                    ) : (
-                      <></>
-                    )}
-                  </S.Field>
-                  <S.Field>
-                    <S.Label htmlFor='password'>비밀번호</S.Label>
-                    <S.Input
-                      type='password'
-                      name='password'
-                      id='password'
-                      autoComplete='off'
-                      required
-                      value={password}
-                      onChange={(e) => setPwd(e.target.value)}
-                      onFocus={() => setPwdFocus(true)}
-                      onBlur={() => setPwdFocus(false)}
-                      placeholder='6자리 이상 입력해 주세요.'
-                      state={inputPwdState()}
-                    />
-                    {password && !validPwd ? (
-                      <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
-                    ) : (
-                      <></>
-                    )}
-                  </S.Field>
-                  <S.Field>
-                    <S.Label htmlFor='confirmPassword'>비밀번호 재입력</S.Label>
-                    <S.Input
-                      type='password'
-                      name='confirmPassword'
-                      id='confirmPassword'
-                      autoComplete='off'
-                      required
-                      value={matchPwd}
-                      onChange={(e) => setMatchPwd(e.target.value)}
-                      onFocus={() => setMatchFocus(true)}
-                      onBlur={() => setMatchFocus(false)}
-                      placeholder='입력한 비밀번호를 입력해 주세요.'
-                      state={inputMatchState()}
-                    />
-                    {matchPwd && !validMatch ? (
-                      <p>입력한 비밀번호와 동일한 비밀번호를 입력해주세요.</p>
-                    ) : (
-                      <></>
-                    )}
-                  </S.Field>
-                </div>
-              </S.Form>
-            </S.Content>
-          </S.Row>
-          <S.Row>
-            <S.Bottom>
-              {/*<S.Join onClick={() => navigate('/location')}>*/}
-              {/*  <span>내 지역이 잘못 입력됐나요?</span>*/}
-              {/*  <S.ArrowImg>*/}
-              {/*    <img src='/images/join_arrow.png' alt='arrow' />*/}
-              {/*  </S.ArrowImg>*/}
-              {/*</S.Join>*/}
-              <S.Button onClick={() => setStep(!firstStep)}>
-                <ButtonRound
-                  disabled={!(validEmail && validPwd && validMatch)}
-                  type='button'
-                >
-                  다음
-                </ButtonRound>
-              </S.Button>
-            </S.Bottom>
-          </S.Row>
+          <S.Arrow>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>
+          </S.Arrow>
+          <S.Content>
+            <S.Title>
+              내 정보 입력 (1/2)
+              <p>{location}</p>
+            </S.Title>
+            <S.Form>
+              <div>
+                <S.Field>
+                  <S.Label htmlFor='email'>이메일</S.Label>
+                  <S.Input
+                    type='email'
+                    name='email'
+                    id='email'
+                    ref={userRef}
+                    autoComplete='off'
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setEmailFocus(true)}
+                    onBlur={() => setEmailFocus(false)}
+                    placeholder='올바른 이메일 형식을 입력해주세요.'
+                    state={inputEmailState()}
+                  />
+                  {email && !validEmail ? (
+                    <p>올바른 이메일 형식을 입력해 주세요.</p>
+                  ) : (
+                    <></>
+                  )}
+                  {email && validEmail && !checkUniqEmail ? (
+                    <p>이미 사용중인 이메일입니다.</p>
+                  ) : (
+                    <></>
+                  )}
+                </S.Field>
+                <S.Field>
+                  <S.Label htmlFor='password'>비밀번호</S.Label>
+                  <S.Input
+                    type='password'
+                    name='password'
+                    id='password'
+                    autoComplete='off'
+                    required
+                    value={password}
+                    onChange={(e) => setPwd(e.target.value)}
+                    onFocus={() => setPwdFocus(true)}
+                    onBlur={() => setPwdFocus(false)}
+                    placeholder='6자리 이상 입력해 주세요.'
+                    state={inputPwdState()}
+                  />
+                  {password && !validPwd ? (
+                    <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+                  ) : (
+                    <></>
+                  )}
+                </S.Field>
+                <S.Field>
+                  <S.Label htmlFor='confirmPassword'>비밀번호 재입력</S.Label>
+                  <S.Input
+                    type='password'
+                    name='confirmPassword'
+                    id='confirmPassword'
+                    autoComplete='off'
+                    required
+                    value={matchPwd}
+                    onChange={(e) => setMatchPwd(e.target.value)}
+                    onFocus={() => setMatchFocus(true)}
+                    onBlur={() => setMatchFocus(false)}
+                    placeholder='입력한 비밀번호를 입력해 주세요.'
+                    state={inputMatchState()}
+                  />
+                  {matchPwd && !validMatch ? (
+                    <p>입력한 비밀번호와 동일한 비밀번호를 입력해주세요.</p>
+                  ) : (
+                    <></>
+                  )}
+                </S.Field>
+              </div>
+            </S.Form>
+          </S.Content>
+          <C.Bottom>
+            {/*<S.Join onClick={() => navigate('/location')}>*/}
+            {/*  <span>내 지역이 잘못 입력됐나요?</span>*/}
+            {/*  <S.ArrowImg>*/}
+            {/*    <img src='/images/join_arrow.png' alt='arrow' />*/}
+            {/*  </S.ArrowImg>*/}
+            {/*</S.Join>*/}
+            <C.Button onClick={() => setStep(!firstStep)}>
+              <ButtonRound
+                disabled={!(validEmail && validPwd && validMatch)}
+                type='button'
+              >
+                다음
+              </ButtonRound>
+            </C.Button>
+          </C.Bottom>
         </>
       ) : (
         <>
-          <S.Row>
-            <S.Arrow onClick={() => setStep(true)}>
-              <S.ImgWrap onClick={() => navigate(-1)}>
-                <img src='/images/back_arrow.png' alt='arrow' />
-              </S.ImgWrap>{' '}
-            </S.Arrow>
-            <S.Content>
-              <S.Title>
-                내 댕댕이 정보 입력 (2/2)
-                <p>{location}</p>
-              </S.Title>
-              <S.Form>
-                <div>
-                  <S.Field>
-                    <S.Label htmlFor='nickname'>반려견 이름</S.Label>
-                    <S.Input
-                      type='text'
-                      name='nickname'
-                      id='nickname'
-                      autoComplete='off'
-                      required
-                      value={nickname}
-                      onChange={(e) => setNickname(e.target.value)}
-                      onFocus={() => setNickFocus(true)}
-                      onBlur={() => setNickFocus(false)}
-                      placeholder='초코'
-                      state={inputNickState()}
-                    />
-                    {nickname && !validNick ? (
-                      <p>반려견 이름은 1~6자리 이상 입력할 수 없어요.</p>
-                    ) : (
-                      <></>
-                    )}
-                  </S.Field>
-                  <S.Field>
-                    <S.Label htmlFor='keyword'>
-                      반려견을 한 단어로 표현한다면?
-                    </S.Label>
-                    <S.Input
-                      type='text'
-                      name='keyword'
-                      id='keyword'
-                      autoComplete='off'
-                      required
-                      value={keyword}
-                      onChange={(e) => setKeyword(e.target.value)}
-                      onFocus={() => setKeywordFocus(true)}
-                      onBlur={() => setKeywordFocus(false)}
-                      placeholder='세젤귀'
-                      state={inputUniqNickState()}
-                    />
-                    {keyword && !validKeyword ? (
-                      <p>단어은 1~6자리 이상 입력할 수 없어요.</p>
-                    ) : (
-                      <></>
-                    )}
+          <S.Arrow onClick={() => setStep(true)}>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>{' '}
+          </S.Arrow>
+          <S.Content>
+            <S.Title>
+              내 댕댕이 정보 입력 (2/2)
+              <p>{location}</p>
+            </S.Title>
+            <S.Form>
+              <div>
+                <S.Field>
+                  <S.Label htmlFor='nickname'>반려견 이름</S.Label>
+                  <S.Input
+                    type='text'
+                    name='nickname'
+                    id='nickname'
+                    autoComplete='off'
+                    required
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    onFocus={() => setNickFocus(true)}
+                    onBlur={() => setNickFocus(false)}
+                    placeholder='초코'
+                    state={inputNickState()}
+                  />
+                  {nickname && !validNick ? (
+                    <p>반려견 이름은 1~6자리 이상 입력할 수 없어요.</p>
+                  ) : (
+                    <></>
+                  )}
+                </S.Field>
+                <S.Field>
+                  <S.Label htmlFor='keyword'>
+                    반려견을 한 단어로 표현한다면?
+                  </S.Label>
+                  <S.Input
+                    type='text'
+                    name='keyword'
+                    id='keyword'
+                    autoComplete='off'
+                    required
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    onFocus={() => setKeywordFocus(true)}
+                    onBlur={() => setKeywordFocus(false)}
+                    placeholder='세젤귀'
+                    state={inputUniqNickState()}
+                  />
+                  {keyword && !validKeyword ? (
+                    <p>단어은 1~6자리 이상 입력할 수 없어요.</p>
+                  ) : (
+                    <></>
+                  )}
 
-                    {checkUniqNick ? (
-                      <></>
-                    ) : (
-                      <p>동일한 이름의 반려견이 이미 사용 중이에요.</p>
-                    )}
-                  </S.Field>
-                </div>
-              </S.Form>
-            </S.Content>
-          </S.Row>
-          <S.Row>
-            <S.Bottom>
-              <S.Button>
-                <ButtonRound
-                  onClick={handleSubmit}
-                  disabled={
-                    !(
-                      validEmail &&
-                      validPwd &&
-                      validMatch &&
-                      validNick &&
-                      validKeyword
-                    )
-                  }
-                  type='submit'
-                >
-                  회원가입 완료
-                </ButtonRound>
-              </S.Button>
-            </S.Bottom>
-          </S.Row>
+                  {checkUniqNick ? (
+                    <></>
+                  ) : (
+                    <p>동일한 이름의 반려견이 이미 사용 중이에요.</p>
+                  )}
+                </S.Field>
+              </div>
+            </S.Form>
+          </S.Content>
+
+          <C.Bottom>
+            <C.Button>
+              <ButtonRound
+                onClick={handleSubmit}
+                disabled={
+                  !(
+                    validEmail &&
+                    validPwd &&
+                    validMatch &&
+                    validNick &&
+                    validKeyword
+                  )
+                }
+                type='submit'
+              >
+                회원가입 완료
+              </ButtonRound>
+            </C.Button>
+          </C.Bottom>
         </>
       )}
-    </S.Wrapper>
+    </C.Wrapper>
   );
 };
 

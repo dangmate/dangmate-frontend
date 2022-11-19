@@ -8,6 +8,7 @@ import { p } from 'msw/lib/glossary-dc3fd077';
 import { useSetRecoilState } from 'recoil';
 import { locationState } from '../store/locationState';
 import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
+import { C } from '../styles/emotionStyle';
 
 declare global {
   interface Window {
@@ -21,15 +22,6 @@ interface InputProps {
 }
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100vh;
-    min-height: ${getVwValue('550')};
-  `,
   Content: styled.div`
     display: flex;
     flex-direction: column;
@@ -78,16 +70,7 @@ const S = {
       border-bottom: 1px solid ${Common.colors.line_medium};
     }
   `,
-  Bottom: styled.div`
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: ${getVwValue('0 20 16')};
-  `,
-  Button: styled.div`
-    width: 100%;
-    margin-top: ${getVwValue('20')};
-  `,
+
   Join: styled.div`
     cursor: pointer;
     display: flex;
@@ -123,8 +106,7 @@ const S = {
     &::placeholder {
       color: ${Common.colors.grey_disabled};
     }
-  `,
-  Row: styled.div``
+  `
 };
 
 // 2~10자리 문자
@@ -189,62 +171,59 @@ const LocationSearch = () => {
     setFoundSearch(true);
   }, [search]);
   return (
-    <S.Wrapper>
-      <S.Row>
-        <S.Arrow onClick={() => navigate(-1)}>
-          <S.ImgWrap>
-            <img src='/images/back_arrow.png' alt='arrow' />
-          </S.ImgWrap>
-        </S.Arrow>
-        <S.Content>
-          <S.Title>
-            내 동네 직접 검색
-            <p>내 반려견에게 동네친구를 선물해 주세요!</p>
-          </S.Title>
+    <C.Wrapper>
+      <S.Arrow onClick={() => navigate(-1)}>
+        <S.ImgWrap>
+          <img src='/images/back_arrow.png' alt='arrow' />
+        </S.ImgWrap>
+      </S.Arrow>
+      <S.Content>
+        <S.Title>
+          내 동네 직접 검색
+          <p>내 반려견에게 동네친구를 선물해 주세요!</p>
+        </S.Title>
 
-          <S.Field>
-            <S.Input
-              type='text'
-              name='search'
-              id='search'
-              ref={userRef}
-              value={search}
-              onChange={onSearchHandler}
-              state={inputSearchState()}
-              placeholder='내 동네 검색 (동,읍,면)'
-            />
-            {search && !validSearch ? <p>2글자 이상 입력해주세요.</p> : <></>}
-            {search && validSearch && !foundSearch ? (
-              <p>입력하신 동네를 찾을 수 없어요.</p>
-            ) : (
-              <></>
-            )}
-          </S.Field>
-          <S.SearchList>
-            {searchList.map((item, index) => (
-              <li key={index} onClick={onSelectHandler}>
-                {item['address_name']}
-              </li>
-            ))}
-          </S.SearchList>
-        </S.Content>
-      </S.Row>
-      <S.Row>
-        <S.Bottom>
-          <S.Join onClick={() => navigate('/location')}>
-            <span>내 위치 자동 검색</span>
-            <S.ArrowImg>
-              <img src='/images/join_arrow.png' alt='arrow' />
-            </S.ArrowImg>
-          </S.Join>
-          <S.Button onClick={addressSearch}>
-            <ButtonRound disabled={!validSearch} type='button'>
-              검색하기
-            </ButtonRound>
-          </S.Button>
-        </S.Bottom>
-      </S.Row>
-    </S.Wrapper>
+        <S.Field>
+          <S.Input
+            type='text'
+            name='search'
+            id='search'
+            ref={userRef}
+            value={search}
+            onChange={onSearchHandler}
+            state={inputSearchState()}
+            placeholder='내 동네 검색 (동,읍,면)'
+          />
+          {search && !validSearch ? <p>2글자 이상 입력해주세요.</p> : <></>}
+          {search && validSearch && !foundSearch ? (
+            <p>입력하신 동네를 찾을 수 없어요.</p>
+          ) : (
+            <></>
+          )}
+        </S.Field>
+        <S.SearchList>
+          {searchList.map((item, index) => (
+            <li key={index} onClick={onSelectHandler}>
+              {item['address_name']}
+            </li>
+          ))}
+        </S.SearchList>
+      </S.Content>
+
+      <C.Bottom>
+        <S.Join onClick={() => navigate('/location')}>
+          <span>내 위치 자동 검색</span>
+          <S.ArrowImg>
+            <img src='/images/join_arrow.png' alt='arrow' />
+          </S.ArrowImg>
+        </S.Join>
+        <C.Button onClick={addressSearch}>
+          <ButtonRound disabled={!validSearch} type='button'>
+            검색하기
+          </ButtonRound>
+        </C.Button>
+      </C.Bottom>
+    </C.Wrapper>
   );
 };
 

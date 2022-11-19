@@ -8,26 +8,13 @@ import axiosRequest from '../api/axios';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
 import { Label_L2, Label_L3, Title_T1 } from '../styles/style.font';
+import { C } from '../styles/emotionStyle';
 
 interface InputProps {
   state?: string;
 }
 
 const S = {
-  SuccessWrapper: styled.div`
-    position: relative;
-    width: 100%;
-    height: 100%;
-  `,
-  Wrapper: styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100vh;
-    min-height: ${getVwValue('550')};
-  `,
   Introduce: styled.h3`
     padding: ${getVwValue('70 20 60')};
     text-align: center;
@@ -67,22 +54,9 @@ const S = {
       object-fit: contain;
     }
   `,
-  Title: styled.div`
-    padding: ${getVwValue('10 0 68')};
-    color: ${Common.colors.grey_headline};
-    ${Title_T1}
-  `,
+
   Form: styled.form``,
-  Bottom: styled.div`
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: ${getVwValue('0 20 16')};
-  `,
-  Button: styled.div`
-    width: 100%;
-    margin-top: ${getVwValue('20')};
-  `,
+
   Join: styled.div`
     cursor: pointer;
     display: flex;
@@ -122,8 +96,7 @@ const S = {
   Label: styled.label`
     color: ${Common.colors.grey_body};
     ${Label_L3};
-  `,
-  Row: styled.div``
+  `
 };
 
 const EMAIL_REGEX =
@@ -207,94 +180,90 @@ const Login = () => {
   return (
     <>
       {success ? (
-        <S.SuccessWrapper>
+        <C.Wrapper>
           <S.Introduce>
             {userData.fullName}에게
             <br /> {userData.location} 친구들을 소개할게요!
           </S.Introduce>
           <S.IntroduceImg></S.IntroduceImg>
-        </S.SuccessWrapper>
+        </C.Wrapper>
       ) : (
-        <S.Wrapper>
-          <S.Row>
-            <S.Arrow>
-              <S.ImgWrap onClick={() => navigate(-1)}>
-                <img src='/images/back_arrow.png' alt='arrow' />
-              </S.ImgWrap>
-            </S.Arrow>
-            <S.Content>
-              <S.Title>
-                로그인하고
-                <br />내 동네 댕댕이들 만나기
-              </S.Title>
+        <C.Wrapper>
+          <S.Arrow>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>
+          </S.Arrow>
+          <S.Content>
+            <C.Title>
+              로그인하고
+              <br />내 동네 댕댕이들 만나기
+            </C.Title>
 
-              <S.Form>
-                <S.Field>
-                  <S.Label htmlFor='email'>이메일</S.Label>
-                  <S.Input
-                    type='email'
-                    name='email'
-                    id='email'
-                    ref={userRef}
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => setEmailFocus(true)}
-                    onBlur={() => setEmailFocus(false)}
-                    placeholder='올바른 이메일 형식을 입력해주세요.'
-                    state={inputEmailState()}
-                  />
-                  {email && !validEmail ? (
-                    <p>올바른 이메일 형식을 입력해 주세요.</p>
-                  ) : (
-                    <></>
-                  )}
-                </S.Field>
-                <S.Field>
-                  <S.Label htmlFor='password'>비밀번호</S.Label>
-                  <S.Input
-                    type='password'
-                    name='password'
-                    id='password'
-                    autoComplete='off'
-                    required
-                    value={pwd}
-                    onChange={(e) => setPwd(e.target.value)}
-                    onFocus={() => setPwdFocus(true)}
-                    onBlur={() => setPwdFocus(false)}
-                    placeholder='6자리 이상 입력해 주세요.'
-                    state={inputPwdState()}
-                  />
-                  {pwd && !validPwd ? (
-                    <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
-                  ) : (
-                    <></>
-                  )}
-                  {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
-                </S.Field>
-              </S.Form>
-            </S.Content>
-          </S.Row>
-          <S.Row>
-            <S.Bottom>
-              <S.Join onClick={() => navigate('/location')}>
-                <span>초간단 회원가입</span>
-                <S.ArrowImg>
-                  <img src='/images/join_arrow.png' alt='arrow' />
-                </S.ArrowImg>
-              </S.Join>
-              <S.Button>
-                <ButtonRound
-                  onClick={handleSubmit}
-                  disabled={!(validEmail && validPwd)}
-                  type='button'
-                >
-                  로그인
-                </ButtonRound>
-              </S.Button>
-            </S.Bottom>
-          </S.Row>
-        </S.Wrapper>
+            <S.Form>
+              <S.Field>
+                <S.Label htmlFor='email'>이메일</S.Label>
+                <S.Input
+                  type='email'
+                  name='email'
+                  id='email'
+                  ref={userRef}
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                  placeholder='올바른 이메일 형식을 입력해주세요.'
+                  state={inputEmailState()}
+                />
+                {email && !validEmail ? (
+                  <p>올바른 이메일 형식을 입력해 주세요.</p>
+                ) : (
+                  <></>
+                )}
+              </S.Field>
+              <S.Field>
+                <S.Label htmlFor='password'>비밀번호</S.Label>
+                <S.Input
+                  type='password'
+                  name='password'
+                  id='password'
+                  autoComplete='off'
+                  required
+                  value={pwd}
+                  onChange={(e) => setPwd(e.target.value)}
+                  onFocus={() => setPwdFocus(true)}
+                  onBlur={() => setPwdFocus(false)}
+                  placeholder='6자리 이상 입력해 주세요.'
+                  state={inputPwdState()}
+                />
+                {pwd && !validPwd ? (
+                  <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+                ) : (
+                  <></>
+                )}
+                {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
+              </S.Field>
+            </S.Form>
+          </S.Content>
+          <C.Bottom>
+            <S.Join onClick={() => navigate('/location')}>
+              <span>초간단 회원가입</span>
+              <S.ArrowImg>
+                <img src='/images/join_arrow.png' alt='arrow' />
+              </S.ArrowImg>
+            </S.Join>
+            <C.Button>
+              <ButtonRound
+                onClick={handleSubmit}
+                disabled={!(validEmail && validPwd)}
+                type='button'
+              >
+                로그인
+              </ButtonRound>
+            </C.Button>
+          </C.Bottom>
+        </C.Wrapper>
       )}
     </>
   );
