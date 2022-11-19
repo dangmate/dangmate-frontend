@@ -20,7 +20,7 @@ const S = {
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     min-height: ${getVwValue('550')};
   `,
   Introduce: styled.h3`
@@ -65,7 +65,7 @@ const S = {
   `,
   Form: styled.form``,
   Bottom: styled.div`
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     padding: ${getVwValue('0 20 16')};
@@ -104,8 +104,11 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
-    color: ${Common.colors.grey_disabled};
-    ${Label_L2}
+    color: ${Common.colors.grey_headline};
+    ${Label_L2};
+    &::placeholder {
+      color: ${Common.colors.grey_disabled};
+    }
   `,
   Label: styled.label`
     color: ${Common.colors.grey_body};
