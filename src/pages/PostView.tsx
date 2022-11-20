@@ -169,11 +169,9 @@ const PostView = () => {
         <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
-        {data?.isPost && (
-          <S.Column onClick={onClickShowMenu}>
-            <ButtonMore />
-          </S.Column>
-        )}
+        <S.Column onClick={onClickShowMenu}>
+          <ButtonMore />
+        </S.Column>
       </S.Arrow>
 
       <S.Container>

@@ -18,6 +18,7 @@ export interface CardType {
   comments: number;
   likes: number;
   postId: number;
+  isLike?: boolean;
 }
 
 export interface CardViewType {

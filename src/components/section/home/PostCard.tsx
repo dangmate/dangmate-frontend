@@ -62,6 +62,7 @@ interface PostType {
 }
 
 const PostCard = (props: PostType) => {
+  console.log(props);
   return (
     <S.Container>
       <Link to={`/view/${props.data.postId}`}>
@@ -93,7 +94,11 @@ const PostCard = (props: PostType) => {
 
         <S.Column>
           <CommentAction comment={props.data.comments} />
-          <LikeAction like={props.data.likes} />
+          <LikeAction
+            like={props.data.likes}
+            postId={props.data.postId}
+            isLike={props.data.isLike}
+          />
         </S.Column>
       </S.Actions>
     </S.Container>

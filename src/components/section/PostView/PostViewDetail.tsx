@@ -90,7 +90,11 @@ const FeedDetail = (props: IProps) => {
         </S.Column>
         <S.Column>
           <CommentAction comment={props.commentCount} />
-          <LikeAction like={props.data?.likes} />
+          <LikeAction
+            like={props.data?.likes}
+            isLike={props.data?.isLike}
+            postId={props.data?.postId}
+          />
         </S.Column>
       </S.Actions>
     </S.Container>

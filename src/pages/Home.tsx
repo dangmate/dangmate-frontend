@@ -32,7 +32,7 @@ const Home = () => {
     const data = { location, category, userId };
     try {
       const response = await axiosRequest().post(
-        '/api/posts?size=10&lastPostId=100',
+        '/api/posts?size=10&lastPostId=30',
         data
       );
       console.log(response.data);
@@ -73,7 +73,7 @@ const Home = () => {
         {/* Write Button */}
         <ButtonWrite />
 
-        {/* Home Navibar*/}
+        {/* Home Navibar */}
         <NaviBar />
       </S.Container>
     </>
