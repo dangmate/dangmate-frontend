@@ -12,6 +12,7 @@ import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
 import CommentInput from '../components/section/comment/CommentInput';
+import { CardViewType } from '../api/type';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20 110')};
@@ -70,27 +71,11 @@ const S = {
   `
 };
 
-interface PostType {
-  category: string;
-  comments: number;
-  content: string;
-  createdAt: string;
-  fullName: string;
-  isLike?: boolean;
-  isPost?: boolean;
-  likes: number;
-  location: string;
-  postId: number | null;
-  profile: string | null;
-  thumbnail: string;
-  views?: number;
-}
-
 const PostView = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const userData = useRecoilValue(userState);
-  const [data, setData] = useState<PostType>();
+  const [data, setData] = useState<CardViewType | undefined>();
 
   const [isMenu, setIsMenu] = useState<boolean>(false);
 
@@ -175,7 +160,11 @@ const PostView = () => {
       </S.Arrow>
 
       <S.Container>
-        <PostViewDetail data={data} commentCount={commentCount} />
+        {data ? (
+          <PostViewDetail postData={data} commentCount={commentCount} />
+        ) : (
+          <div>데이터 불러오는중</div>
+        )}
         <CommentState comments={commentCount} />
         <CommentArea postId={postId} commentData={commentData} />
       </S.Container>

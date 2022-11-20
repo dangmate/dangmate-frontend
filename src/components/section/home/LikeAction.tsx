@@ -34,8 +34,8 @@ interface IProps {
 
 const LikeAction = (props: IProps) => {
   const [like, setLike] = useState<boolean | undefined>(props.isLike);
-  const userData = useRecoilValue(userState);
   const [likeCount, setLikeCount] = useState<number>(props.like);
+  const userData = useRecoilValue(userState);
 
   const postLikeAction = async () => {
     const data = {
