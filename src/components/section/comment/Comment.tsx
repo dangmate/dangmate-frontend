@@ -8,15 +8,19 @@ import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
 import axiosRequest from '../../../api/axios';
 import { ReplyType } from '../../../api/type';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import {
   CommentIdState,
+  CommentReplyUpdateState,
+  CommentUpdateState,
   CommentUserState,
-  ReplyMode
+  ReplyMode,
+  UpdateMode
 } from '../../../store/comment';
 import { fetchCommentReply } from '../../../api/request';
 import { Body_B2, Body_B3 } from '../../../styles/style.font';
+import BottomMenu from '../../asset/BottomMenu';
 
 const S = {
   Container: styled.div`
@@ -77,9 +81,28 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const [isShowReply, setIsShowReply] = useState(false);
   const [replyCount, setReplyCount] = useState(0);
 
-  const setReply = useSetRecoilState(ReplyMode);
-  const commentUser = useSetRecoilState(CommentUserState);
-  const setCommentId = useSetRecoilState(CommentIdState);
+  const [isMenu, setIsMenu] = useState<boolean>(false);
+  const [updateCommentData, setUpdateCommentData] = useState({
+    commentId: 0,
+    replyId: 0,
+    content: ''
+  });
+  const [updateCommentReplyData, setUpdateCommentReplyData] = useState({
+    commentId: 0,
+    replyId: 0,
+    content: ''
+  });
+
+  const [isReply, setReply] = useRecoilState(ReplyMode);
+  const commentReplyUser = useSetRecoilState(CommentUserState);
+  const setReplyCommentId = useSetRecoilState(CommentIdState);
+
+  // 댓글 업데이트
+  const setUpdateCommentStore = useSetRecoilState(CommentUpdateState);
+  const setUpdateMode = useSetRecoilState(UpdateMode);
+
+  // 대댓글 업데이트
+  const setUpdateCommentReplyStore = useSetRecoilState(CommentReplyUpdateState);
 
   const fetchReplyList = async () => {
     if (props.data.reply > 0) {
@@ -97,10 +120,109 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
     }
   };
 
+  // reply button 클릭시 replymode, replyuser, replyid store에 저장
   const setReplyMode = () => {
     setReply(true);
-    commentUser(props.data.fullName);
-    setCommentId(props.data.commentId);
+    commentReplyUser(props.data.fullName);
+    setReplyCommentId(props.data.commentId);
+  };
+
+  // 댓글 수정, 삭제
+  const showBottomMenu = () => {
+    console.log(props.data.commentId);
+    setIsMenu(true);
+    setUpdateCommentData({
+      commentId: props.data.commentId,
+      replyId: 0,
+      content: props.data.content
+    });
+    setReply(false);
+  };
+
+  const onClickDeem = () => {
+    setIsMenu(false);
+  };
+
+  const onClickUpdateComment = () => {
+    setIsMenu(false);
+    if (updateCommentData) {
+      setUpdateCommentStore(updateCommentData);
+      setUpdateMode(true);
+      console.log(updateCommentData);
+    }
+  };
+  const onClickDeleteComment = () => {
+    if (window.confirm('정말로 댓글을 삭제할까요?')) {
+      deleteComment();
+    }
+  };
+
+  const deleteComment = async () => {
+    try {
+      const response = await axiosRequest().delete(
+        `/api/post/${props.postId}/comment/${updateCommentData.commentId}`,
+        {
+          data: { userId: userData.userId }
+        }
+      );
+      if (response) {
+        console.log(response);
+        console.log('삭제성공!');
+        fetchReplyList();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //대댓글 수정,삭제
+  const showBottomMenuReply = (replyId: number, content: string) => {
+    // console.log(replyId);
+    // console.log(content);
+    // console.log(props.data.commentId);
+    setIsMenu(true);
+    setReply(true);
+    setUpdateCommentData({
+      commentId: props.data.commentId,
+      replyId: replyId,
+      content: content
+    });
+  };
+
+  const onClickUpdateCommentReply = () => {
+    setIsMenu(false);
+    if (updateCommentData) {
+      setUpdateCommentStore(updateCommentData);
+      setUpdateMode(true);
+      console.log(updateCommentData);
+    }
+  };
+
+  const onClickDeleteCommentReply = () => {
+    if (window.confirm('정말로 댓글을 삭제할까요?')) {
+      deleteCommentReply();
+    }
+  };
+
+  const deleteCommentReply = async () => {
+    try {
+      const response = await axiosRequest().delete(
+        `/api/post/${props.postId}/reply/${updateCommentData.replyId}`,
+        {
+          data: {
+            userId: userData.userId,
+            commentId: updateCommentData.commentId
+          }
+        }
+      );
+      if (response) {
+        console.log(response);
+        console.log('삭제성공!');
+        // fetchReplyList();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -125,7 +247,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
           </S.TimeWrap>
         </S.Column>
 
-        <S.Column>
+        <S.Column onClick={showBottomMenu}>
           <ButtonMore />
         </S.Column>
       </S.Head>
@@ -149,6 +271,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
           </S.Column>
         </S.Foot>
       </S.Content>
+
       {props.data.reply > 0 &&
         isShowReply &&
         replyData.map((reply, index) => (
@@ -167,7 +290,11 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
                 </S.TimeWrap>
               </S.Column>
 
-              <S.Column>
+              <S.Column
+                onClick={() =>
+                  showBottomMenuReply(reply['replyId'], reply['content'])
+                }
+              >
                 <ButtonMore />
               </S.Column>
             </S.Head>
@@ -177,6 +304,24 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
             </S.ReplyContent>
           </S.Reply>
         ))}
+      {isMenu && !isReply && (
+        <BottomMenu
+          updateText={'댓글 수정하기'}
+          deleteText={'댓글 삭제하기'}
+          update={onClickUpdateComment}
+          delete={onClickDeleteComment}
+          deem={onClickDeem}
+        />
+      )}
+      {isMenu && isReply && (
+        <BottomMenu
+          updateText={'대댓글 수정하기'}
+          deleteText={'대댓글 삭제하기'}
+          update={onClickUpdateCommentReply}
+          delete={onClickDeleteCommentReply}
+          deem={onClickDeem}
+        />
+      )}
     </S.Container>
   );
 };

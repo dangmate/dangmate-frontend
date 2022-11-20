@@ -4,14 +4,16 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
 import axiosRequest from '../../../api/axios';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import { useNavigate, useParams } from 'react-router-dom';
 import { COMMENT_REGEX } from '../../../utils/regex';
 import {
   CommentIdState,
+  CommentUpdateState,
   CommentUserState,
-  ReplyMode
+  ReplyMode,
+  UpdateMode
 } from '../../../store/comment';
 import { Label_L2 } from '../../../styles/style.font';
 
@@ -79,14 +81,19 @@ const CommentInput = (props: IProp) => {
   const [comment, setComment] = useState<string>('');
   const [validComment, setValidComment] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
+
+  // 댓글, 대댓글 상태 처리
   // 바로 댓글창을 누르면 해당 게시물 주인에게 포커스
   // reply 버튼을 누르면 해당 댓글 주인에게로 포커스
-  const isReply = useRecoilValue(ReplyMode);
-  const setReply = useSetRecoilState(ReplyMode);
-  const commentUser = useRecoilValue(CommentUserState);
-  const setCommentUser = useSetRecoilState(CommentUserState);
-  const commentId = useRecoilValue(CommentIdState);
-  const setCommentId = useSetRecoilState(CommentIdState);
+  const [isReply, setReply] = useRecoilState(ReplyMode);
+  const [commentReplyUser, setCommentReplyUser] =
+    useRecoilState(CommentUserState);
+  const [commentId, setCommentId] = useRecoilState(CommentIdState);
+
+  // 댓글 수정 처리
+  const [updateMode, setUpdateMode] = useRecoilState(UpdateMode);
+  const [updateCommentStoreData, setUpdateCommentStoreData] =
+    useRecoilState(CommentUpdateState);
 
   const writeComment = async () => {
     const data = { userId: userData.userId, content: comment };
@@ -98,6 +105,44 @@ const CommentInput = (props: IProp) => {
       );
       console.log(response.data);
       await props.fetchComments();
+      setComment('');
+      setCommentFocus(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateComment = async () => {
+    const data = { userId: userData.userId, content: comment };
+    console.log(data);
+    try {
+      const response = await axiosRequest().put(
+        `/api/post/${postId}/comment/${updateCommentStoreData.commentId}`,
+        data
+      );
+      console.log(response.data);
+      await props.fetchComments();
+      setComment('');
+      setCommentFocus(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateCommentReply = async () => {
+    const data = {
+      userId: userData.userId,
+      content: comment,
+      commentId: updateCommentStoreData.commentId
+    };
+    console.log(data);
+    try {
+      const response = await axiosRequest().put(
+        `/api/post/${postId}/reply/${updateCommentStoreData.replyId}`,
+        data
+      );
+      console.log(response.data);
+      navigate(0);
       setComment('');
       setCommentFocus(false);
     } catch (err) {
@@ -128,12 +173,12 @@ const CommentInput = (props: IProp) => {
   };
 
   const onScrollHandler = () => {
-    if (commentFocus) {
-      setCommentFocus(false);
-      setReply(false);
-      setCommentUser('');
-      setCommentId(0);
-    }
+    setCommentFocus(false);
+    setReply(false);
+    setCommentReplyUser('');
+    setCommentId(0);
+    setUpdateMode(false);
+    setUpdateCommentStoreData({ commentId: 0, replyId: 0, content: '' });
   };
 
   useEffect(() => {
@@ -145,6 +190,11 @@ const CommentInput = (props: IProp) => {
   }, [comment]);
 
   useEffect(() => {
+    setComment(updateCommentStoreData.content);
+    setCommentFocus(true);
+  }, [updateMode]);
+
+  useEffect(() => {
     window.addEventListener('scroll', onScrollHandler);
     return () => {
       window.removeEventListener('scroll', onScrollHandler);
@@ -153,7 +203,7 @@ const CommentInput = (props: IProp) => {
 
   useEffect(() => {
     setCommentFocus(true);
-  }, [commentUser]);
+  }, [commentReplyUser]);
 
   return (
     <S.Bottom>
@@ -171,18 +221,39 @@ const CommentInput = (props: IProp) => {
         />
       </S.InputWrap>
       <S.Field focus={commentFocus}>
-        <S.P>{commentUser ? commentUser : props.postUser}에게 댓글 작성</S.P>
-        <S.SvgWrap
-          valid={validComment}
-          onClick={isReply ? writeCommentReply : writeComment}
-        >
-          <ImageControl
-            src={'/svg/upload.svg'}
-            width={'10'}
-            height={'12'}
-            alt={'arrow'}
-          />
-        </S.SvgWrap>
+        {commentReplyUser ? (
+          <S.P>{commentReplyUser}에게 대댓글 작성</S.P>
+        ) : (
+          <S.P>{props.postUser}에게 댓글 작성</S.P>
+        )}
+
+        {updateMode ? (
+          <S.SvgWrap
+            valid={validComment}
+            onClick={isReply ? updateCommentReply : updateComment}
+          >
+            <ImageControl
+              src={'/svg/upload.svg'}
+              width={'10'}
+              height={'12'}
+              alt={'arrow'}
+            />
+            업뎃
+          </S.SvgWrap>
+        ) : (
+          <S.SvgWrap
+            valid={validComment}
+            onClick={isReply ? writeCommentReply : writeComment}
+          >
+            <ImageControl
+              src={'/svg/upload.svg'}
+              width={'10'}
+              height={'12'}
+              alt={'arrow'}
+            />
+            댓글
+          </S.SvgWrap>
+        )}
       </S.Field>
     </S.Bottom>
   );

@@ -62,7 +62,7 @@ interface PostType {
 }
 
 const PostCard = (props: PostType) => {
-  console.log(props);
+  // console.log(props);
   return (
     <S.Container>
       <Link to={`/view/${props.data.postId}`}>

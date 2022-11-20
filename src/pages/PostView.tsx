@@ -6,7 +6,7 @@ import PostViewDetail from '../components/section/PostView/PostViewDetail';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
@@ -14,6 +14,8 @@ import ButtonMore from '../components/asset/ButtonMore';
 import CommentInput from '../components/section/comment/CommentInput';
 import { CardViewType } from '../api/type';
 import { Button_Btn2 } from '../styles/style.font';
+import BottomMenu from '../components/asset/BottomMenu';
+
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20 110')};
@@ -174,9 +176,11 @@ const PostView = () => {
         <S.ImgWrap onClick={() => navigate('/home')}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
-        <S.Column onClick={onClickShowMenu}>
-          <ButtonMore />
-        </S.Column>
+        {data?.isPost && (
+          <S.Column onClick={onClickShowMenu}>
+            <ButtonMore />
+          </S.Column>
+        )}
       </S.Arrow>
 
       <S.Container>
@@ -192,32 +196,14 @@ const PostView = () => {
       <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />
 
       {isMenu && (
-        <S.BottomMenu>
-          <S.Row onClick={onClickUpdatePost}>
-            <S.ImageWrap>
-              <ImageControl
-                src={'/svg/update.svg'}
-                width={'18'}
-                height={'18'}
-                alt={'update'}
-              />
-            </S.ImageWrap>
-            <S.Text>수정하기</S.Text>
-          </S.Row>
-          <S.Row onClick={onClickDeletePost}>
-            <S.ImageWrap>
-              <ImageControl
-                src={'/svg/delete.svg'}
-                width={'14'}
-                height={'18'}
-                alt={'delete'}
-              />
-            </S.ImageWrap>
-            <S.Text>삭제하기</S.Text>
-          </S.Row>
-        </S.BottomMenu>
+        <BottomMenu
+          updateText={'수정하기'}
+          deleteText={'삭제하기'}
+          update={onClickUpdatePost}
+          delete={onClickDeletePost}
+          deem={onClickDeem}
+        />
       )}
-      {isDeem && <S.Deem onClick={onClickDeem} />}
     </>
   );
 };
