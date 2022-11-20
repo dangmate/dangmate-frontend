@@ -7,7 +7,7 @@ import Story from './pages/Story';
 import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck, isMobile } from './hooks/useMobile';
-import OnBoarding from './pages/OnBoarding';
+import OnBoarding from './components/common/OnBoarding';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Join from './pages/Join';

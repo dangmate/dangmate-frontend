@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import ImageControl from '../../asset/ImageControl';
 import { Common } from '../../../styles/common';
-import UserName from '../../common/UserName';
+import UserName from '../../asset/UserName';
 import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
 import axiosRequest from '../../../api/axios';
