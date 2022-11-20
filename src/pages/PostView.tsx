@@ -13,6 +13,7 @@ import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
 import CommentInput from '../components/section/comment/CommentInput';
 import { CardViewType } from '../api/type';
+import { Button_Btn2 } from '../styles/style.font';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20 110')};
@@ -40,6 +41,11 @@ const S = {
       object-fit: contain;
     }
   `,
+  ImageWrap: styled.div`
+    width: ${getVwValue('20')};
+    display: flex;
+    justify-content: center;
+  `,
   Column: styled.div`
     display: flex;
     align-items: center;
@@ -57,10 +63,6 @@ const S = {
     height: ${getVwValue('56')};
     padding-left: ${getVwValue('20')};
     background: ${Common.colors.grey_white};
-    & > span {
-      display: flex;
-      margin-left: ${getVwValue('35')};
-    }
   `,
   Deem: styled.div`
     position: fixed;
@@ -68,6 +70,11 @@ const S = {
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.2);
+  `,
+  Text: styled.div`
+    display: flex;
+    margin-left: ${getVwValue('35')};
+    ${Button_Btn2}
   `
 };
 
@@ -142,11 +149,24 @@ const PostView = () => {
       deletePost();
     }
   };
+  const onScrollHandler = () => {
+    if (isMenu && isDeem) {
+      setIsMenu(false);
+      setIsDeem(false);
+    }
+  };
 
   useEffect(() => {
     fetchPost();
     fetchComments();
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHandler);
+    return () => {
+      window.removeEventListener('scroll', onScrollHandler);
+    };
+  });
 
   return (
     <>
@@ -174,22 +194,26 @@ const PostView = () => {
       {isMenu && (
         <S.BottomMenu>
           <S.Row onClick={onClickUpdatePost}>
-            <ImageControl
-              src={'/svg/update.svg'}
-              width={'18'}
-              height={'18'}
-              alt={'update'}
-            />
-            <span>수정하기</span>
+            <S.ImageWrap>
+              <ImageControl
+                src={'/svg/update.svg'}
+                width={'18'}
+                height={'18'}
+                alt={'update'}
+              />
+            </S.ImageWrap>
+            <S.Text>수정하기</S.Text>
           </S.Row>
           <S.Row onClick={onClickDeletePost}>
-            <ImageControl
-              src={'/svg/delete.svg'}
-              width={'14'}
-              height={'18'}
-              alt={'delete'}
-            />
-            <span>삭제하기</span>
+            <S.ImageWrap>
+              <ImageControl
+                src={'/svg/delete.svg'}
+                width={'14'}
+                height={'18'}
+                alt={'delete'}
+              />
+            </S.ImageWrap>
+            <S.Text>삭제하기</S.Text>
           </S.Row>
         </S.BottomMenu>
       )}
