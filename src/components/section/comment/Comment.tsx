@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import ImageControl from '../../asset/ImageControl';
@@ -7,12 +7,10 @@ import UserName from '../../asset/UserName';
 import PostTime from '../home/PostTime';
 import ButtonMore from '../../asset/ButtonMore';
 import axiosRequest from '../../../api/axios';
-import { ReplyType } from '../../../api/type';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import {
   CommentIdState,
-  CommentReplyUpdateState,
   CommentUpdateState,
   CommentUserState,
   ReplyMode,
@@ -23,9 +21,7 @@ import { Body_B2, Body_B3 } from '../../../styles/style.font';
 import BottomMenu from '../../asset/BottomMenu';
 
 const S = {
-  Container: styled.div`
-    //margin-bottom: ${getVwValue('32')};
-  `,
+  Container: styled.div``,
   Head: styled.div`
     display: flex;
     justify-content: space-between;
@@ -87,11 +83,6 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
     replyId: 0,
     content: ''
   });
-  const [updateCommentReplyData, setUpdateCommentReplyData] = useState({
-    commentId: 0,
-    replyId: 0,
-    content: ''
-  });
 
   const [isReply, setReply] = useRecoilState(ReplyMode);
   const commentReplyUser = useSetRecoilState(CommentUserState);
@@ -102,8 +93,6 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const setUpdateMode = useSetRecoilState(UpdateMode);
 
   // 대댓글 업데이트
-  const setUpdateCommentReplyStore = useSetRecoilState(CommentReplyUpdateState);
-
   const fetchReplyList = async () => {
     if (props.data.reply > 0) {
       try {
@@ -177,9 +166,6 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
 
   //대댓글 수정,삭제
   const showBottomMenuReply = (replyId: number, content: string) => {
-    // console.log(replyId);
-    // console.log(content);
-    // console.log(props.data.commentId);
     setIsMenu(true);
     setReply(true);
     setUpdateCommentData({

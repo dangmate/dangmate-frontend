@@ -94,13 +94,16 @@ const PostView = () => {
 
   const [commentCount, setCommentCount] = useState(0);
 
+  const [relatedUsers, setRelatedUsers] = useState(0);
+
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      console.log(response.data);
       setData(response.data);
+      setRelatedUsers(response.data.relatedUsers);
+      console.log(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -146,11 +149,13 @@ const PostView = () => {
     const postId = data?.postId;
     navigate(`/upload/${postId}`);
   };
+
   const onClickDeletePost = () => {
     if (window.confirm('정말로 게시글을 삭제할까요?')) {
       deletePost();
     }
   };
+
   const onScrollHandler = () => {
     if (isMenu && isDeem) {
       setIsMenu(false);
@@ -189,7 +194,7 @@ const PostView = () => {
         ) : (
           <div>데이터 불러오는중</div>
         )}
-        <CommentState comments={commentCount} />
+        <CommentState relatedCount={relatedUsers} />
         <CommentArea postId={postId} commentData={commentData} />
       </S.Container>
 

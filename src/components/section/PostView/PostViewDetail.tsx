@@ -8,8 +8,6 @@ import LikeAction from '../home/LikeAction';
 import CommentAction from '../comment/CommentAction';
 import CountHits from './PostCountHit';
 import PostTime from '../home/PostTime';
-import { b } from 'msw/lib/glossary-dc3fd077';
-import ButtonMore from '../../asset/ButtonMore';
 import { CardViewType } from '../../../api/type';
 import { Body_B2 } from '../../../styles/style.font';
 import UserLocation from './UserLocation';
@@ -58,7 +56,7 @@ interface IProps {
 }
 
 const FeedDetail = (props: IProps) => {
-  console.log(props.postData);
+  // console.log(props.postData);
   return (
     <S.Container>
       <S.FeedHead>

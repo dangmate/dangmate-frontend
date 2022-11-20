@@ -35,4 +35,5 @@ export interface CardViewType {
   profile: string | null | undefined;
   thumbnail: string | null;
   views: number;
+  relatedUsers: number;
 }

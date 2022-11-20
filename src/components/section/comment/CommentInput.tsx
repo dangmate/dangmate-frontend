@@ -205,6 +205,10 @@ const CommentInput = (props: IProp) => {
     setCommentFocus(true);
   }, [commentReplyUser]);
 
+  useEffect(() => {
+    setCommentFocus(false);
+  }, []);
+
   return (
     <S.Bottom>
       <S.InputWrap>
@@ -238,7 +242,6 @@ const CommentInput = (props: IProp) => {
               height={'12'}
               alt={'arrow'}
             />
-            업뎃
           </S.SvgWrap>
         ) : (
           <S.SvgWrap
@@ -251,7 +254,6 @@ const CommentInput = (props: IProp) => {
               height={'12'}
               alt={'arrow'}
             />
-            댓글
           </S.SvgWrap>
         )}
       </S.Field>

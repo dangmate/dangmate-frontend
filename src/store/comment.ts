@@ -28,12 +28,3 @@ export const CommentUpdateState = atom({
     content: ''
   }
 });
-
-export const CommentReplyUpdateState = atom({
-  key: 'CommentUpdateState',
-  default: {
-    commentId: 0,
-    replyId: 0,
-    content: ''
-  }
-});
