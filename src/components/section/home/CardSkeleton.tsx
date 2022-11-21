@@ -72,7 +72,8 @@ const CardSkeleton = (props: IProps) => {
             </S.FeedHead>
 
             <S.Content>
-              <Skeleton count={2} />
+              <Skeleton count={1} />
+              <Skeleton count={1} />
             </S.Content>
           </S.CardSkeleton>
         ))}
