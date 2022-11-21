@@ -44,6 +44,13 @@ const S = {
     span {
       border-radius: ${getVwValue('7')};
     }
+  `,
+  Row: styled.div`
+    width: 100%;
+    margin-bottom: ${getVwValue('8')};
+    span {
+      border-radius: ${getVwValue('7')};
+    }
   `
 };
 
@@ -72,8 +79,12 @@ const CardSkeleton = (props: IProps) => {
             </S.FeedHead>
 
             <S.Content>
-              <Skeleton count={1} />
-              <Skeleton count={1} />
+              <S.Row>
+                <Skeleton count={1} />
+              </S.Row>
+              <S.Row>
+                <Skeleton count={1} />
+              </S.Row>
             </S.Content>
           </S.CardSkeleton>
         ))}
