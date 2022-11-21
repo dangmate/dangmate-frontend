@@ -2,14 +2,12 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import React from 'react';
 import { Common } from '../../../styles/common';
-import UserName from '../../common/UserName';
-import Category from '../../common/Category';
+import UserName from '../../asset/UserName';
+import Category from '../../asset/Category';
 import LikeAction from '../home/LikeAction';
 import CommentAction from '../comment/CommentAction';
 import CountHits from './PostCountHit';
 import PostTime from '../home/PostTime';
-import { b } from 'msw/lib/glossary-dc3fd077';
-import ButtonMore from '../../asset/ButtonMore';
 import { CardViewType } from '../../../api/type';
 import { Body_B2 } from '../../../styles/style.font';
 import UserLocation from './UserLocation';
@@ -53,44 +51,50 @@ const S = {
 };
 
 interface IProps {
-  data: any;
+  postData: CardViewType;
   commentCount: number;
 }
 
 const FeedDetail = (props: IProps) => {
-  // console.log(props.data);
+  // console.log(props.postData);
   return (
     <S.Container>
       <S.FeedHead>
         <UserName
           src={
-            props.data?.profile ? props.data?.profile : '/images/profile.png'
+            props.postData.profile
+              ? props.postData.profile
+              : '/images/profile.png'
           }
           alt={''}
-          name={props.data?.fullName}
+          name={props.postData.fullName}
         />
-        <Category title={props.data?.category} />
+        <Category title={props.postData.category} />
       </S.FeedHead>
-      <CountHits views={props.data?.views} />
+      <CountHits views={props.postData.views} />
 
-      {props.data?.thumbnail ? (
+      {props.postData.thumbnail ? (
         <S.Media>
-          <img src={props.data?.thumbnail} alt='thumb' />
+          <img src={props.postData.thumbnail} alt='thumb' />
         </S.Media>
       ) : (
         <></>
       )}
 
-      <S.Content>{props.data?.content}</S.Content>
+      <S.Content>{props.postData.content}</S.Content>
 
       <S.Actions>
         <S.Column>
-          <UserLocation location={props.data?.location} />
-          <PostTime data={props.data?.createdAt} />
+          <UserLocation location={props.postData.location} />
+          <PostTime data={props.postData.createdAt} />
         </S.Column>
         <S.Column>
           <CommentAction comment={props.commentCount} />
-          <LikeAction like={props.data?.likes} />
+          <LikeAction
+            like={props.postData.likes}
+            isLike={props.postData.isLike}
+            postId={props.postData.postId}
+          />
         </S.Column>
       </S.Actions>
     </S.Container>

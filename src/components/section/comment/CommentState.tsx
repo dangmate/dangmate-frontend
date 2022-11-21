@@ -32,7 +32,7 @@ const S = {
 };
 
 interface IProps {
-  comments?: number;
+  relatedCount: number;
 }
 const CommentState = (props: IProps) => {
   return (
@@ -46,8 +46,8 @@ const CommentState = (props: IProps) => {
         ></ImageControl>
       </S.LikeWrap>
       <S.Count>
-        {props.comments
-          ? `${props.comments}마리 댕댕이들 대화 중`
+        {props.relatedCount
+          ? `${props.relatedCount}마리 댕댕이들 대화 중`
           : '댕댕이한테 말을 걸어보세요!'}
       </S.Count>
     </S.Container>

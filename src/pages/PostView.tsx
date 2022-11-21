@@ -6,12 +6,17 @@ import PostViewDetail from '../components/section/PostView/PostViewDetail';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
 import CommentInput from '../components/section/comment/CommentInput';
+import { CardViewType } from '../api/type';
+import { Button_Btn2 } from '../styles/style.font';
+import BottomMenu from '../components/asset/BottomMenu';
+import CardDetailSkeleton from '../components/section/home/CardDetailSkeleton';
+
 const S = {
   Container: styled.div`
     padding: ${getVwValue('0 20 110')};
@@ -39,6 +44,11 @@ const S = {
       object-fit: contain;
     }
   `,
+  ImageWrap: styled.div`
+    width: ${getVwValue('20')};
+    display: flex;
+    justify-content: center;
+  `,
   Column: styled.div`
     display: flex;
     align-items: center;
@@ -56,10 +66,6 @@ const S = {
     height: ${getVwValue('56')};
     padding-left: ${getVwValue('20')};
     background: ${Common.colors.grey_white};
-    & > span {
-      display: flex;
-      margin-left: ${getVwValue('35')};
-    }
   `,
   Deem: styled.div`
     position: fixed;
@@ -67,30 +73,19 @@ const S = {
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.2);
+  `,
+  Text: styled.div`
+    display: flex;
+    margin-left: ${getVwValue('35')};
+    ${Button_Btn2}
   `
 };
-
-interface PostType {
-  category: string;
-  comments: number;
-  content: string;
-  createdAt: string;
-  fullName: string;
-  isLike?: boolean;
-  isPost?: boolean;
-  likes: number;
-  location: string;
-  postId: number | null;
-  profile: string | null;
-  thumbnail: string;
-  views?: number;
-}
 
 const PostView = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const userData = useRecoilValue(userState);
-  const [data, setData] = useState<PostType>();
+  const [data, setData] = useState<CardViewType | undefined>();
 
   const [isMenu, setIsMenu] = useState<boolean>(false);
 
@@ -100,13 +95,16 @@ const PostView = () => {
 
   const [commentCount, setCommentCount] = useState(0);
 
+  const [relatedUsers, setRelatedUsers] = useState(0);
+
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      console.log(response.data);
       setData(response.data);
+      setRelatedUsers(response.data.relatedUsers);
+      console.log(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -152,9 +150,17 @@ const PostView = () => {
     const postId = data?.postId;
     navigate(`/upload/${postId}`);
   };
+
   const onClickDeletePost = () => {
     if (window.confirm('정말로 게시글을 삭제할까요?')) {
       deletePost();
+    }
+  };
+
+  const onScrollHandler = () => {
+    if (isMenu && isDeem) {
+      setIsMenu(false);
+      setIsDeem(false);
     }
   };
 
@@ -162,6 +168,13 @@ const PostView = () => {
     fetchPost();
     fetchComments();
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHandler);
+    return () => {
+      window.removeEventListener('scroll', onScrollHandler);
+    };
+  });
 
   return (
     <>
@@ -176,37 +189,27 @@ const PostView = () => {
         )}
       </S.Arrow>
 
-      <S.Container>
-        <PostViewDetail data={data} commentCount={commentCount} />
-        <CommentState comments={commentCount} />
-        <CommentArea postId={postId} commentData={commentData} />
-      </S.Container>
+      {data && relatedUsers && postId && commentData ? (
+        <S.Container>
+          <PostViewDetail postData={data} commentCount={commentCount} />
+          <CommentState relatedCount={relatedUsers} />
+          <CommentArea postId={postId} commentData={commentData} />
+        </S.Container>
+      ) : (
+        <CardDetailSkeleton cards={1} />
+      )}
 
       <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />
 
       {isMenu && (
-        <S.BottomMenu>
-          <S.Row onClick={onClickUpdatePost}>
-            <ImageControl
-              src={'/svg/update.svg'}
-              width={'18'}
-              height={'18'}
-              alt={'update'}
-            />
-            <span>수정하기</span>
-          </S.Row>
-          <S.Row onClick={onClickDeletePost}>
-            <ImageControl
-              src={'/svg/delete.svg'}
-              width={'14'}
-              height={'18'}
-              alt={'delete'}
-            />
-            <span>삭제하기</span>
-          </S.Row>
-        </S.BottomMenu>
+        <BottomMenu
+          updateText={'수정하기'}
+          deleteText={'삭제하기'}
+          update={onClickUpdatePost}
+          delete={onClickDeletePost}
+          deem={onClickDeem}
+        />
       )}
-      {isDeem && <S.Deem onClick={onClickDeem} />}
     </>
   );
 };

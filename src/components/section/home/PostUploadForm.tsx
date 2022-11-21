@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosRequest, { axiosMultiRequest } from '../../../api/axios';
 import ArrowBack from '../../asset/ArrowBack';
 import ImageControl from '../../asset/ImageControl';
-import Category from '../../common/Category';
+import Category from '../../asset/Category';
 import ButtonRound from '../../asset/ButtonRound';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
