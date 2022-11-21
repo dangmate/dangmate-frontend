@@ -15,6 +15,7 @@ import CommentInput from '../components/section/comment/CommentInput';
 import { CardViewType } from '../api/type';
 import { Button_Btn2 } from '../styles/style.font';
 import BottomMenu from '../components/asset/BottomMenu';
+import CardDetailSkeleton from '../components/section/home/CardDetailSkeleton';
 
 const S = {
   Container: styled.div`
@@ -188,15 +189,15 @@ const PostView = () => {
         )}
       </S.Arrow>
 
-      <S.Container>
-        {data ? (
+      {data && relatedUsers && postId && commentData ? (
+        <S.Container>
           <PostViewDetail postData={data} commentCount={commentCount} />
-        ) : (
-          <div>데이터 불러오는중</div>
-        )}
-        <CommentState relatedCount={relatedUsers} />
-        <CommentArea postId={postId} commentData={commentData} />
-      </S.Container>
+          <CommentState relatedCount={relatedUsers} />
+          <CommentArea postId={postId} commentData={commentData} />
+        </S.Container>
+      ) : (
+        <CardDetailSkeleton cards={1} />
+      )}
 
       <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />
 

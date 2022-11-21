@@ -48,6 +48,8 @@ const Home = () => {
       setFeed((feed) => {
         return [...feed, ...response.data.posts];
       });
+      setLoading(false);
+      console.log('fetch end', loading);
     } catch (err) {
       console.log(err);
     }
@@ -59,15 +61,15 @@ const Home = () => {
       document.documentElement.scrollHeight
     ) {
       setLoading(true);
+      console.log('handleScroll', loading);
       setPage((prev) => prev - 5);
-      console.log(page);
     }
   };
 
   useEffect(() => {
     setTimeout(async () => {
       fetchPosts(categoryContext.isCategory);
-      setLoading(false);
+      console.log(loading);
     }, 1500);
   }, [page]);
 
@@ -87,7 +89,6 @@ const Home = () => {
 
         {/* FeedList */}
         {loading && <CardSkeleton cards={2} />}
-
         <S.FeedList>
           {feed ? (
             feed.map((item, index) => {
