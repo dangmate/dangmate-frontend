@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
-import React from 'react';
+import React, { useState } from 'react';
 import { Common } from '../../../styles/common';
 import UserName from '../../asset/UserName';
 import Category from '../../asset/Category';
@@ -11,6 +11,7 @@ import { Body_B2, Button_Btn2 } from '../../../styles/style.font';
 import { CardType } from '../../../api/type';
 import UserLocation from '../PostView/UserLocation';
 import PostTime from './PostTime';
+import CardSkeleton from './CardSkeleton';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};
@@ -62,46 +63,54 @@ interface PostType {
 }
 
 const PostCard = (props: PostType) => {
-  // console.log(props);
+  const [detailData, setDetailData] = useState(props.data);
   return (
-    <S.Container>
-      <Link to={`/view/${props.data.postId}`}>
-        {props.data.thumbnail ? (
-          <S.Media>
-            <img src={props.data.thumbnail} alt='thumb' />
-          </S.Media>
-        ) : (
-          <></>
-        )}
+    <>
+      {detailData ? (
+        <S.Container>
+          <Link to={`/view/${detailData.postId}`}>
+            {detailData.thumbnail ? (
+              <S.Media>
+                <img src={detailData.thumbnail} alt='thumb' />
+              </S.Media>
+            ) : (
+              <></>
+            )}
 
-        <S.FeedHead>
-          <UserName
-            src={props.data.profile ? props.data.profile : 'images/profile.png'}
-            alt={''}
-            name={props.data.fullName}
-          />
-          <Category title={props.data.category} />
-        </S.FeedHead>
+            <S.FeedHead>
+              <UserName
+                src={
+                  detailData.profile ? detailData.profile : 'images/profile.png'
+                }
+                alt={''}
+                name={detailData.fullName}
+              />
+              <Category title={detailData.category} />
+            </S.FeedHead>
 
-        <S.Content>{props.data.content}</S.Content>
-      </Link>
+            <S.Content>{detailData.content}</S.Content>
+          </Link>
 
-      <S.Actions>
-        <S.Column>
-          <UserLocation location={props.data.location} />
-          <PostTime data={props.data.createdAt} />
-        </S.Column>
+          <S.Actions>
+            <S.Column>
+              <UserLocation location={detailData.location} />
+              <PostTime data={detailData.createdAt} />
+            </S.Column>
 
-        <S.Column>
-          <CommentAction comment={props.data.comments} />
-          <LikeAction
-            like={props.data.likes}
-            postId={props.data.postId}
-            isLike={props.data.isLike}
-          />
-        </S.Column>
-      </S.Actions>
-    </S.Container>
+            <S.Column>
+              <CommentAction comment={detailData.comments} />
+              <LikeAction
+                like={detailData.likes}
+                postId={detailData.postId}
+                isLike={detailData.isLike}
+              />
+            </S.Column>
+          </S.Actions>
+        </S.Container>
+      ) : (
+        <CardSkeleton cards={1} />
+      )}
+    </>
   );
 };
 

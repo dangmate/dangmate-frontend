@@ -18,6 +18,8 @@ import { RecoilRoot } from 'recoil';
 import PostView from './pages/PostView';
 import Upload from './pages/Upload';
 import { FeedCategory } from './context/FeedCategory';
+import { SkeletonTheme } from 'react-loading-skeleton';
+import { Common } from './styles/common';
 
 interface IProp {
   isCategory: string;
@@ -63,11 +65,16 @@ const App = () => {
   return (
     <>
       <div className='App'>
-        <FeedCategory.Provider value={{ isCategory, setCategory } as IProp}>
-          <RecoilRoot>
-            {useMobileCheck() ? element : <MobileGuide />}
-          </RecoilRoot>
-        </FeedCategory.Provider>
+        <SkeletonTheme
+          baseColor={Common.colors.grey_disabled}
+          highlightColor='#c7c7c7'
+        >
+          <FeedCategory.Provider value={{ isCategory, setCategory } as IProp}>
+            <RecoilRoot>
+              {useMobileCheck() ? element : <MobileGuide />}
+            </RecoilRoot>
+          </FeedCategory.Provider>
+        </SkeletonTheme>
       </div>
       {location.pathname === '/' && isShow && <OnBoarding />}
     </>

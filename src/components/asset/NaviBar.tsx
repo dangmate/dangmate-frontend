@@ -14,6 +14,7 @@ const S = {
     background: ${Common.colors.bg_light};
     border-bottom: 1px solid #e5e5ec;
     box-shadow: 0px -2px 16px rgba(0, 0, 0, 0.15);
+    z-index: 100;
   `,
 
   Ul: styled.ul`
