@@ -17,7 +17,6 @@ const Button = styled.button<IProps>`
   height: ${getVwValue('56')};
   background-color: ${Common.colors.primary};
   border: none;
-  //border-radius: ${getVwValue('6')};
   color: #fff;
   ${Button_Btn1}
   &:disabled {
