@@ -13,6 +13,7 @@ const S = {
     height: auto;
     border-radius: ${getVwValue('12')};
     box-shadow: 0 0 12px rgba(83, 55, 194, 0.5);
+    z-index: 100;
   `
 };
 
