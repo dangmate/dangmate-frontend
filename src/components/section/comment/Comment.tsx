@@ -158,6 +158,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
         console.log(response);
         console.log('삭제성공!');
         fetchReplyList();
+        setIsMenu(false);
       }
     } catch (err) {
       console.log(err);
