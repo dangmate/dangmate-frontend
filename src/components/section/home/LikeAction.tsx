@@ -6,7 +6,9 @@ import { Button_Btn2 } from '../../../styles/style.font';
 import { Common } from '../../../styles/common';
 import axiosRequest from '../../../api/axios';
 import { userState } from '../../../store/user';
+import { guestState } from '../../../store/guest';
 import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   Like: styled.div`
@@ -36,8 +38,13 @@ const LikeAction = (props: IProps) => {
   const [like, setLike] = useState<boolean | undefined>(props.isLike);
   const [likeCount, setLikeCount] = useState<number>(props.like);
   const userData = useRecoilValue(userState);
+  const isGuest = useRecoilValue(guestState);
+  const navigate = useNavigate();
 
   const postLikeAction = async () => {
+    if (isGuest) {
+      navigate('/login');
+    }
     const data = {
       userId: userData.userId,
       postId: props.postId
@@ -54,6 +61,9 @@ const LikeAction = (props: IProps) => {
   };
 
   const postUnlikeAction = async () => {
+    if (isGuest) {
+      navigate('/login');
+    }
     try {
       const response = await axiosRequest().delete(`/api/post/unlike`, {
         data: {

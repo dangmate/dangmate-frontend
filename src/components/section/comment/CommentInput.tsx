@@ -6,6 +6,7 @@ import { Common } from '../../../styles/common';
 import axiosRequest from '../../../api/axios';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
+import { guestState } from '../../../store/guest';
 import { useNavigate, useParams } from 'react-router-dom';
 import { COMMENT_REGEX } from '../../../utils/regex';
 import {
@@ -77,6 +78,7 @@ const CommentInput = (props: IProp) => {
   const userData = useRecoilValue(userState);
   const navigate = useNavigate();
   const { postId } = useParams();
+  const isGuest = useRecoilValue(guestState);
 
   const [comment, setComment] = useState<string>('');
   const [validComment, setValidComment] = useState<boolean>(false);
@@ -181,9 +183,10 @@ const CommentInput = (props: IProp) => {
     setUpdateCommentStoreData({ commentId: 0, replyId: 0, content: '' });
   };
 
-  useEffect(() => {
-    // fetchComments();
-  }, []);
+  const onFocusHandler = () => {
+    if (isGuest) navigate('/login');
+    else setCommentFocus(true);
+  };
 
   useEffect(() => {
     setValidComment(COMMENT_REGEX.test(comment));
@@ -219,7 +222,7 @@ const CommentInput = (props: IProp) => {
           required
           value={comment}
           onChange={onChangeComment}
-          onFocus={() => setCommentFocus(true)}
+          onFocus={() => onFocusHandler()}
           // onBlur={() => setCommentFocus(false)}
           placeholder='댓글을 작성해 주세요.'
         />

@@ -233,9 +233,11 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
           </S.TimeWrap>
         </S.Column>
 
-        <S.Column onClick={showBottomMenu}>
-          <ButtonMore />
-        </S.Column>
+        {props.data.fullName === userData.fullName && (
+          <S.Column onClick={showBottomMenu}>
+            <ButtonMore />
+          </S.Column>
+        )}
       </S.Head>
 
       <S.Content>
@@ -276,13 +278,15 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
                 </S.TimeWrap>
               </S.Column>
 
-              <S.Column
-                onClick={() =>
-                  showBottomMenuReply(reply['replyId'], reply['content'])
-                }
-              >
-                <ButtonMore />
-              </S.Column>
+              {userData.fullName === reply['fullName'] && (
+                <S.Column
+                  onClick={() =>
+                    showBottomMenuReply(reply['replyId'], reply['content'])
+                  }
+                >
+                  <ButtonMore />
+                </S.Column>
+              )}
             </S.Head>
 
             <S.ReplyContent>

@@ -24,7 +24,11 @@ const HomeHeader = () => {
   const navigate = useNavigate();
   return (
     <S.Container>
-      <S.H2>{userData.location} 댕댕이들</S.H2>
+      {userData.location ? (
+        <S.H2>{userData.location} 댕댕이들</S.H2>
+      ) : (
+        <S.H2>댕댕이들 구경하기</S.H2>
+      )}
       <div onClick={() => navigate('/profile')}>
         <ImageControl
           width='32'

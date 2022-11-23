@@ -8,6 +8,7 @@ import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
+import { guestState } from '../store/guest';
 import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
@@ -96,6 +97,8 @@ const PostView = () => {
   const [commentCount, setCommentCount] = useState(0);
 
   const [relatedUsers, setRelatedUsers] = useState(0);
+
+  const isGuest = useRecoilValue(guestState);
 
   const fetchPost = async () => {
     try {

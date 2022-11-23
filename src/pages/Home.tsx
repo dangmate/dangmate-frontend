@@ -108,10 +108,32 @@ const Home = () => {
       }
     };
 
+    const firstFetchNoAuthPosts = async () => {
+      // console.log('category', category);
+      // const location = userData.location;
+      // const userId = userData.userId;
+      // const data = { location, category, userId };
+      try {
+        const response = await axiosRequest().get(`/api/posts?size=5`);
+        console.log(response.data);
+        // firstIdRef.current = response.data.firstId;
+        // lastPostIdRef.current =
+        //   response.data.posts[response.data.posts.length - 1].postId;
+        setFeed(() => {
+          return [...response.data.posts];
+        });
+        setLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     setTimeout(async () => {
       console.log(feed);
       console.log(categoryContext.isCategory);
-      firstFetchPosts(categoryContext.isCategory);
+      if (userData.fullName) firstFetchPosts(categoryContext.isCategory);
+      else firstFetchNoAuthPosts();
     }, 1000);
   }, [categoryContext.isCategory]);
 

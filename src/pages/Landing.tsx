@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { getVwValue } from '../styles/styleUtil';
 import ButtonRound from '../components/asset/ButtonRound';
 import { Body_B3, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/user';
+import { guestState } from '../store/guest';
 
 const S = {
   Wrapper: styled.div`
@@ -44,6 +47,15 @@ const S = {
 };
 const Landing = () => {
   const navigate = useNavigate();
+  const userData = useRecoilValue(userState);
+  const isGuest = useRecoilValue(guestState);
+
+  useEffect(() => {
+    if (!isGuest) {
+      console.log(userData.fullName + '으로 로그인');
+      navigate('/home');
+    }
+  }, []);
 
   return (
     <S.Wrapper>
