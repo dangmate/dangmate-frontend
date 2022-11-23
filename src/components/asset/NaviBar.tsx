@@ -48,7 +48,7 @@ const NaviBar = () => {
   return (
     <S.NaviBar>
       <S.Ul>
-        <li>
+        <li onClick={() => navigate('/favorite')}>
           <S.SvgWrap>
             <svg
               width='18'
@@ -69,7 +69,7 @@ const NaviBar = () => {
           </S.SvgWrap>
           <S.Text>관심 목록</S.Text>
         </li>
-        <li>
+        <li onClick={() => navigate('/home')}>
           <S.SvgWrap>
             <svg
               width='18'
@@ -88,7 +88,7 @@ const NaviBar = () => {
           </S.SvgWrap>
           <S.TextHome>홈</S.TextHome>
         </li>
-        <li>
+        <li onClick={() => navigate('/story')}>
           <S.SvgWrap>
             <svg
               width='24'
