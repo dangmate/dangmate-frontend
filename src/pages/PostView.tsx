@@ -14,7 +14,7 @@ import CommentInput from '../components/section/comment/CommentInput';
 import { CardViewType } from '../api/type';
 import { Button_Btn2 } from '../styles/style.font';
 import BottomMenu from '../components/asset/BottomMenu';
-import CardDetailSkeleton from '../components/section/home/CardDetailSkeleton';
+import CardSkeleton from '../components/section/home/CardSkeleton';
 
 const S = {
   Container: styled.div`
@@ -198,7 +198,7 @@ const PostView = () => {
           <CommentArea postId={postId} commentData={commentData} />
         </S.Container>
       ) : (
-        <CardDetailSkeleton cards={1} />
+        <CardSkeleton cards={1} />
       )}
 
       <CommentInput fetchComments={fetchComments} postUser={data?.fullName} />

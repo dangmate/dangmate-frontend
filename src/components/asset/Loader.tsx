@@ -6,20 +6,17 @@ import { getVwValue } from '../../styles/styleUtil';
 
 const S = {
   Loader: styled.div`
-    margin: ${getVwValue('30 0 100')};
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: ${getVwValue('50 0 100')};
   `
 };
 
 const Loader = () => {
   return (
     <S.Loader>
-      <div className='lds-roller'>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+      <div className='lds-ripple'>
         <div></div>
         <div></div>
       </div>

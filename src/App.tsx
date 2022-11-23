@@ -65,10 +65,7 @@ const App = () => {
   return (
     <>
       <div className='App'>
-        <SkeletonTheme
-          baseColor={Common.colors.grey_disabled}
-          highlightColor='#c7c7c7'
-        >
+        <SkeletonTheme baseColor='#D3D3DB' highlightColor='#e8e8f0'>
           <FeedCategory.Provider value={{ isCategory, setCategory } as IProp}>
             <RecoilRoot>
               {useMobileCheck() ? element : <MobileGuide />}
