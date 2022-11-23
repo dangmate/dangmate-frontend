@@ -6,10 +6,8 @@ import PostViewDetail from '../components/section/PostView/PostViewDetail';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
-import { guestState } from '../store/guest';
-import ImageControl from '../components/asset/ImageControl';
 import { Common } from '../styles/common';
 import ButtonMore from '../components/asset/ButtonMore';
 import CommentInput from '../components/section/comment/CommentInput';
@@ -98,8 +96,6 @@ const PostView = () => {
 
   const [relatedUsers, setRelatedUsers] = useState(0);
 
-  const isGuest = useRecoilValue(guestState);
-
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(
@@ -107,6 +103,10 @@ const PostView = () => {
       );
       setData(response.data);
       setRelatedUsers(response.data.relatedUsers);
+      if (response.data.comments !== 0) {
+        fetchComments();
+      }
+      console.log(response.data.comments);
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -169,7 +169,6 @@ const PostView = () => {
 
   useEffect(() => {
     fetchPost();
-    fetchComments();
   }, []);
 
   useEffect(() => {
@@ -192,7 +191,7 @@ const PostView = () => {
         )}
       </S.Arrow>
 
-      {data && relatedUsers && postId && commentData ? (
+      {data ? (
         <S.Container>
           <PostViewDetail postData={data} commentCount={commentCount} />
           <CommentState relatedCount={relatedUsers} />
