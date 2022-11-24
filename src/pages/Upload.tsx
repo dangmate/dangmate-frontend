@@ -12,10 +12,11 @@ import { getVwValue } from '../styles/styleUtil';
 import { Common } from '../styles/common';
 import { TEXT_REGEX } from '../utils/regex';
 import { Body_B2, Label_L3, Title_T1 } from '../styles/style.font';
+import { C } from '../styles/emotionStyle';
 
 const S = {
   Container: styled.div`
-    padding: ${getVwValue('0 20')};
+    padding: ${getVwValue('0 20 100')};
   `,
   Row: styled.div`
     display: block;
@@ -345,8 +346,8 @@ const UploadForm = () => {
                   </S.CategoryWrap>
                 </S.Content>
               </S.Container>
-              <S.Bottom>
-                <S.Button>
+              <C.Bottom>
+                <C.Button>
                   <ButtonRound
                     onClick={() => setNext(true)}
                     disabled={!((toggleA || toggleB) && category)}
@@ -354,8 +355,8 @@ const UploadForm = () => {
                   >
                     다음
                   </ButtonRound>
-                </S.Button>
-              </S.Bottom>
+                </C.Button>
+              </C.Bottom>
             </>
           ) : (
             <>
@@ -449,8 +450,8 @@ const UploadForm = () => {
                   </S.TextForm>
                 </S.FormContent>
               </S.Container>
-              <S.Bottom>
-                <S.Button>
+              <C.Bottom>
+                <C.Button>
                   {isUpdate ? (
                     <ButtonRound
                       onClick={UpdateFeed}
@@ -468,8 +469,8 @@ const UploadForm = () => {
                       업로드
                     </ButtonRound>
                   )}
-                </S.Button>
-              </S.Bottom>
+                </C.Button>
+              </C.Bottom>
             </>
           )}
         </>

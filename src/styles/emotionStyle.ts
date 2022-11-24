@@ -24,6 +24,7 @@ export const C = {
   `,
   Bottom: styled.div`
     position: fixed;
+    left: 0;
     bottom: 0;
     width: 100%;
   `,

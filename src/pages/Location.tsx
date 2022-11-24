@@ -67,8 +67,8 @@ const S = {
     overflow-y: scroll;
   `,
   SearchList: styled.ul`
-    height: ${getVwValue('350')};
-    overflow: scroll;
+    height: ${getVwValue('250')};
+    overflow-y: scroll;
     & > li {
       padding: ${getVwValue('12 0')};
       cursor: pointer;
@@ -321,7 +321,7 @@ const Location = () => {
       </S.Content>
       <C.Bottom>
         <S.Join onClick={() => navigate('/location-search')}>
-          <span>내 위치 직접 검색</span>
+          <span>내 위치 직접 입력하기</span>
           <S.ArrowImg>
             <img src='/images/join_arrow.png' alt='arrow' />
           </S.ArrowImg>

@@ -9,6 +9,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../store/user';
 import { Label_L2, Label_L3, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
+import LikeIcon from '../components/asset/LikeIcon';
 
 interface InputProps {
   state?: string;
@@ -29,9 +30,8 @@ const S = {
   Content: styled.div`
     display: flex;
     flex-direction: column;
-
     justify-content: space-between;
-    padding: ${getVwValue('0 20')};
+    padding: ${getVwValue('0 20 70')};
   `,
   Arrow: styled.div`
     width: 100%;
@@ -60,9 +60,12 @@ const S = {
   Join: styled.div`
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+
     & > span {
+      display: block;
+      margin-top: ${getVwValue('16')};
       color: ${Common.colors.grey_sub};
       ${Label_L2};
     }
@@ -245,14 +248,12 @@ const Login = () => {
                 {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
               </S.Field>
             </S.Form>
+            <S.Join onClick={() => navigate('/location')}>
+              <LikeIcon />
+              <span>아직 계정이 없으신가요?</span>
+            </S.Join>
           </S.Content>
           <C.Bottom>
-            <S.Join onClick={() => navigate('/location')}>
-              <span>초간단 회원가입</span>
-              <S.ArrowImg>
-                <img src='/images/join_arrow.png' alt='arrow' />
-              </S.ArrowImg>
-            </S.Join>
             <C.Button>
               <ButtonRound
                 onClick={handleSubmit}

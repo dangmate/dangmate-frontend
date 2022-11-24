@@ -42,7 +42,7 @@ const S = {
 };
 
 interface IProps {
-  fetchPosts: (props: string) => void;
+  fetchPosts?: (props: string) => void;
 }
 const HomeTabMenu = (props: IProps) => {
   const categoryContext = useContext(FeedCategory);
@@ -50,17 +50,17 @@ const HomeTabMenu = (props: IProps) => {
   const fetchAllPosts = () => {
     setToggleState(1);
     categoryContext.setCategory('all');
-    props.fetchPosts('all');
+    // props.fetchPosts('all');
   };
   const fetchMatePosts = () => {
     setToggleState(2);
     categoryContext.setCategory('산책 메이트');
-    props.fetchPosts('산책 메이트');
+    // props.fetchPosts('산책 메이트');
   };
   const fetchStoryPosts = () => {
     setToggleState(3);
     categoryContext.setCategory('댕댕 이야기');
-    props.fetchPosts('댕댕 이야기');
+    // props.fetchPosts('댕댕 이야기');
   };
 
   useEffect(() => {

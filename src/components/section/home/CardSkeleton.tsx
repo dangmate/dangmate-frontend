@@ -26,23 +26,30 @@ const S = {
       height: ${getVwValue('180')};
     }
   `,
-  FeedHead: styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  `,
-
   Content: styled.div`
-    margin: ${getVwValue('30 0 35')};
+    margin: ${getVwValue('15 0 0')};
+    border-radius: ${getVwValue('6')};
     span {
-      border-radius: ${getVwValue('7')};
+      display: block;
+      height: ${getVwValue('22')};
     }
   `,
-
-  Column: styled.div`
-    width: ${getVwValue('100')};
+  Content2: styled.div`
+    margin: ${getVwValue('15 0 0')};
+    border-radius: ${getVwValue('6')};
     span {
-      border-radius: ${getVwValue('7')};
+      display: block;
+      width: ${getVwValue('260')};
+      height: ${getVwValue('22')};
+    }
+  `,
+  Content3: styled.div`
+    margin: ${getVwValue('15 0 0')};
+    border-radius: ${getVwValue('6')};
+    span {
+      display: block;
+      width: ${getVwValue('60')};
+      height: ${getVwValue('22')};
     }
   `
 };
@@ -61,20 +68,18 @@ const CardSkeleton = (props: IProps) => {
             <S.Media>
               <Skeleton count={1} />
             </S.Media>
-
-            <S.FeedHead>
-              <S.Column>
-                <Skeleton count={1} />
-              </S.Column>
-              <S.Column>
-                <Skeleton count={1} />
-              </S.Column>
-            </S.FeedHead>
-
             <S.Content>
               <Skeleton count={1} />
+            </S.Content>
+            <S.Content2>
+              <Skeleton count={1} />
+            </S.Content2>
+            <S.Content>
               <Skeleton count={1} />
             </S.Content>
+            <S.Content3>
+              <Skeleton count={1} />
+            </S.Content3>
           </S.CardSkeleton>
         ))}
     </>

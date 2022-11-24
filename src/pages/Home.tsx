@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeHeader from '../components/section/home/HomeHeader';
@@ -24,59 +24,129 @@ const S = {
   `
 };
 
-const PAGE_NUMBER = 27;
-
 const Home = () => {
   const userData = useRecoilValue(userState);
   const [feed, setFeed] = useState<CardType[]>([]);
   const categoryContext = useContext(FeedCategory);
+  const firstIdRef = useRef(0);
+  const lastPostIdRef = useRef<number | null>(null);
 
   // infinite scroll
-  const [page, setPage] = useState(PAGE_NUMBER);
   const [loading, setLoading] = useState(true);
+  const [scroll, setScroll] = useState(0);
 
-  const fetchPosts = async (category: string) => {
-    const location = userData.location;
-    const userId = userData.userId;
-    const data = { location, category, userId };
-    try {
-      const response = await axiosRequest().post(
-        `/api/posts?size=5&lastPostId=${page}`,
-        data
-      );
-      console.log(response.data);
-      setFeed((feed) => {
-        return [...feed, ...response.data.posts];
-      });
-      setLoading(false);
-      console.log('fetch end', loading);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [scrollLoading, setScrollLoading] = useState(false);
 
   const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setLoading(true);
-      console.log('handleScroll', loading);
-      setPage((prev) => prev - 5);
+      if (firstIdRef.current === lastPostIdRef.current) {
+        console.log('끝');
+        return;
+      }
+      setScrollLoading(true);
+      setScroll((scroll) => scroll + 1);
     }
   };
-
-  useEffect(() => {
-    setTimeout(async () => {
-      fetchPosts(categoryContext.isCategory);
-      console.log(loading);
-    }, 1500);
-  }, [page]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+
+    setFeed(() => {
+      return [];
+    });
+    const firstFetchPosts = async (category: string) => {
+      console.log('category', category);
+      const location = userData.location;
+      const userId = userData.userId;
+      const data = { location, category, userId };
+      try {
+        const response = await axiosRequest().post(`/api/posts?size=5`, data);
+        console.log(response.data);
+        firstIdRef.current = response.data.firstId;
+        lastPostIdRef.current =
+          response.data.posts[response.data.posts.length - 1].postId;
+        setFeed(() => {
+          return [...response.data.posts];
+        });
+        setLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const firstFetchNoAuthPosts = async () => {
+      // console.log('category', category);
+      // const location = userData.location;
+      // const userId = userData.userId;
+      // const data = { location, category, userId };
+      try {
+        const response = await axiosRequest().get(`/api/posts?size=5`);
+        console.log(response.data);
+        // firstIdRef.current = response.data.firstId;
+        // lastPostIdRef.current =
+        //   response.data.posts[response.data.posts.length - 1].postId;
+        setFeed(() => {
+          return [...response.data.posts];
+        });
+        setLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    setTimeout(async () => {
+      console.log(feed);
+      console.log(categoryContext.isCategory);
+      if (userData.fullName) firstFetchPosts(categoryContext.isCategory);
+      else firstFetchNoAuthPosts();
+    }, 1000);
+  }, [categoryContext.isCategory]);
+
+  useEffect(() => {
+    const fetchPosts = async (category: string) => {
+      if (firstIdRef.current === 0) {
+        return;
+      }
+      console.log('firstIdRef', firstIdRef);
+      console.log('lastpostidRef', lastPostIdRef);
+      const data = {
+        location: userData.location,
+        userId: userData.userId,
+        category
+      };
+
+      try {
+        const response = await axiosRequest().post(
+          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
+          data
+        );
+        console.log(response.data);
+        lastPostIdRef.current =
+          response.data.posts[response.data.posts.length - 1].postId;
+        setFeed((feed) => {
+          return [...feed, ...response.data.posts];
+        });
+        // setFeed((prev, props) => [...prev, response.data.posts]);
+        setScrollLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    setTimeout(async () => {
+      fetchPosts(categoryContext.isCategory);
+    }, 1500);
+  }, [scroll]);
 
   return (
     <>
@@ -85,10 +155,10 @@ const Home = () => {
         <HomeHeader />
 
         {/* TabMenu */}
-        <HomeTabMenu fetchPosts={fetchPosts} />
+        <HomeTabMenu />
 
         {/* FeedList */}
-        {loading && <CardSkeleton cards={2} />}
+        {loading && <CardSkeleton cards={1} />}
         <S.FeedList>
           {feed ? (
             feed.map((item, index) => {
@@ -102,7 +172,7 @@ const Home = () => {
             <PostEmpty />
           )}
         </S.FeedList>
-        {loading && <Loader />}
+        {scrollLoading && <Loader />}
 
         {/* Write Button */}
         <ButtonWrite />

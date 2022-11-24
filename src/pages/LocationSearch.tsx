@@ -61,8 +61,8 @@ const S = {
     }
   `,
   SearchList: styled.ul`
-    height: ${getVwValue('300')};
-    overflow: scroll;
+    height: ${getVwValue('250')};
+    overflow-y: scroll;
     & > li {
       padding: ${getVwValue('12 0')};
       cursor: pointer;
@@ -70,17 +70,17 @@ const S = {
       border-bottom: 1px solid ${Common.colors.line_medium};
     }
   `,
-
-  Join: styled.div`
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    & > span {
-      color: ${Common.colors.grey_sub};
-      ${Label_L2};
-    }
-  `,
+  //
+  // Join: styled.div`
+  //   cursor: pointer;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   & > span {
+  //     color: ${Common.colors.grey_sub};
+  //     ${Label_L2};
+  //   }
+  // `,
   ArrowImg: styled.div`
     display: inline-block;
     width: ${getVwValue('8')};
@@ -211,12 +211,12 @@ const LocationSearch = () => {
       </S.Content>
 
       <C.Bottom>
-        <S.Join onClick={() => navigate('/location')}>
-          <span>내 위치 자동 검색</span>
-          <S.ArrowImg>
-            <img src='/images/join_arrow.png' alt='arrow' />
-          </S.ArrowImg>
-        </S.Join>
+        {/*<S.Join onClick={() => navigate('/location')}>*/}
+        {/*  <span>내 위치 자동 검색</span>*/}
+        {/*  <S.ArrowImg>*/}
+        {/*    <img src='/images/join_arrow.png' alt='arrow' />*/}
+        {/*  </S.ArrowImg>*/}
+        {/*</S.Join>*/}
         <C.Button onClick={addressSearch}>
           <ButtonRound disabled={!validSearch} type='button'>
             검색하기

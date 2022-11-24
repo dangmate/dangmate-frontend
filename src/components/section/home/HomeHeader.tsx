@@ -5,6 +5,7 @@ import ImageControl from '../../asset/ImageControl';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../store/user';
 import { Title_T2 } from '../../../styles/style.font';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   Container: styled.div`
@@ -20,15 +21,22 @@ const S = {
 
 const HomeHeader = () => {
   const userData = useRecoilValue(userState);
+  const navigate = useNavigate();
   return (
     <S.Container>
-      <S.H2>{userData.location} 댕댕이들</S.H2>
-      <ImageControl
-        width='32'
-        height='32'
-        src={userData.profile ? userData.profile : 'images/profile.png'}
-        alt={'profile'}
-      />
+      {userData.location ? (
+        <S.H2>{userData.location} 댕댕이들</S.H2>
+      ) : (
+        <S.H2>댕댕이들 구경하기</S.H2>
+      )}
+      <div onClick={() => navigate('/profile')}>
+        <ImageControl
+          width='32'
+          height='32'
+          src={userData.profile ? userData.profile : 'images/profile.png'}
+          alt={'profile'}
+        />
+      </div>
     </S.Container>
   );
 };
