@@ -33,34 +33,9 @@ const Home = () => {
 
   // infinite scroll
   const [loading, setLoading] = useState(true);
+  const [scroll, setScroll] = useState(0);
 
-  const fetchPosts = async (category: string) => {
-    if (firstIdRef.current === 0) {
-      return;
-    }
-    const location = userData.location;
-    const userId = userData.userId;
-    const data = { location, category, userId };
-    setTimeout(async () => {
-      try {
-        const response = await axiosRequest().post(
-          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
-          data
-        );
-        console.log(response.data);
-        lastPostIdRef.current =
-          response.data.posts[response.data.posts.length - 1].postId;
-        setFeed((feed) => {
-          return [...feed, ...response.data.posts];
-        });
-        // setFeed((prev, props) => [...prev, response.data.posts]);
-        setLoading(false);
-        console.log('fetch end', loading);
-      } catch (err) {
-        console.log(err);
-      }
-    }, 1500);
-  };
+  const [scrollLoading, setScrollLoading] = useState(false);
 
   const handleScroll = () => {
     if (
@@ -71,8 +46,8 @@ const Home = () => {
         console.log('끝');
         return;
       }
-      setLoading(true);
-      fetchPosts(categoryContext.isCategory);
+      setScrollLoading(true);
+      setScroll((scroll) => scroll + 1);
     }
   };
 
@@ -137,6 +112,42 @@ const Home = () => {
     }, 1000);
   }, [categoryContext.isCategory]);
 
+  useEffect(() => {
+    const fetchPosts = async (category: string) => {
+      if (firstIdRef.current === 0) {
+        return;
+      }
+      console.log('firstIdRef', firstIdRef);
+      console.log('lastpostidRef', lastPostIdRef);
+      const data = {
+        location: userData.location,
+        userId: userData.userId,
+        category
+      };
+
+      try {
+        const response = await axiosRequest().post(
+          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
+          data
+        );
+        console.log(response.data);
+        lastPostIdRef.current =
+          response.data.posts[response.data.posts.length - 1].postId;
+        setFeed((feed) => {
+          return [...feed, ...response.data.posts];
+        });
+        // setFeed((prev, props) => [...prev, response.data.posts]);
+        setScrollLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    setTimeout(async () => {
+      fetchPosts(categoryContext.isCategory);
+    }, 1500);
+  }, [scroll]);
+
   return (
     <>
       <S.Container>
@@ -161,7 +172,7 @@ const Home = () => {
             <PostEmpty />
           )}
         </S.FeedList>
-        {loading && <Loader />}
+        {scrollLoading && <Loader />}
 
         {/* Write Button */}
         <ButtonWrite />
