@@ -158,7 +158,7 @@ const Home = () => {
         <HomeTabMenu />
 
         {/* FeedList */}
-        {loading && <CardSkeleton cards={2} />}
+        {loading && <CardSkeleton cards={1} />}
         <S.FeedList>
           {feed ? (
             feed.map((item, index) => {
