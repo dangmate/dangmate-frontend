@@ -16,7 +16,7 @@ const S = {
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     padding: ${getVwValue('0 20')};
     text-align: center;
   `,
