@@ -14,6 +14,7 @@ import NaviBar from '../components/asset/NaviBar';
 import { CardType } from '../api/type';
 import Loader from '../components/asset/Loader';
 import CardSkeleton from '../components/section/home/CardSkeleton';
+import { guestState } from '../store/guest';
 
 const S = {
   Container: styled.div`
@@ -30,12 +31,15 @@ const Home = () => {
   const categoryContext = useContext(FeedCategory);
   const firstIdRef = useRef(0);
   const lastPostIdRef = useRef<number | null>(null);
+  const isGuest = useRecoilValue(guestState);
 
   // infinite scroll
   const [loading, setLoading] = useState(true);
   const [scroll, setScroll] = useState(0);
+  const [noAuthScroll, setNoAuthScroll] = useState(0);
 
   const [scrollLoading, setScrollLoading] = useState(false);
+  const isInitialMount = useRef(true);
 
   const handleScroll = () => {
     if (
@@ -47,7 +51,9 @@ const Home = () => {
         return;
       }
       setScrollLoading(true);
-      setScroll((scroll) => scroll + 1);
+      isInitialMount.current = false;
+      if (!isGuest) setScroll((scroll) => scroll + 1);
+      else setNoAuthScroll((noAuthScroll) => noAuthScroll + 1);
     }
   };
 
@@ -91,14 +97,14 @@ const Home = () => {
       try {
         const response = await axiosRequest().get(`/api/posts?size=5`);
         console.log(response.data);
-        // firstIdRef.current = response.data.firstId;
-        // lastPostIdRef.current =
-        //   response.data.posts[response.data.posts.length - 1].postId;
+        console.log('firstIdRef.current', firstIdRef.current);
+        firstIdRef.current = response.data.firstId;
+        lastPostIdRef.current =
+          response.data.posts[response.data.posts.length - 1].postId;
         setFeed(() => {
           return [...response.data.posts];
         });
         setLoading(false);
-        console.log('fetch end', loading);
       } catch (err) {
         console.log(err);
       }
@@ -107,16 +113,17 @@ const Home = () => {
     setTimeout(async () => {
       console.log(feed);
       console.log(categoryContext.isCategory);
-      if (userData.fullName) firstFetchPosts(categoryContext.isCategory);
+      if (!isGuest) firstFetchPosts(categoryContext.isCategory);
       else firstFetchNoAuthPosts();
     }, 1000);
   }, [categoryContext.isCategory]);
 
   useEffect(() => {
     const fetchPosts = async (category: string) => {
-      if (firstIdRef.current === 0) {
+      if (firstIdRef.current === 0 || isGuest || isInitialMount.current) {
         return;
       }
+
       console.log('firstIdRef', firstIdRef);
       console.log('lastpostidRef', lastPostIdRef);
       const data = {
@@ -146,6 +153,44 @@ const Home = () => {
       fetchPosts(categoryContext.isCategory);
     }, 1500);
   }, [scroll]);
+
+  useEffect(() => {
+    const fetchNoAuthPosts = async (category: string) => {
+      if (firstIdRef.current === 0 || isInitialMount.current) {
+        return;
+      } else {
+        console.log('scroll', noAuthScroll);
+        console.log(firstIdRef.current);
+        console.log('실행');
+      }
+      // console.log('firstIdRef', firstIdRef);
+      // console.log('lastpostidRef', lastPostIdRef);
+      // const data = {
+      //   location: userData.location,
+      //   userId: userData.userId,
+      //   category
+      // };
+
+      try {
+        const response = await axiosRequest().get(
+          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`
+        );
+        console.log(response.data);
+        lastPostIdRef.current =
+          response.data.posts[response.data.posts.length - 1].postId;
+        setFeed((feed) => {
+          return [...feed, ...response.data.posts];
+        });
+        setScrollLoading(false);
+        console.log('fetch end', loading);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    setTimeout(async () => {
+      fetchNoAuthPosts(categoryContext.isCategory);
+    }, 1500);
+  }, [noAuthScroll]);
 
   return (
     <>
