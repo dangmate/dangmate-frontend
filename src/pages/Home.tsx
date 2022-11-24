@@ -136,7 +136,6 @@ const Home = () => {
         setFeed((feed) => {
           return [...feed, ...response.data.posts];
         });
-        // setFeed((prev, props) => [...prev, response.data.posts]);
         setScrollLoading(false);
         console.log('fetch end', loading);
       } catch (err) {
