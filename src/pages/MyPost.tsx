@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-import HomeTabMenu from '../components/section/home/HomeTabMenu';
-import ButtonMore from '../components/asset/ButtonMore';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
 import { Title_T2 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
-import PostEmpty from '../components/section/home/PostEmpty';
+import { MyPostEmpty } from '../components/section/home/PostEmpty';
+import MyPostTabMenu from '../components/section/home/MyPostTabMenu';
 
 const S = {
   Container: styled.div`
@@ -39,10 +38,14 @@ const S = {
   Text: styled.div`
     color: ${Common.colors.grey_sub};
     ${Title_T2}
+  `,
+  FeedList: styled.div`
+    padding: ${getVwValue('0 20')};
   `
 };
 const MyPost = () => {
   const navigate = useNavigate();
+  const [myPostList, setMyPostList] = useState([]);
   return (
     <S.Container>
       <S.Arrow>
@@ -52,21 +55,21 @@ const MyPost = () => {
         <S.Text>내 게시물</S.Text>
       </S.Arrow>
 
-      <HomeTabMenu />
+      <MyPostTabMenu />
 
-      {/*<S.FeedList>*/}
-      {/*  {feed ? (*/}
-      {/*      feed.map((item, index) => {*/}
-      {/*        return (*/}
-      {/*            <React.Fragment key={index}>*/}
-      {/*              <PostCard data={item} />*/}
-      {/*            </React.Fragment>*/}
-      {/*        );*/}
-      {/*      })*/}
-      {/*  ) : (*/}
-      {/*      <PostEmpty />*/}
-      {/*  )}*/}
-      {/*</S.FeedList>*/}
+      <S.FeedList>
+        {myPostList.length > 0 ? (
+          myPostList.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <PostCard data={item} />
+              </React.Fragment>
+            );
+          })
+        ) : (
+          <MyPostEmpty />
+        )}
+      </S.FeedList>
     </S.Container>
   );
 };

@@ -3,7 +3,7 @@ import { RouteObject, useLocation, useRoutes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import Favorite from './pages/Favorite';
-import Story from './pages/Story';
+import Story from './pages/MyPost';
 import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck, isMobile } from './hooks/useMobile';

@@ -68,14 +68,16 @@ const Home = () => {
     setFeed(() => {
       return [];
     });
-    const firstFetchPosts = async (category: string) => {
-      console.log('category', category);
-      const location = userData.location;
-      const userId = userData.userId;
-      const data = { location, category, userId };
+
+    const firstFetchNoAuthPosts = async () => {
+      // console.log('category', category);
+      // const location = userData.location;
+      // const userId = userData.userId;
+      // const data = { location, category, userId };
       try {
-        const response = await axiosRequest().post(`/api/posts?size=5`, data);
+        const response = await axiosRequest().get(`/api/posts?size=5`);
         console.log(response.data);
+        console.log('firstIdRef.current', firstIdRef.current);
         firstIdRef.current = response.data.firstId;
         lastPostIdRef.current =
           response.data.posts[response.data.posts.length - 1].postId;
@@ -83,7 +85,6 @@ const Home = () => {
           return [...response.data.posts];
         });
         setLoading(false);
-        console.log('fetch end', loading);
       } catch (err) {
         console.log(err);
       }
@@ -92,28 +93,30 @@ const Home = () => {
     setTimeout(async () => {
       console.log(feed);
       console.log(categoryContext.isCategory);
-      firstFetchPosts(categoryContext.isCategory);
+      firstFetchNoAuthPosts();
     }, 1000);
   }, [categoryContext.isCategory]);
 
   useEffect(() => {
-    const fetchPosts = async (category: string) => {
-      if (firstIdRef.current === 0 || isGuest || isInitialMount.current) {
+    const fetchNoAuthPosts = async (category: string) => {
+      if (firstIdRef.current === 0 || isInitialMount.current) {
         return;
+      } else {
+        console.log('scroll', noAuthScroll);
+        console.log(firstIdRef.current);
+        console.log('실행');
       }
-
-      console.log('firstIdRef', firstIdRef);
-      console.log('lastpostidRef', lastPostIdRef);
-      const data = {
-        location: userData.location,
-        userId: userData.userId,
-        category
-      };
+      // console.log('firstIdRef', firstIdRef);
+      // console.log('lastpostidRef', lastPostIdRef);
+      // const data = {
+      //   location: userData.location,
+      //   userId: userData.userId,
+      //   category
+      // };
 
       try {
-        const response = await axiosRequest().post(
-          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
-          data
+        const response = await axiosRequest().get(
+          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`
         );
         console.log(response.data);
         lastPostIdRef.current =
@@ -128,9 +131,9 @@ const Home = () => {
       }
     };
     setTimeout(async () => {
-      fetchPosts(categoryContext.isCategory);
+      fetchNoAuthPosts(categoryContext.isCategory);
     }, 1500);
-  }, [scroll]);
+  }, [noAuthScroll]);
 
   return (
     <>
