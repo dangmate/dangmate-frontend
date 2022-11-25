@@ -12,6 +12,7 @@ const S = {
     padding: ${getVwValue('108 0 20')};
   `,
   Text: styled.div`
+    padding: ${getVwValue('0 0 26')};
     text-align: center;
     ${Body_B2}
   `,
@@ -25,6 +26,12 @@ export const PostEmpty = () => {
   return (
     <S.EmptyFeed>
       <S.Text>댕댕이들에게 말을 걸어보세요!</S.Text>
+      <ImageControl
+        width='277'
+        height='282'
+        src={'/images/likeEmpty.png'}
+        alt={'profile'}
+      ></ImageControl>
     </S.EmptyFeed>
   );
 };
