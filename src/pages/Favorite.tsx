@@ -10,6 +10,7 @@ import LikeTabMenu from '../components/section/home/LikeTabMenu';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
+import { guestState } from '../store/guest';
 
 const S = {
   Container: styled.div`
