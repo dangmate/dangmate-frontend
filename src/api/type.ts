@@ -7,6 +7,15 @@ export interface ReplyType {
   replyId: number;
 }
 
+export interface CommentType {
+  commentId: number;
+  profile: string;
+  fullName: string;
+  createdAt: string;
+  content: string;
+  reply: number;
+}
+
 export interface UserType {
   email: string;
   fullName: string;

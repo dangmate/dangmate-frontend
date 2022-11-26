@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-import HomeTabMenu from '../components/section/home/HomeTabMenu';
-import ButtonMore from '../components/asset/ButtonMore';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
 import { Title_T2 } from '../styles/style.font';

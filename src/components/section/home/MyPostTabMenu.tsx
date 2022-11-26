@@ -1,7 +1,13 @@
 import styled from '@emotion/styled';
 import { Common } from '../../../styles/common';
 import { getVwValue } from '../../../styles/styleUtil';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import { Button_Btn2 } from '../../../styles/style.font';
 import { FeedCategory } from '../../../context/FeedCategory';
 
@@ -42,25 +48,19 @@ const S = {
 };
 
 interface IProps {
-  fetchPosts?: (props: string) => void;
+  setTab: Dispatch<SetStateAction<boolean>>;
 }
 const HomeTabMenu = (props: IProps) => {
-  const categoryContext = useContext(FeedCategory);
   const [toggleState, setToggleState] = useState<number>(1);
-  const [myPostTab, setMyPostTab] = useState(0);
+
   const fetchAllPosts = () => {
     setToggleState(1);
-    categoryContext.setCategory('all');
+    props.setTab(true);
   };
   const fetchMatePosts = () => {
     setToggleState(2);
-    categoryContext.setCategory('산책 메이트');
+    props.setTab(false);
   };
-
-  useEffect(() => {
-    if (categoryContext.isCategory === 'all') setToggleState(1);
-    else if (categoryContext.isCategory === '산책 메이트') setToggleState(2);
-  }, []);
 
   return (
     <S.Ul>
