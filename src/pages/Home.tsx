@@ -44,9 +44,10 @@ const Home = () => {
 
   const handleScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      window.innerHeight + document.documentElement.scrollTop + 2 >=
       document.documentElement.scrollHeight
     ) {
+      console.log('sccroll!!!');
       if (firstIdRef.current === lastPostIdRef.current) {
         console.log('끝');
         return;
