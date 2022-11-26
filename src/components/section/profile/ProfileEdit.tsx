@@ -292,11 +292,13 @@ const ProfileEdit = (props: IProps) => {
             data
           );
           if (res.status == 200) {
-            setUserData((userData: UserType) => {
-              const newData = { ...userData };
-              newData.fullName = res.data.fullName;
-              return { newData };
+            setUserData({
+              email: userData.email,
+              fullName: res.data.fullName,
+              location: userData.location,
+              userId: userData.userId
             });
+            console.log(userData);
           }
         } catch (err: any) {
           if (err.response.status === 401) {
@@ -319,11 +321,13 @@ const ProfileEdit = (props: IProps) => {
           data
         );
         if (res.status == 200) {
-          setUserData((userData: UserType) => {
-            const newData = { ...userData };
-            newData.fullName = res.data.fullName;
-            return { newData };
+          setUserData({
+            email: userData.email,
+            fullName: res.data.fullName,
+            location: userData.location,
+            userId: userData.userId
           });
+          console.log(userData);
         }
       } catch (err: any) {
         if (err.response.status === 401) {
@@ -337,29 +341,29 @@ const ProfileEdit = (props: IProps) => {
     }
   };
 
-  const EditUserCheck = async () => {
-    const data = {
-      thumbnail: props.profile,
-      fullName: props.fullName
-    };
-    try {
-      const res = await axiosRequest().put(
-        `/api/user/${userData.userId}`,
-        data
-      );
-      if (res.status == 200) {
-        setEditError(false);
-      }
-    } catch (err: any) {
-      if (err.response.status === 401) {
-        setEditError(true);
-      } else if (err.response.status === 404) {
-        console.log('존재하지 않는 유저입니다.');
-      } else if (err.response.status === 500) {
-        console.log('유저 업데이트에 실패했습니다.');
-      }
-    }
-  };
+  // const EditUserCheck = async () => {
+  //   const data = {
+  //     thumbnail: props.profile,
+  //     fullName: props.fullName
+  //   };
+  //   try {
+  //     const res = await axiosRequest().put(
+  //       `/api/user/${userData.userId}`,
+  //       data
+  //     );
+  //     if (res.status == 200) {
+  //       setEditError(false);
+  //     }
+  //   } catch (err: any) {
+  //     if (err.response.status === 401) {
+  //       setEditError(true);
+  //     } else if (err.response.status === 404) {
+  //       console.log('존재하지 않는 유저입니다.');
+  //     } else if (err.response.status === 500) {
+  //       console.log('유저 업데이트에 실패했습니다.');
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (image) {
@@ -400,10 +404,14 @@ const ProfileEdit = (props: IProps) => {
     }
   }, [isEdited, fullName, nickname, keyword, image, checkUniqNick]);
 
-  useEffect(() => {
-    EditUserCheck();
-    console.log(editError);
-  }, [editError]);
+  // useEffect(() => {
+  //   EditUserCheck();
+  //   console.log(editError);
+  // }, [editError]);
+
+  // useEffect(() => {
+  //   test();
+  // }, []);
 
   return (
     <>
@@ -463,7 +471,13 @@ const ProfileEdit = (props: IProps) => {
                 id='nickname'
                 autoComplete='off'
                 required
-                value={nickname}
+                value={
+                  !editError
+                    ? nickname
+                    : props.fullName
+                    ? props.fullName.split(' ')[1]
+                    : nickname
+                }
                 onChange={(e) => setNickname(e.target.value)}
                 onFocus={() => setNickFocus(true)}
                 onBlur={() => setNickFocus(false)}
@@ -488,7 +502,13 @@ const ProfileEdit = (props: IProps) => {
                 id='keyword'
                 autoComplete='off'
                 required
-                value={keyword}
+                value={
+                  !editError
+                    ? keyword
+                    : props.fullName
+                    ? props.fullName.split(' ')[0]
+                    : keyword
+                }
                 onChange={(e) => setKeyword(e.target.value)}
                 onFocus={() => setKeywordFocus(true)}
                 onBlur={() => setKeywordFocus(false)}
