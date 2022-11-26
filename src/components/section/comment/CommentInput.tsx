@@ -184,7 +184,7 @@ const CommentInput = (props: IProp) => {
   };
 
   const onFocusHandler = () => {
-    if (isGuest) return;
+    if (isGuest) navigate('login');
     else setCommentFocus(true);
   };
 
