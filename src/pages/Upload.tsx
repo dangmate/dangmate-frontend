@@ -247,22 +247,38 @@ const UploadForm = () => {
     }
   };
 
-  const UpdateFeed = async () => {
-    // 이미지 수정을 했을 때
-    // image가 생김
+  const updateFeedImage = async () => {
+    const formData = new FormData();
     if (image) {
-      const formData = new FormData();
       formData.append('multipartFile', image);
-      const response = await axiosMultiRequest().post('/api/gallery', formData);
-      if (response.data) {
-        setThumbnail(response.data.imagePath);
+    }
+    const response = await axiosMultiRequest().post('/api/gallery', formData);
+    if (response.data) {
+      const thumbnail = response.data.imagePath;
+      console.log(thumbnail);
+
+      const data = {
+        location: userData.location,
+        category,
+        thumbnail,
+        content: text
+      };
+
+      const uploadResponse = await axiosRequest().put(
+        `/api/post/${postId}/user/${userData.userId}`,
+        data
+      );
+      if (uploadResponse.data) {
+        navigate(`/view/${postId}`);
       }
     }
+  };
 
+  const updateFeedText = async () => {
     const data = {
       location: userData.location,
       category,
-      thumbnail,
+      thumbnail: null,
       content: text
     };
 
@@ -382,11 +398,11 @@ const UploadForm = () => {
                   <S.UploadForm>
                     <S.Label htmlFor='image'>
                       <S.UploadImage onClick={uploadImage}>
-                        {isUpdate ? (
+                        {isUpdate && thumbnail ? (
                           <ImageControl
                             width={'90'}
                             height={'45'}
-                            src={thumbnail}
+                            src={image ? preview : thumbnail}
                             alt={'image'}
                             fit={'cover'}
                           />
@@ -405,7 +421,9 @@ const UploadForm = () => {
                       <S.UploadName>
                         {isUpdate ? (
                           <S.TextSub>
-                            {image ? image.name : '이미지 업로드 완료!'}
+                            {thumbnail || image
+                              ? '이미지 업로드 완료!'
+                              : '최대 1장의 사진 등록이 가능해요'}
                           </S.TextSub>
                         ) : (
                           <S.TextSub>
@@ -415,7 +433,7 @@ const UploadForm = () => {
                           </S.TextSub>
                         )}
 
-                        {image && (
+                        {(image || thumbnail) && (
                           <S.CloseBtn onClick={RemoveImageHandler}>
                             <ImageControl
                               width={'18'}
@@ -454,8 +472,8 @@ const UploadForm = () => {
                 <C.Button>
                   {isUpdate ? (
                     <ButtonRound
-                      onClick={UpdateFeed}
-                      disabled={!(text && validText && thumbnail)}
+                      onClick={image ? updateFeedImage : updateFeedText}
+                      disabled={!(text && validText)}
                       type='button'
                     >
                       수정하기

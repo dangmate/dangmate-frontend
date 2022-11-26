@@ -6,7 +6,7 @@ interface IProps {
   width: string;
   height?: string;
   fit?: string;
-  src: string;
+  src: string | undefined | null;
   alt: string;
 }
 
@@ -23,7 +23,7 @@ const S = {
 const ImageControl = (props: IProps) => {
   return (
     <S.ImgWrap {...props}>
-      <img src={props.src} alt={props.alt} />
+      {props.src && <img src={props.src} alt={props.alt} />}
     </S.ImgWrap>
   );
 };
