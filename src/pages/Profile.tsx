@@ -6,7 +6,7 @@ import { Common } from '../styles/common';
 import { Body_B2, Label_L2, Title_T2, Title_T4 } from '../styles/style.font';
 import LikeIcon from '../components/asset/LikeIcon';
 import ImageControl from '../components/asset/ImageControl';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { guestState } from '../store/guest';
 import { userState } from '../store/user';
 
@@ -149,12 +149,13 @@ const S = {
 };
 const Profile = () => {
   const navigate = useNavigate();
-  const isGuest = useRecoilValue(guestState);
+  const [isGuest, setGuest] = useRecoilState(guestState);
   const setUserData = useSetRecoilState(userState);
 
   const onClickLogoutHandler = () => {
     if (window.confirm('정말로 로그아웃 할까요?')) {
       window.localStorage.removeItem('recoil-persist');
+      setGuest(true);
       setUserData({ email: '', fullName: '', location: '', userId: 0 });
       navigate('/');
     }
