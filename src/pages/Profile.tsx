@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,9 @@ import { Common } from '../styles/common';
 import { Body_B2, Label_L2, Title_T2, Title_T4 } from '../styles/style.font';
 import LikeIcon from '../components/asset/LikeIcon';
 import ImageControl from '../components/asset/ImageControl';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { guestState } from '../store/guest';
+import { userState } from '../store/user';
 
 const S = {
   Container: styled.div`
@@ -146,13 +149,22 @@ const S = {
 };
 const Profile = () => {
   const navigate = useNavigate();
+  const isGuest = useRecoilValue(guestState);
+  const setUserData = useSetRecoilState(userState);
 
   const onClickLogoutHandler = () => {
     if (window.confirm('정말로 로그아웃 할까요?')) {
       window.localStorage.removeItem('recoil-persist');
+      setUserData({ email: '', fullName: '', location: '', userId: 0 });
       navigate('/login');
     }
   };
+
+  useEffect(() => {
+    if (isGuest) {
+      navigate('/login');
+    }
+  }, [isGuest]);
 
   return (
     <S.Container>

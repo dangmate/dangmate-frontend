@@ -44,6 +44,7 @@ const LikeAction = (props: IProps) => {
   const postLikeAction = async () => {
     if (isGuest) {
       navigate('/login');
+      return;
     }
     const data = {
       userId: userData.userId,
@@ -63,6 +64,7 @@ const LikeAction = (props: IProps) => {
   const postUnlikeAction = async () => {
     if (isGuest) {
       navigate('/login');
+      return;
     }
     try {
       const response = await axiosRequest().delete(`/api/post/unlike`, {

@@ -15,6 +15,7 @@ import { CardType } from '../api/type';
 import Loader from '../components/asset/Loader';
 import CardSkeleton from '../components/section/home/CardSkeleton';
 import { guestState } from '../store/guest';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   Container: styled.div`
@@ -32,11 +33,11 @@ const Home = () => {
   const firstIdRef = useRef(0);
   const lastPostIdRef = useRef<number | null>(null);
   const isGuest = useRecoilValue(guestState);
+  const navigate = useNavigate();
 
   // infinite scroll
   const [loading, setLoading] = useState(true);
   const [scroll, setScroll] = useState(0);
-  const [noAuthScroll, setNoAuthScroll] = useState(0);
 
   const [scrollLoading, setScrollLoading] = useState(false);
   const isInitialMount = useRef(true);
@@ -50,13 +51,9 @@ const Home = () => {
         console.log('끝');
         return;
       }
-      if (feed.length === 0) {
-        return;
-      }
       setScrollLoading(true);
       isInitialMount.current = false;
-      if (!isGuest) setScroll((scroll) => scroll + 1);
-      else setNoAuthScroll((noAuthScroll) => noAuthScroll + 1);
+      setScroll((scroll) => scroll + 1);
     }
   };
 
@@ -80,9 +77,8 @@ const Home = () => {
         console.log(response.data);
         firstIdRef.current = response.data.firstId;
         if (response.data.posts.length > 0) {
-          lastPostIdRef.current = Number(
-            response.data.posts[response.data.posts.length - 1].postId
-          );
+          lastPostIdRef.current =
+            response.data.posts[response.data.posts.length - 1].postId;
         }
         setFeed(() => {
           return [...response.data.posts];
@@ -104,7 +100,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchPosts = async (category: string) => {
-      if (firstIdRef.current === 0 || isGuest || isInitialMount.current) {
+      if (firstIdRef.current === 0 || isInitialMount.current) {
         return;
       }
 
@@ -137,6 +133,12 @@ const Home = () => {
       fetchPosts(categoryContext.isCategory);
     }, 1500);
   }, [scroll]);
+
+  useEffect(() => {
+    if (isGuest) {
+      navigate('/feed');
+    }
+  }, [isGuest]);
 
   return (
     <>
