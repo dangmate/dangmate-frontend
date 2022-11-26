@@ -71,9 +71,18 @@ interface CommentType {
   reply: number;
 }
 
+interface CommentReplyType {
+  replyId: number;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  isReply: boolean;
+  profile: string;
+}
+
 const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const userData = useRecoilValue(userState);
-  const [replyData, setReplyData] = useState([]);
+  const [replyData, setReplyData] = useState<CommentReplyType[]>([]);
   const [isShowReply, setIsShowReply] = useState(false);
   const [replyCount, setReplyCount] = useState(0);
 
@@ -194,18 +203,16 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const deleteCommentReply = async () => {
     try {
       const response = await axiosRequest().delete(
-        `/api/post/${props.postId}/reply/${updateCommentData.replyId}`,
-        {
-          data: {
-            userId: userData.userId,
-            commentId: updateCommentData.commentId
-          }
-        }
+        `/api/post/${props.postId}/reply/${updateCommentData.replyId}?userId=${userData.userId}&commentId=${updateCommentData.commentId}`
       );
       if (response) {
+        const newReplyList = replyData.filter(
+          (item) => item.replyId !== response.data.replyId
+        );
+        setReplyData(newReplyList);
+        setIsMenu(false);
+        setReplyCount((replyCount) => replyCount - 1);
         console.log(response);
-        console.log('삭제성공!');
-        // fetchReplyList();
       }
     } catch (err) {
       console.log(err);
