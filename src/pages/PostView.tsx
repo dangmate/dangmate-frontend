@@ -181,7 +181,7 @@ const PostView = () => {
   return (
     <>
       <S.Arrow>
-        <S.ImgWrap onClick={() => navigate('/home')}>
+        <S.ImgWrap onClick={() => navigate(-1)}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
         {data?.isPost && (

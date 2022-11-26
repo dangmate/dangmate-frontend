@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeTabMenu from '../components/section/home/HomeTabMenu';
@@ -8,6 +8,10 @@ import { Common } from '../styles/common';
 import { Title_T2 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
 import { LikeEmpty } from '../components/section/home/PostEmpty';
+import LikeTabMenu from '../components/section/home/LikeTabMenu';
+import axiosRequest from '../api/axios';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/user';
 
 const S = {
   Container: styled.div`
@@ -47,6 +51,26 @@ const S = {
 const Favorite = () => {
   const navigate = useNavigate();
   const [likeList, setLikeList] = useState([]);
+  const userData = useRecoilValue(userState);
+  const [category, setCategory] = useState<string>('all');
+
+  const fetchLikeData = async () => {
+    try {
+      const res = await axiosRequest().get(
+        `/api/user/${userData.userId}/likes?category=${category}`
+      );
+      if (res.status === 200) {
+        setLikeList(res.data.likes);
+        console.log(res.data.likes);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikeData();
+  }, [category]);
 
   return (
     <S.Container>
@@ -57,7 +81,7 @@ const Favorite = () => {
         <S.Text>관심 목록</S.Text>
       </S.Arrow>
 
-      <HomeTabMenu />
+      <LikeTabMenu setCategory={setCategory} />
 
       <S.FeedList>
         {likeList.length > 0 ? (
