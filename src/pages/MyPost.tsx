@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,11 @@ import { Title_T2 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
 import { MyPostEmpty } from '../components/section/home/PostEmpty';
 import MyPostTabMenu from '../components/section/home/MyPostTabMenu';
+import axiosRequest from '../api/axios';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/user';
+import { CommentType } from '../api/type';
+import CommentCard from '../components/section/home/CommentCard';
 
 const S = {
   Container: styled.div`
@@ -43,9 +48,52 @@ const S = {
     padding: ${getVwValue('0 20')};
   `
 };
+
 const MyPost = () => {
   const navigate = useNavigate();
+  const userData = useRecoilValue(userState);
   const [myPostList, setMyPostList] = useState([]);
+  const [myCommentList, setMyCommentList] = useState<CommentType[]>([]);
+  const [isPost, setPost] = useState<boolean>(true);
+
+  const fetchMyPostData = async () => {
+    try {
+      const res = await axiosRequest().get(
+        `/api/user/${userData.userId}/posts`
+      );
+      if (res.status === 200) {
+        setMyPostList(res.data.posts);
+        setPost(true);
+        console.log(myPostList);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchMyCommentData = async () => {
+    try {
+      const res = await axiosRequest().get(
+        `/api/user/${userData.userId}/comments`
+      );
+      if (res.status === 200) {
+        setMyCommentList(res.data.comments);
+        setPost(false);
+        console.log(myCommentList);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyPostData();
+  }, []);
+
+  useEffect(() => {
+    fetchMyCommentData();
+  }, []);
+
   return (
     <S.Container>
       <S.Arrow>
@@ -55,21 +103,39 @@ const MyPost = () => {
         <S.Text>내 게시물</S.Text>
       </S.Arrow>
 
-      <MyPostTabMenu />
+      <MyPostTabMenu setTab={setPost} />
 
-      <S.FeedList>
-        {myPostList.length > 0 ? (
-          myPostList.map((item, index) => {
-            return (
-              <React.Fragment key={index}>
-                <PostCard data={item} />
-              </React.Fragment>
-            );
-          })
-        ) : (
-          <MyPostEmpty />
-        )}
-      </S.FeedList>
+      {isPost ? (
+        <S.FeedList>
+          {myPostList && myPostList.length > 0 ? (
+            myPostList.map((item, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <PostCard data={item} />
+                </React.Fragment>
+              );
+            })
+          ) : (
+            <MyPostEmpty />
+          )}
+        </S.FeedList>
+      ) : (
+        <>
+          <S.FeedList>
+            {myCommentList ? (
+              myCommentList.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <CommentCard data={item} />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <MyPostEmpty />
+            )}
+          </S.FeedList>
+        </>
+      )}
     </S.Container>
   );
 };

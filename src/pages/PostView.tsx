@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate, useParams } from 'react-router-dom';
-import PostViewDetail from '../components/section/PostView/PostViewDetail';
+import PostViewDetail from '../components/section/postView/PostViewDetail';
 import CommentState from '../components/section/comment/CommentState';
 import CommentArea from '../components/section/comment/CommentArea';
 import axiosRequest from '../api/axios';
@@ -181,7 +181,7 @@ const PostView = () => {
   return (
     <>
       <S.Arrow>
-        <S.ImgWrap onClick={() => navigate('/home')}>
+        <S.ImgWrap onClick={() => navigate(-1)}>
           <img src='/images/back_arrow.png' alt='arrow' />
         </S.ImgWrap>
         {data?.isPost && (

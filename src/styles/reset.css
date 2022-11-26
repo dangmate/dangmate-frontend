@@ -72,3 +72,7 @@ button{
 h1,h2,h3,h4,strong{
     font-weight: normal;
 }
+
+input:disabled{
+    background: none;
+}

@@ -142,6 +142,7 @@ interface PostType {
   thumbnail: string;
   views?: number;
 }
+const formData = new FormData();
 
 const UploadForm = () => {
   const [category, setCategory] = useState<string>('');
@@ -197,13 +198,12 @@ const UploadForm = () => {
   };
 
   const RemoveImageHandler = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    formData.delete('multipartFile');
+    setImage(null);
+    setThumbnail('');
   };
 
   const uploadFeedImage = async () => {
-    const formData = new FormData();
     if (image && text && category) {
       formData.append('multipartFile', image);
     }
@@ -248,7 +248,7 @@ const UploadForm = () => {
   };
 
   const updateFeedImage = async () => {
-    const formData = new FormData();
+    // const formData = new FormData();
     if (image) {
       formData.append('multipartFile', image);
     }

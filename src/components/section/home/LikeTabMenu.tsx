@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { Button_Btn2 } from '../../../styles/style.font';
 import { FeedCategory } from '../../../context/FeedCategory';
+import { b } from 'msw/lib/glossary-dc3fd077';
 
 interface tabType {
   active: boolean;
@@ -48,30 +49,37 @@ const S = {
 };
 
 interface IProps {
-  setTab: Dispatch<SetStateAction<boolean>>;
+  setCategory: Dispatch<SetStateAction<string>>;
 }
-const HomeTabMenu = (props: IProps) => {
+const LikeTabMenu = (props: IProps) => {
+  // const categoryContext = useContext(FeedCategory);
   const [toggleState, setToggleState] = useState<number>(1);
-
   const fetchAllPosts = () => {
     setToggleState(1);
-    props.setTab(true);
+    props.setCategory('all');
   };
   const fetchMatePosts = () => {
     setToggleState(2);
-    props.setTab(false);
+    props.setCategory('산책 메이트');
+  };
+  const fetchStoryPosts = () => {
+    setToggleState(3);
+    props.setCategory('댕댕 이야기');
   };
 
   return (
     <S.Ul>
       <S.Li active={toggleState === 1} onClick={fetchAllPosts}>
-        <span>내 게시물</span>
+        <span>모두 보기</span>
       </S.Li>
       <S.Li active={toggleState === 2} onClick={fetchMatePosts}>
-        <span>내 댓글</span>
+        <span>산책 메이트</span>
+      </S.Li>
+      <S.Li active={toggleState === 3} onClick={fetchStoryPosts}>
+        <span>댕댕 이야기</span>
       </S.Li>
     </S.Ul>
   );
 };
 
-export default HomeTabMenu;
+export default LikeTabMenu;

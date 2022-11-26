@@ -3,14 +3,10 @@ import { getVwValue } from '../../../styles/styleUtil';
 import React, { useState } from 'react';
 import { Common } from '../../../styles/common';
 import UserName from '../../asset/UserName';
-import LikeAction from './LikeAction';
-import CommentAction from '../comment/CommentAction';
-import { Link } from 'react-router-dom';
 import { Body_B2, Body_B3, Button_Btn2 } from '../../../styles/style.font';
-import { CardType } from '../../../api/type';
-import UserLocation from '../PostView/UserLocation';
-import PostTime from './PostTime';
+import { CommentType } from '../../../api/type';
 import CardSkeleton from './CardSkeleton';
+import PostTime from './PostTime';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};
@@ -51,33 +47,44 @@ const S = {
     margin-right: ${getVwValue('10')};
     color: ${Common.colors.grey_body};
     ${Button_Btn2}
+  `,
+  Row: styled.div`
+    display: flex;
+    align-items: center;
+    & > div:first-of-type {
+      margin-right: ${getVwValue('10')};
+    }
   `
 };
 
 interface PostType {
-  data: CardType;
+  data: CommentType;
 }
 
 const CommentCard = (props: PostType) => {
+  console.log('data', props);
   const [detailData, setDetailData] = useState(props.data);
   return (
     <>
-      {detailData ? (
+      {props.data ? (
         <S.Container>
-          <Link to={`/view/${detailData.postId}`}>
-            <S.FeedHead>
+          {/*<Link to={`/view/${detailData.postId}`}>*/}
+          <S.FeedHead>
+            <S.Row>
               <UserName
                 src={
-                  detailData.profile ? detailData.profile : 'images/profile.png'
+                  props.data.profile ? detailData.profile : 'images/profile.png'
                 }
                 alt={''}
-                name={detailData.fullName}
+                name={props.data.fullName}
               />
-              <S.TextBtn>답글 {'4'}</S.TextBtn>
-            </S.FeedHead>
+              <PostTime data={props.data.createdAt} />
+            </S.Row>
+            <S.TextBtn>답글 {props.data.reply}</S.TextBtn>
+          </S.FeedHead>
 
-            <S.Content>{detailData.content}</S.Content>
-          </Link>
+          <S.Content>{props.data.content}</S.Content>
+          {/*</Link>*/}
         </S.Container>
       ) : (
         <CardSkeleton cards={1} />

@@ -4,6 +4,8 @@ import { getVwValue } from '../../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../../styles/common';
 import { Label_L3 } from '../../styles/style.font';
+import { useRecoilValue } from 'recoil';
+import { guestState } from '../../store/guest';
 
 const S = {
   NaviBar: styled.div`
@@ -44,11 +46,16 @@ const S = {
 
 const NaviBar = () => {
   const navigate = useNavigate();
+  const isGuest = useRecoilValue(guestState);
 
   return (
     <S.NaviBar>
       <S.Ul>
-        <li onClick={() => navigate('/favorite')}>
+        <li
+          onClick={
+            isGuest ? () => navigate('/login') : () => navigate('/favorite')
+          }
+        >
           <S.SvgWrap>
             <svg
               width='18'
@@ -88,7 +95,11 @@ const NaviBar = () => {
           </S.SvgWrap>
           <S.TextHome>홈</S.TextHome>
         </li>
-        <li onClick={() => navigate('/story')}>
+        <li
+          onClick={
+            isGuest ? () => navigate('/login') : () => navigate('/story')
+          }
+        >
           <S.SvgWrap>
             <svg
               width='24'
