@@ -111,8 +111,6 @@ const Login = () => {
   const setUserState = useSetRecoilState(userState);
   const userData = useRecoilValue(userState);
 
-  const userRef = useRef<HTMLInputElement>(null);
-
   const [email, setEmail] = useState<string>('');
   const [validEmail, setValidEmail] = useState<boolean>(false);
   const [emailFocus, setEmailFocus] = useState<boolean>(false);
@@ -121,6 +119,7 @@ const Login = () => {
   const [validPwd, setValidPwd] = useState<boolean>(false);
   const [pwdFocus, setPwdFocus] = useState<boolean>(false);
 
+  const [collectEmail, setCollectEmail] = useState<boolean>(true);
   const [collectPwd, setCollectPwd] = useState<boolean>(true);
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -128,6 +127,7 @@ const Login = () => {
   const inputEmailState = () => {
     let color = '';
     if (!!email && !validEmail) color = Common.colors.system_error;
+    else if (!collectEmail) color = Common.colors.system_error;
     else if (!!email && validEmail) color = Common.colors.system_good;
     else if (!email && !validEmail) color = Common.colors.grey_disabled;
     return color;
@@ -142,13 +142,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (userRef.current) {
-      userRef.current.focus();
-    }
-  }, []);
-
-  useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
+    setCollectEmail(true);
   }, [email]);
 
   useEffect(() => {
@@ -173,11 +168,15 @@ const Login = () => {
         setSuccess(true);
         setTimeout(() => navigate('/home'), 2000);
       }
-    } catch (err) {
-      console.log(err);
-      setCollectPwd(false);
+    } catch (err: any) {
+      if (err.response.status === 404) {
+        setCollectEmail(false);
+        setCollectPwd(false);
+      }
+      if (err.response.status === 401) {
+        setCollectPwd(false);
+      }
     }
-    // 로그인을 성공했을 때 : accessToken을 저장
   };
 
   return (
@@ -210,7 +209,6 @@ const Login = () => {
                   type='email'
                   name='email'
                   id='email'
-                  ref={userRef}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -224,6 +222,7 @@ const Login = () => {
                 ) : (
                   <></>
                 )}
+                {!collectEmail ? <p>일치하는 이메일이 없습니다.</p> : <></>}
               </S.Field>
               <S.Field>
                 <S.Label htmlFor='password'>비밀번호</S.Label>
@@ -245,7 +244,7 @@ const Login = () => {
                 ) : (
                   <></>
                 )}
-                {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}{' '}
+                {!collectPwd ? <p>잘못된 비밀번호입니다.</p> : <></>}
               </S.Field>
             </S.Form>
             <S.Join onClick={() => navigate('/location')}>
