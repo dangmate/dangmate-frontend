@@ -42,7 +42,7 @@ const Home = () => {
 
   const handleScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      window.innerHeight + document.documentElement.scrollTop + 2 >=
       document.documentElement.scrollHeight
     ) {
       if (firstIdRef.current === lastPostIdRef.current) {
@@ -123,8 +123,8 @@ const Home = () => {
   }, [scroll]);
 
   useEffect(() => {
-    if (isGuest) {
-      navigate('/feed');
+    if (!isGuest) {
+      navigate('/home');
     }
   }, [isGuest]);
 
