@@ -1,15 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
-import HomeTabMenu from '../components/section/home/HomeTabMenu';
-import ButtonMore from '../components/asset/ButtonMore';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
 import { Body_B2, Label_L2, Title_T2, Title_T4 } from '../styles/style.font';
-import PostCard from '../components/section/home/PostCard';
-import PostEmpty from '../components/section/home/PostEmpty';
 import LikeIcon from '../components/asset/LikeIcon';
-import ButtonRound from '../components/asset/ButtonRound';
 import ImageControl from '../components/asset/ImageControl';
 
 const S = {
@@ -151,6 +146,14 @@ const S = {
 };
 const Profile = () => {
   const navigate = useNavigate();
+
+  const onClickLogoutHandler = () => {
+    if (window.confirm('정말로 로그아웃 할까요?')) {
+      window.localStorage.removeItem('recoil-persist');
+      navigate('/login');
+    }
+  };
+
   return (
     <S.Container>
       <S.Arrow>
@@ -196,7 +199,7 @@ const Profile = () => {
             <strong>버전 정보</strong>
             <span>v0.10</span>
           </li>
-          <li>
+          <li onClick={onClickLogoutHandler}>
             <strong>로그아웃</strong>
             <S.svgWrap>
               <img src='/images/join_arrow.png' alt='arrow' />
