@@ -260,9 +260,8 @@ const Join = () => {
     };
     try {
       const res = await axiosRequest().post('/api/user/signin', data);
-      alert(`회원가입이 완료되었습니다!`);
+      alert(`회원가입에 성공했습니다!`);
       console.log(res.data);
-      // await alert(`${res.data?.param.nick}님 환영합니다!`);
       setEmail('');
       setPwd('');
       setMatchPwd('');

@@ -12,6 +12,7 @@ import { distance } from '../utils/distance';
 import { getCityCode } from '../utils/ciryCode';
 import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
+import Loader from '../components/asset/Loader';
 
 declare global {
   interface Window {
@@ -127,6 +128,9 @@ const Location = () => {
   const [regionList, setRegionList] = useState<object[]>([]);
 
   const [addressList, setAddressList] = useState<string[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false);
 
   const options = {
     enableHighAccuracy: true,
@@ -280,8 +284,12 @@ const Location = () => {
   };
 
   const autoSearch = () => {
+    setListLoading(true);
     setRegionList([]);
     getRegionThirdList();
+    setTimeout(() => {
+      setListLoading(false);
+    }, 1500);
   };
 
   const onSelectHandler = (e: React.MouseEvent) => {
@@ -293,6 +301,13 @@ const Location = () => {
   useEffect(() => {
     getCoords();
   }, [coords.latitude, coords.longitude, regionFirstName]);
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   return (
     <C.Wrapper>
@@ -310,13 +325,19 @@ const Location = () => {
           </p>
         </S.Title>
         <S.SearchList>
-          {regionList
-            .sort((a: any, b: any) => a.distance - b.distance)
-            .map((item: any, index) => (
-              <li onClick={onSelectHandler} key={index}>
-                {item.name}
-              </li>
-            ))}
+          {listLoading ? (
+            <Loader />
+          ) : (
+            <>
+              {regionList
+                .sort((a: any, b: any) => a.distance - b.distance)
+                .map((item: any, index) => (
+                  <li onClick={onSelectHandler} key={index}>
+                    {item.name}
+                  </li>
+                ))}
+            </>
+          )}
         </S.SearchList>
       </S.Content>
       <C.Bottom>
@@ -329,10 +350,10 @@ const Location = () => {
         <C.Button>
           <ButtonRound
             onClick={() => autoSearch()}
-            disabled={false}
+            disabled={loading}
             type='button'
           >
-            간편한 자동 검색
+            {loading ? '위치 검색 중...' : '간편한 자동 검색'}
           </ButtonRound>
         </C.Button>
       </C.Bottom>

@@ -3,7 +3,7 @@ import { RouteObject, useLocation, useRoutes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import Favorite from './pages/Favorite';
-import Story from './pages/Story';
+import Story from './pages/MyPost';
 import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck, isMobile } from './hooks/useMobile';
@@ -20,6 +20,7 @@ import Upload from './pages/Upload';
 import { FeedCategory } from './context/FeedCategory';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { Common } from './styles/common';
+import HomeGuest from './pages/HomeGuest';
 
 interface IProp {
   isCategory: string;
@@ -39,6 +40,7 @@ const App = () => {
         { path: 'location', element: <Location /> },
         { path: 'location-search', element: <LocationSearch /> },
         { path: 'home', element: <Home /> },
+        { path: 'feed', element: <HomeGuest /> },
         { path: 'view/:postId', element: <PostView /> },
         { path: 'upload', element: <Upload /> },
         { path: 'upload/:postId', element: <Upload /> },

@@ -6,7 +6,6 @@ import HomeTabMenu from '../components/section/home/HomeTabMenu';
 import PostCard from '../components/section/home/PostCard';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
-import { userState } from '../store/user';
 import { PostEmpty } from '../components/section/home/PostEmpty';
 import { FeedCategory } from '../context/FeedCategory';
 import ButtonWrite from '../components/asset/ButtonWrite';
@@ -27,7 +26,6 @@ const S = {
 };
 
 const Home = () => {
-  const userData = useRecoilValue(userState);
   const [feed, setFeed] = useState<CardType[]>([]);
   const categoryContext = useContext(FeedCategory);
   const firstIdRef = useRef(0);
@@ -67,13 +65,12 @@ const Home = () => {
     setFeed(() => {
       return [];
     });
+
     const firstFetchPosts = async (category: string) => {
-      console.log('category', category);
-      const location = userData.location;
-      const userId = userData.userId;
-      const data = { location, category, userId };
       try {
-        const response = await axiosRequest().post(`/api/posts?size=5`, data);
+        const response = await axiosRequest().get(
+          `/api/posts?size=5&category=${category}`
+        );
         console.log(response.data);
         firstIdRef.current = response.data.firstId;
         if (response.data.posts.length > 0) {
@@ -104,18 +101,9 @@ const Home = () => {
         return;
       }
 
-      console.log('firstIdRef', firstIdRef);
-      console.log('lastpostidRef', lastPostIdRef);
-      const data = {
-        location: userData.location,
-        userId: userData.userId,
-        category
-      };
-
       try {
-        const response = await axiosRequest().post(
-          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
-          data
+        const response = await axiosRequest().get(
+          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}&category=${category}`
         );
         console.log(response.data);
         lastPostIdRef.current =

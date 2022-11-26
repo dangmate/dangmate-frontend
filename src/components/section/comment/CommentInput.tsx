@@ -224,7 +224,9 @@ const CommentInput = (props: IProp) => {
           onChange={onChangeComment}
           onFocus={() => onFocusHandler()}
           // onBlur={() => setCommentFocus(false)}
-          placeholder='댓글을 작성해 주세요.'
+          placeholder={
+            !isGuest ? '댓글을 작성해 주세요.' : '로그인 후 작성 가능해요.'
+          }
         />
       </S.InputWrap>
       <S.Field focus={commentFocus}>

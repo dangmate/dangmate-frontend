@@ -47,6 +47,7 @@ interface IProps {
 const HomeTabMenu = (props: IProps) => {
   const categoryContext = useContext(FeedCategory);
   const [toggleState, setToggleState] = useState<number>(1);
+  const [myPostTab, setMyPostTab] = useState(0);
   const fetchAllPosts = () => {
     setToggleState(1);
     categoryContext.setCategory('all');
@@ -55,27 +56,19 @@ const HomeTabMenu = (props: IProps) => {
     setToggleState(2);
     categoryContext.setCategory('산책 메이트');
   };
-  const fetchStoryPosts = () => {
-    setToggleState(3);
-    categoryContext.setCategory('댕댕 이야기');
-  };
 
   useEffect(() => {
     if (categoryContext.isCategory === 'all') setToggleState(1);
     else if (categoryContext.isCategory === '산책 메이트') setToggleState(2);
-    else if (categoryContext.isCategory === '댕댕 이야기') setToggleState(3);
   }, []);
 
   return (
     <S.Ul>
       <S.Li active={toggleState === 1} onClick={fetchAllPosts}>
-        <span>모두 보기</span>
+        <span>내 게시물</span>
       </S.Li>
       <S.Li active={toggleState === 2} onClick={fetchMatePosts}>
-        <span>산책 메이트</span>
-      </S.Li>
-      <S.Li active={toggleState === 3} onClick={fetchStoryPosts}>
-        <span>댕댕 이야기</span>
+        <span>내 댓글</span>
       </S.Li>
     </S.Ul>
   );

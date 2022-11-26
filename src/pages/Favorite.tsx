@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import HomeTabMenu from '../components/section/home/HomeTabMenu';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
 import { Title_T2 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
-import PostEmpty from '../components/section/home/PostEmpty';
+import { LikeEmpty } from '../components/section/home/PostEmpty';
 
 const S = {
   Container: styled.div`
@@ -39,10 +39,15 @@ const S = {
   Text: styled.div`
     color: ${Common.colors.grey_sub};
     ${Title_T2}
+  `,
+  FeedList: styled.div`
+    padding: ${getVwValue('0 20')};
   `
 };
 const Favorite = () => {
   const navigate = useNavigate();
+  const [likeList, setLikeList] = useState([]);
+
   return (
     <S.Container>
       <S.Arrow>
@@ -54,19 +59,19 @@ const Favorite = () => {
 
       <HomeTabMenu />
 
-      {/*<S.FeedList>*/}
-      {/*  {feed ? (*/}
-      {/*      feed.map((item, index) => {*/}
-      {/*        return (*/}
-      {/*            <React.Fragment key={index}>*/}
-      {/*              <PostCard data={item} />*/}
-      {/*            </React.Fragment>*/}
-      {/*        );*/}
-      {/*      })*/}
-      {/*  ) : (*/}
-      {/*      <PostEmpty />*/}
-      {/*  )}*/}
-      {/*</S.FeedList>*/}
+      <S.FeedList>
+        {likeList.length > 0 ? (
+          likeList.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <PostCard data={item} />
+              </React.Fragment>
+            );
+          })
+        ) : (
+          <LikeEmpty />
+        )}
+      </S.FeedList>
     </S.Container>
   );
 };

@@ -55,7 +55,7 @@ const Landing = () => {
       console.log(userData.fullName + '으로 로그인');
       navigate('/home');
     }
-  }, []);
+  }, [isGuest]);
 
   return (
     <S.Wrapper>
