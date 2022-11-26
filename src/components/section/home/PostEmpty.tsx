@@ -11,6 +11,12 @@ const S = {
     align-items: center;
     padding: ${getVwValue('108 0 20')};
   `,
+  Empty: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: ${getVwValue('50 0 20')};
+  `,
   Text: styled.div`
     padding: ${getVwValue('0 0 26')};
     text-align: center;
@@ -24,7 +30,7 @@ const S = {
 };
 export const PostEmpty = () => {
   return (
-    <S.EmptyFeed>
+    <S.Empty>
       <S.Text>댕댕이들에게 말을 걸어보세요!</S.Text>
       <ImageControl
         width='277'
@@ -32,7 +38,7 @@ export const PostEmpty = () => {
         src={'/images/likeEmpty.png'}
         alt={'profile'}
       ></ImageControl>
-    </S.EmptyFeed>
+    </S.Empty>
   );
 };
 

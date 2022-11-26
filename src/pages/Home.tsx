@@ -50,6 +50,9 @@ const Home = () => {
         console.log('끝');
         return;
       }
+      if (feed.length === 0) {
+        return;
+      }
       setScrollLoading(true);
       isInitialMount.current = false;
       if (!isGuest) setScroll((scroll) => scroll + 1);
@@ -64,7 +67,6 @@ const Home = () => {
 
   useEffect(() => {
     setLoading(true);
-
     setFeed(() => {
       return [];
     });
@@ -77,11 +79,15 @@ const Home = () => {
         const response = await axiosRequest().post(`/api/posts?size=5`, data);
         console.log(response.data);
         firstIdRef.current = response.data.firstId;
-        lastPostIdRef.current =
-          response.data.posts[response.data.posts.length - 1].postId;
+        if (response.data.posts.length > 0) {
+          lastPostIdRef.current = Number(
+            response.data.posts[response.data.posts.length - 1].postId
+          );
+        }
         setFeed(() => {
           return [...response.data.posts];
         });
+        console.log('feed', feed);
         setLoading(false);
         console.log('fetch end', loading);
       } catch (err) {
@@ -142,20 +148,24 @@ const Home = () => {
         <HomeTabMenu />
 
         {/* FeedList */}
-        {loading && <CardSkeleton cards={1} />}
-        <S.FeedList>
-          {feed ? (
-            feed.map((item, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <PostCard data={item} />
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <PostEmpty />
-          )}
-        </S.FeedList>
+        {loading ? (
+          <CardSkeleton cards={1} />
+        ) : (
+          <S.FeedList>
+            {feed.length > 0 ? (
+              feed.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <PostCard data={item} />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <PostEmpty />
+            )}
+          </S.FeedList>
+        )}
+
         {scrollLoading && <Loader />}
 
         {/* Write Button */}
