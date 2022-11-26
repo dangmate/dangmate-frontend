@@ -83,7 +83,7 @@ const Favorite = () => {
       <LikeTabMenu setCategory={setCategory} />
 
       <S.FeedList>
-        {likeList.length > 0 ? (
+        {likeList ? (
           likeList.map((item, index) => {
             return (
               <React.Fragment key={index}>
