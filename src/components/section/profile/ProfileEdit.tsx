@@ -299,6 +299,7 @@ const ProfileEdit = (props: IProps) => {
               userId: userData.userId
             });
             console.log(userData);
+            props.setEditMode(false);
           }
         } catch (err: any) {
           if (err.response.status === 401) {
@@ -328,6 +329,7 @@ const ProfileEdit = (props: IProps) => {
             userId: userData.userId
           });
           console.log(userData);
+          props.setEditMode(false);
         }
       } catch (err: any) {
         if (err.response.status === 401) {
