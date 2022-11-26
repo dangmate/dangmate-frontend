@@ -8,7 +8,7 @@ import CommentAction from '../comment/CommentAction';
 import { Link } from 'react-router-dom';
 import { Body_B2, Body_B3, Button_Btn2 } from '../../../styles/style.font';
 import { CardType } from '../../../api/type';
-import UserLocation from '../PostView/UserLocation';
+import UserLocation from '../postView/UserLocation';
 import PostTime from './PostTime';
 import CardSkeleton from './CardSkeleton';
 const S = {

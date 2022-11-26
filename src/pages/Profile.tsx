@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,19 @@ import ImageControl from '../components/asset/ImageControl';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { guestState } from '../store/guest';
 import { userState } from '../store/user';
+import axiosRequest from '../api/axios';
+import ProfileEdit from '../components/section/profile/ProfileEdit';
+import profileEdit from '../components/section/profile/ProfileEdit';
+
+interface ProfileType {
+  comments: number;
+  fullName: string;
+  location: string;
+  posts: number;
+  profile: null | string;
+  userId: number;
+  users: number;
+}
 
 const S = {
   Container: styled.div`
@@ -26,7 +39,6 @@ const S = {
     height: 100%;
     padding: ${getVwValue('0 28')};
     vertical-align: center;
-    cursor: pointer;
     & > img {
       position: absolute;
       top: 50%;
@@ -43,7 +55,6 @@ const S = {
     width: ${getVwValue('10')};
     height: ${getVwValue('20')};
     vertical-align: center;
-    cursor: pointer;
     & > img {
       position: absolute;
       top: 50%;
@@ -135,7 +146,6 @@ const S = {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
       & > span {
         color: ${Common.colors.grey_body};
         ${Label_L2}
@@ -150,7 +160,9 @@ const S = {
 const Profile = () => {
   const navigate = useNavigate();
   const [isGuest, setGuest] = useRecoilState(guestState);
-  const setUserData = useSetRecoilState(userState);
+  const [userData, setUserData] = useRecoilState(userState);
+  const [profileData, setProfileData] = useState<ProfileType>();
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const onClickLogoutHandler = () => {
     if (window.confirm('정말로 로그아웃 할까요?')) {
@@ -161,6 +173,53 @@ const Profile = () => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      const res = await axiosRequest().get(`/api/user/${userData.userId}`);
+      if (res.status === 200) {
+        setProfileData(res.data);
+        console.log(profileData);
+      }
+    } catch (err: any) {
+      if (err.status === 404) {
+        console.log('존재하지 않는 유저입니다.');
+      }
+      if (err.status === 500) {
+        console.log('유저 조회에 실패했습니다.');
+      }
+    }
+  };
+
+  const onClickDeleteUser = () => {
+    if (confirm('정말로 회원 탈퇴 하시겠어요?')) {
+      deleteUserData();
+    }
+  };
+
+  const deleteUserData = async () => {
+    try {
+      const res = await axiosRequest().delete(`/api/user/${userData.userId}`);
+      if (res.status === 200) {
+        window.localStorage.removeItem('recoil-persist');
+        setGuest(true);
+        setUserData({ email: '', fullName: '', location: '', userId: 0 });
+        alert('회원탈퇴가 완료되었습니다.');
+        navigate('/');
+      }
+    } catch (err: any) {
+      if (err.status === 404) {
+        alert('존재하지 않는 유저입니다.');
+      }
+      if (err.status === 500) {
+        alert('유저 업데이트에 실패했습니다.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     if (isGuest) {
       navigate('/');
@@ -168,67 +227,81 @@ const Profile = () => {
   }, [isGuest]);
 
   return (
-    <S.Container>
-      <S.Arrow>
-        <S.ImgWrap onClick={() => navigate(-1)}>
-          <img src='/images/back_arrow.png' alt='arrow' />
-        </S.ImgWrap>
-        <S.Text>프로필</S.Text>
-      </S.Arrow>
+    <>
+      {!editMode ? (
+        <S.Container>
+          <S.Arrow>
+            <S.ImgWrap onClick={() => navigate(-1)}>
+              <img src='/images/back_arrow.png' alt='arrow' />
+            </S.ImgWrap>
+            <S.Text>프로필</S.Text>
+          </S.Arrow>
 
-      <S.Article>
-        <S.ProfileWrap>
-          <ImageControl
-            width='56'
-            height='56'
-            src={'images/profile.png'}
-            alt={'profile'}
-          />
-          <strong>닉네임</strong>
-          <span>이메일</span>
-        </S.ProfileWrap>
+          <S.Article>
+            <S.ProfileWrap>
+              <ImageControl
+                width='56'
+                height='56'
+                src={
+                  profileData?.profile
+                    ? profileData.profile
+                    : 'images/profile.png'
+                }
+                alt={'profile'}
+              />
+              <strong>{profileData?.fullName}</strong>
+              <span>{userData.email}</span>
+            </S.ProfileWrap>
 
-        <S.MyPostStateWrap>
-          <div>
-            <span>내 게시물</span>
-            <strong>11</strong>
-          </div>
-          <div>
-            <span>내 댓글</span>
-            <strong>11</strong>
-          </div>
-        </S.MyPostStateWrap>
+            <S.MyPostStateWrap>
+              <div>
+                <span>내 게시물</span>
+                <strong>{profileData?.posts}</strong>
+              </div>
+              <div>
+                <span>내 댓글</span>
+                <strong>{profileData?.comments}</strong>
+              </div>
+            </S.MyPostStateWrap>
 
-        <S.LocationInfoWrap>
-          <LikeIcon />
-          <strong>우만동 댕댕이</strong>
-          <span>489마리 댕댕이가 살고 있어요!</span>
-        </S.LocationInfoWrap>
+            <S.LocationInfoWrap>
+              <LikeIcon />
+              <strong>{profileData?.location} 댕댕이</strong>
+              <span>{profileData?.users}마리 댕댕이가 살고 있어요!</span>
+            </S.LocationInfoWrap>
 
-        <S.Button>프로필 수정</S.Button>
+            <S.Button onClick={() => setEditMode(true)}>프로필 수정</S.Button>
 
-        <S.OptionUl>
-          <li>
-            <strong>버전 정보</strong>
-            <span>v0.10</span>
-          </li>
-          <li onClick={onClickLogoutHandler}>
-            <strong>로그아웃</strong>
-            <S.svgWrap>
-              <img src='/images/join_arrow.png' alt='arrow' />
-            </S.svgWrap>
-          </li>
-          <li>
-            <strong style={{ color: Common.colors.system_error }}>
-              회원 탈퇴
-            </strong>
-            <S.svgWrap>
-              <img src='/images/join_arrow.png' alt='arrow' />
-            </S.svgWrap>
-          </li>
-        </S.OptionUl>
-      </S.Article>
-    </S.Container>
+            <S.OptionUl>
+              <li>
+                <strong>버전 정보</strong>
+                <span>v0.10</span>
+              </li>
+              <li onClick={onClickLogoutHandler}>
+                <strong>로그아웃</strong>
+                <S.svgWrap>
+                  <img src='/images/join_arrow.png' alt='arrow' />
+                </S.svgWrap>
+              </li>
+              <li onClick={onClickDeleteUser}>
+                <strong style={{ color: Common.colors.system_error }}>
+                  회원 탈퇴
+                </strong>
+                <S.svgWrap>
+                  <img src='/images/join_arrow.png' alt='arrow' />
+                </S.svgWrap>
+              </li>
+            </S.OptionUl>
+          </S.Article>
+        </S.Container>
+      ) : (
+        <ProfileEdit
+          setEditMode={setEditMode}
+          profile={profileData?.profile}
+          fullName={profileData?.fullName}
+        />
+      )}
+    </>
   );
 };
 

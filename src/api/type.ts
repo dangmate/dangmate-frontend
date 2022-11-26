@@ -7,6 +7,13 @@ export interface ReplyType {
   replyId: number;
 }
 
+export interface UserType {
+  email: string;
+  fullName: string;
+  location: string;
+  userId: number;
+}
+
 export interface CardType {
   category: string;
   content: string;

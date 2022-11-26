@@ -1,13 +1,8 @@
 import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
+import { UserType } from '../api/type';
 
 const { persistAtom } = recoilPersist();
-interface UserType {
-  email: string;
-  fullName: string;
-  location: string;
-  userId: number;
-}
 
 export const userState = atom({
   key: 'userState',
