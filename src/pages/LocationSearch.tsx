@@ -70,17 +70,6 @@ const S = {
       border-bottom: 1px solid ${Common.colors.line_medium};
     }
   `,
-  //
-  // Join: styled.div`
-  //   cursor: pointer;
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
-  //   & > span {
-  //     color: ${Common.colors.grey_sub};
-  //     ${Label_L2};
-  //   }
-  // `,
   ArrowImg: styled.div`
     display: inline-block;
     width: ${getVwValue('8')};
@@ -153,6 +142,10 @@ const LocationSearch = () => {
   const onSelectHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLTextAreaElement;
     if (target.innerText.split(' ').length !== 3) {
+      alert('동,읍,면이 포함된 지역 이름을 입력해주세요');
+      return;
+    }
+    if (target.innerText.slice(-1) === '구') {
       alert('동,읍,면이 포함된 지역 이름을 입력해주세요');
       return;
     }
