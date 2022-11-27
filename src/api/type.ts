@@ -39,7 +39,7 @@ export interface CardType {
 
 export interface CardViewType {
   category: string;
-  comment: number;
+  comments: number;
   content: string;
   createdAt: string;
   isLike: boolean;

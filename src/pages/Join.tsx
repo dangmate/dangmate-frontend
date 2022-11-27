@@ -382,7 +382,7 @@ const Join = () => {
       ) : (
         <>
           <S.Arrow onClick={() => setStep(true)}>
-            <S.ImgWrap onClick={() => navigate(-1)}>
+            <S.ImgWrap>
               <img src='/images/back_arrow.png' alt='arrow' />
             </S.ImgWrap>{' '}
           </S.Arrow>
