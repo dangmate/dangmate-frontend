@@ -13,6 +13,10 @@ const S = {
   Text: styled.span`
     margin-left: ${getVwValue('5')};
     ${Title_T4}
+  `,
+  ImageWrap: styled.div`
+    border-radius: 50%;
+    overflow: hidden;
   `
 };
 
@@ -25,7 +29,15 @@ interface IProps {
 const UserName = (props: IProps) => {
   return (
     <S.Nick>
-      <ImageControl width='18' height='18' src={props.src} alt={props.alt} />
+      <S.ImageWrap>
+        <ImageControl
+          width='18'
+          height='18'
+          src={props.src}
+          alt={props.alt}
+          fit={'cover'}
+        />
+      </S.ImageWrap>
       <S.Text>{props.name}</S.Text>
     </S.Nick>
   );

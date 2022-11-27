@@ -163,10 +163,9 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
           data: { userId: userData.userId }
         }
       );
-      if (response) {
+      if (response.status === 200) {
         console.log(response);
         console.log('삭제성공!');
-        fetchReplyList();
         setIsMenu(false);
       }
     } catch (err) {

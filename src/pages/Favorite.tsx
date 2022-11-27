@@ -84,13 +84,18 @@ const Favorite = () => {
 
       <S.FeedList>
         {likeList ? (
-          likeList.map((item, index) => {
-            return (
-              <React.Fragment key={index}>
-                <PostCard data={item} />
-              </React.Fragment>
-            );
-          })
+          likeList
+            .sort(
+              (a: { postId: number }, b: { postId: number }) =>
+                b.postId - a.postId
+            )
+            .map((item, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <PostCard data={item} />
+                </React.Fragment>
+              );
+            })
         ) : (
           <LikeEmpty />
         )}

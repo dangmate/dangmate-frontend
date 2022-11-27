@@ -17,6 +17,10 @@ const S = {
   `,
   H2: styled.h2`
     ${Title_T2}
+  `,
+  ImageWrap: styled.div`
+    border-radius: 50%;
+    overflow: hidden;
   `
 };
 
@@ -33,14 +37,15 @@ const HomeHeader = () => {
         <S.H2>댕댕이들 구경하기</S.H2>
       )}
       {!isGuest ? (
-        <div onClick={() => navigate('/profile')}>
+        <S.ImageWrap onClick={() => navigate('/profile')}>
           <ImageControl
             width='32'
             height='32'
             src={userData.profile ? userData.profile : 'images/profile.png'}
             alt={'profile'}
+            fit={'cover'}
           />
-        </div>
+        </S.ImageWrap>
       ) : (
         <></>
       )}
