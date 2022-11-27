@@ -155,6 +155,10 @@ const S = {
         ${Body_B2}
       }
     }
+  `,
+  ProfileImgWrap: styled.div`
+    border-radius: 50%;
+    overflow: hidden;
   `
 };
 const Profile = () => {
@@ -239,16 +243,19 @@ const Profile = () => {
 
           <S.Article>
             <S.ProfileWrap>
-              <ImageControl
-                width='56'
-                height='56'
-                src={
-                  profileData?.profile
-                    ? profileData.profile
-                    : 'images/profile.png'
-                }
-                alt={'profile'}
-              />
+              <S.ProfileImgWrap>
+                <ImageControl
+                  width='56'
+                  height='56'
+                  src={
+                    profileData?.profile
+                      ? profileData.profile
+                      : 'images/profile.png'
+                  }
+                  alt={'profile'}
+                  fit={'cover'}
+                />
+              </S.ProfileImgWrap>
               <strong>{profileData?.fullName}</strong>
               <span>{userData.email}</span>
             </S.ProfileWrap>
