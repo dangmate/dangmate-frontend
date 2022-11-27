@@ -58,7 +58,7 @@ const App = () => {
   const [isShow, setShow] = useState<boolean>(true);
   useEffect(() => {
     if (isMobile()) {
-      setTimeout(() => setShow(false), 1000);
+      setTimeout(() => setShow(false), 1500);
     } else {
       setShow(false);
     }
@@ -75,7 +75,7 @@ const App = () => {
           </FeedCategory.Provider>
         </SkeletonTheme>
       </div>
-      {location.pathname === '/' && isShow && <OnBoarding />}
+      {location.pathname === '/' && <OnBoarding isShow={isShow} />}
     </>
   );
 };
