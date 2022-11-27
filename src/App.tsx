@@ -58,7 +58,7 @@ const App = () => {
   const [isShow, setShow] = useState<boolean>(true);
   useEffect(() => {
     if (isMobile()) {
-      setTimeout(() => setShow(false), 1500);
+      setTimeout(() => setShow(false), 2000);
     } else {
       setShow(false);
     }
