@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
 import axiosRequest from '../../../api/axios';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../../../store/user';
 import { guestState } from '../../../store/guest';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -97,6 +97,7 @@ const CommentInput = (props: IProp) => {
   const [updateCommentStoreData, setUpdateCommentStoreData] =
     useRecoilState(CommentUpdateState);
 
+  // 댓글 등록
   const writeComment = async () => {
     const data = { userId: userData.userId, content: comment };
     console.log(data);
@@ -114,6 +115,7 @@ const CommentInput = (props: IProp) => {
     }
   };
 
+  // 댓글 수정
   const updateComment = async () => {
     const data = { userId: userData.userId, content: comment };
     console.log(data);
@@ -131,16 +133,13 @@ const CommentInput = (props: IProp) => {
     }
   };
 
-  const updateCommentReply = async () => {
-    const data = {
-      userId: userData.userId,
-      content: comment,
-      commentId: updateCommentStoreData.commentId
-    };
+  // 대댓글 등록
+  const writeCommentReply = async () => {
+    const data = { userId: userData.userId, content: comment, commentId };
     console.log(data);
     try {
-      const response = await axiosRequest().put(
-        `/api/post/${postId}/reply/${updateCommentStoreData.replyId}`,
+      const response = await axiosRequest().post(
+        `/api/post/${postId}/reply`,
         data
       );
       console.log(response.data);
@@ -152,12 +151,17 @@ const CommentInput = (props: IProp) => {
     }
   };
 
-  const writeCommentReply = async () => {
-    const data = { userId: userData.userId, content: comment, commentId };
+  // 대댓글 수정
+  const updateCommentReply = async () => {
+    const data = {
+      userId: userData.userId,
+      content: comment,
+      commentId: updateCommentStoreData.commentId
+    };
     console.log(data);
     try {
-      const response = await axiosRequest().post(
-        `/api/post/${postId}/reply`,
+      const response = await axiosRequest().put(
+        `/api/post/${postId}/reply/${updateCommentStoreData.replyId}`,
         data
       );
       console.log(response.data);

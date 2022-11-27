@@ -85,15 +85,10 @@ const PostView = () => {
   const { postId } = useParams();
   const userData = useRecoilValue(userState);
   const [data, setData] = useState<CardViewType | undefined>();
-
   const [isMenu, setIsMenu] = useState<boolean>(false);
-
   const [isDeem, setIsDeem] = useState(false);
-
   const [commentData, setCommentData] = useState([]);
-
   const [commentCount, setCommentCount] = useState(0);
-
   const [relatedUsers, setRelatedUsers] = useState(0);
 
   const fetchPost = async () => {
@@ -101,8 +96,10 @@ const PostView = () => {
       const response = await axiosRequest().get(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      setData(response.data);
-      setRelatedUsers(response.data.relatedUsers);
+      if (response.status === 200) {
+        setData(response.data);
+        setRelatedUsers(response.data.relatedUsers);
+      }
       if (response.data.comments !== 0) {
         fetchComments();
       }
@@ -118,7 +115,7 @@ const PostView = () => {
       const response = await axiosRequest().delete(
         `/api/post/${postId}/user/${userData.userId}`
       );
-      if (response) {
+      if (response.status === 200) {
         navigate('/home');
       }
     } catch (err) {
