@@ -5,8 +5,8 @@ import { Common } from '../../../styles/common';
 import UserName from '../../asset/UserName';
 import { Body_B2, Body_B3, Button_Btn2 } from '../../../styles/style.font';
 import { CommentType } from '../../../api/type';
-import CardSkeleton from './CardSkeleton';
-import PostTime from './PostTime';
+import CardSkeleton from '../home/CardSkeleton';
+import PostTime from '../home/PostTime';
 const S = {
   Container: styled.div`
     padding: ${getVwValue('40 0')};

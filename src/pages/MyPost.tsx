@@ -11,7 +11,7 @@ import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import { CommentType } from '../api/type';
-import CommentCard from '../components/section/home/CommentCard';
+import CommentCard from '../components/section/comment/CommentCard';
 
 const S = {
   Container: styled.div`

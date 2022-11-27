@@ -89,7 +89,7 @@ const FeedDetail = (props: IProps) => {
           <PostTime data={props.postData.createdAt} />
         </S.Column>
         <S.Column>
-          <CommentAction comment={props.commentCount} />
+          <CommentAction comment={props.postData.comments} />
           <LikeAction
             like={props.postData.likes}
             isLike={props.postData.isLike}

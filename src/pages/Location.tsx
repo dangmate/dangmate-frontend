@@ -124,8 +124,10 @@ const Location = () => {
     longitude: 0
   });
   const [regionFirstName, setRegionFirstName] = useState<string>('');
+  const [cityCode, setCityCode] = useState<string>('');
 
   const [regionList, setRegionList] = useState<object[]>([]);
+  const [mapData, setMapData] = useState<object[]>([]);
 
   const [addressList, setAddressList] = useState<string[]>([]);
 
@@ -153,15 +155,17 @@ const Location = () => {
       (err) => console.log(err),
       options
     );
-    console.log('위도, 경도', coords);
     // console.log('현재 위치의 위도 경도 반환', coords);
-    getRegionFirstName();
+    if (coords.latitude !== 0 && coords.longitude !== 0) {
+      console.log('위도, 경도', coords);
+      getRegionCityCode();
+    }
   };
 
   /**
-   * 2. 현재 위치의 도시 이름만 추출(ex: 서울)
+   * 2. 현재 위치의 도시 이름의 citycode 추출(ex: 서울)
    * */
-  const getRegionFirstName = () => {
+  const getRegionCityCode = () => {
     const geocoder = new window.kakao.maps.services.Geocoder();
     const coord = new window.kakao.maps.LatLng(
       coords.latitude,
@@ -171,16 +175,23 @@ const Location = () => {
     const callback = function (result: any, status: any) {
       if (status === window.kakao.maps.services.Status.OK) {
         setRegionFirstName(result[0].address.region_1depth_name);
-        console.log('현재 위치 도시 :', regionFirstName);
       }
     };
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
 
-    const cityCode = getCityCode(regionFirstName);
-    console.log(cityCode);
-    getAddressList(cityCode);
-    getRegionThirdList();
+    if (regionFirstName) {
+      setCityCode(getCityCode(regionFirstName));
+      console.log('citycode', cityCode);
+    }
+
+    if (cityCode) {
+      getAddressList(cityCode);
+    }
+
+    // console.log(cityCode);
+    // getAddressList(cityCode);
+    // getRegionThirdList();
   };
 
   /**
@@ -197,6 +208,7 @@ const Location = () => {
         }
       }
     );
+    // console.log('response', response);
     // 해당 도시에 대한 주소 코드 반환
     // 행정동에 대한 리스트가 아닌 구 단위의 코드를 반환.(강남구, 강서구, 강동구...)
     // 구에 대한 코드를 입력해야 행정동 리스트가 나옴.
@@ -211,34 +223,40 @@ const Location = () => {
         }
       }
     );
-    // 서울 구 코드를 array로 반환
-    const guCodeArray =
-      (await addressData.data.result) &&
-      (await addressData.data.result.map((item: any) => item.cd));
 
-    // 구코드를 반복문으로 돌려 다시 검색
-    (await guCodeArray) &&
-      (await guCodeArray.forEach((item: any) => {
-        axios
-          .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
-            params: {
-              accessToken: response.data.result.accessToken,
-              cd: item,
-              pg_yn: '0'
-            }
-          })
-          .then((res) => {
-            const mapData =
-              res.data.result &&
-              res.data.result.map((item: any) => item.addr_name);
-            const setData = () => {
-              mapData.forEach((item: any) => {
-                setAddressList((addressList) => [...addressList, item]);
-              });
-            };
-            setData();
-          });
-      }));
+    // 서울 구코드를 array로 반환['111230', '11250']
+    const guCodeArray = await addressData.data.result.map(
+      (item: any) => item.cd
+    );
+
+    const guSearch = await guCodeArray.forEach((item: any) => {
+      axios
+        .get('https://sgisapi.kostat.go.kr/OpenAPI3/addr/stage.json', {
+          params: {
+            accessToken: response.data.result.accessToken,
+            cd: item,
+            pg_yn: '0'
+          }
+        })
+        .then((res) => {
+          const mapData =
+            res.data.result &&
+            res.data.result.map((item: any) => item.addr_name);
+          console.log(mapData);
+          const setData = () => {
+            mapData.forEach((item: any) => {
+              setAddressList((addressList) => [...addressList, item]);
+            });
+          };
+          setData();
+        });
+    });
+
+    Promise.all([response, addressData, guCodeArray, guSearch]).then(
+      (value) => {
+        console.log('value', value);
+      }
+    );
   };
 
   /**
@@ -300,7 +318,7 @@ const Location = () => {
 
   useEffect(() => {
     getCoords();
-  }, [coords.latitude, coords.longitude, regionFirstName]);
+  }, [coords.latitude, coords.longitude, regionFirstName, cityCode]);
 
   useEffect(() => {
     setLoading(true);
