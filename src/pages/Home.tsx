@@ -30,12 +30,12 @@ const Home = () => {
   const userData = useRecoilValue(userState);
   const [feed, setFeed] = useState<CardType[]>([]);
   const categoryContext = useContext(FeedCategory);
-  const firstIdRef = useRef(0);
-  const lastPostIdRef = useRef<number | null>(null);
   const isGuest = useRecoilValue(guestState);
   const navigate = useNavigate();
 
   // infinite scroll
+  const firstIdRef = useRef(0);
+  const lastPostIdRef = useRef<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [scroll, setScroll] = useState(0);
 
@@ -69,33 +69,29 @@ const Home = () => {
       return [];
     });
     const firstFetchPosts = async (category: string) => {
-      console.log('category', category);
-      const location = userData.location;
-      const userId = userData.userId;
-      const data = { location, category, userId };
+      const param = {
+        location: userData.location,
+        category,
+        userId: userData.userId
+      };
       try {
-        const response = await axiosRequest().post(`/api/posts?size=5`, data);
-        console.log(response.data);
-        firstIdRef.current = response.data.firstId;
-        if (response.data.posts.length > 0) {
-          lastPostIdRef.current =
-            response.data.posts[response.data.posts.length - 1].postId;
+        const { data } = await axiosRequest().post(`/api/posts?size=5`, param);
+
+        firstIdRef.current = data.firstId;
+        if (data.posts.length > 0) {
+          lastPostIdRef.current = data.posts[data.posts.length - 1].postId;
         }
         setFeed(() => {
-          return [...response.data.posts];
+          return [...data.posts];
         });
-        console.log('feed', feed);
         setLoading(false);
-        console.log('fetch end', loading);
       } catch (err) {
         console.log(err);
       }
     };
 
     setTimeout(async () => {
-      console.log(feed);
-      console.log(categoryContext.isCategory);
-      firstFetchPosts(categoryContext.isCategory);
+      await firstFetchPosts(categoryContext.isCategory);
     }, 1000);
   }, [categoryContext.isCategory]);
 
@@ -104,9 +100,6 @@ const Home = () => {
       if (firstIdRef.current === 0 || isInitialMount.current) {
         return;
       }
-
-      console.log('firstIdRef', firstIdRef);
-      console.log('lastpostidRef', lastPostIdRef);
       const data = {
         location: userData.location,
         userId: userData.userId,
@@ -118,14 +111,12 @@ const Home = () => {
           `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
           data
         );
-        console.log(response.data);
         lastPostIdRef.current =
           response.data.posts[response.data.posts.length - 1].postId;
         setFeed((feed) => {
           return [...feed, ...response.data.posts];
         });
         setScrollLoading(false);
-        console.log('fetch end', loading);
       } catch (err) {
         console.log(err);
       }
