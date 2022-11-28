@@ -28,30 +28,35 @@ const S = {
 const Home = () => {
   const [feed, setFeed] = useState<CardType[]>([]);
   const categoryContext = useContext(FeedCategory);
-  const firstIdRef = useRef(0);
-  const lastPostIdRef = useRef<number | null>(null);
+
   const isGuest = useRecoilValue(guestState);
   const navigate = useNavigate();
 
   // infinite scroll
+  const firstIdRef = useRef(0);
+  const lastPostIdRef = useRef<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [scroll, setScroll] = useState(0);
 
   const [scrollLoading, setScrollLoading] = useState(false);
   const isInitialMount = useRef(true);
+  const timer = useRef<boolean>(false);
 
   const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 2 >=
-      document.documentElement.scrollHeight
-    ) {
+    const { scrollTop, scrollHeight } = document.documentElement;
+    if (window.innerHeight + scrollTop + 10 >= scrollHeight) {
+      // 더 이상 컨텐츠가 없을 때
       if (firstIdRef.current === lastPostIdRef.current) {
-        console.log('끝');
         return;
       }
-      setScrollLoading(true);
-      isInitialMount.current = false;
-      setScroll((scroll) => scroll + 1);
+
+      if (!timer.current) {
+        timer.current = true;
+        isInitialMount.current = false;
+        setScrollLoading(true);
+        setTimeout(() => {
+          timer.current = false;
+        }, 1500);
+      }
     }
   };
 
@@ -118,9 +123,9 @@ const Home = () => {
       }
     };
     setTimeout(async () => {
-      fetchPosts(categoryContext.isCategory);
+      if (scrollLoading) fetchPosts(categoryContext.isCategory);
     }, 1500);
-  }, [scroll]);
+  }, [scrollLoading]);
 
   useEffect(() => {
     if (!isGuest) {
