@@ -17,7 +17,7 @@ const S = {
   `,
   ImageWrap: styled.div`
     position: fixed;
-    bottom: 0;
+    bottom: ${getVwValue('117')};
     display: block;
   `,
   SvgWrap: styled.div`
@@ -42,7 +42,7 @@ const OnBoarding = (props: { isShow: boolean }) => {
       <S.ImageWrap>
         <ImageControl
           width='360'
-          height='397'
+          height='200'
           src={'/images/splash.png'}
           alt={'splash'}
           fit={'cover'}

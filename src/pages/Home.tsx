@@ -56,7 +56,7 @@ const Home = () => {
         setScrollLoading(true);
         setTimeout(() => {
           timer.current = false;
-        }, 1500);
+        }, 1000);
       }
     }
   };
@@ -95,7 +95,7 @@ const Home = () => {
 
     setTimeout(async () => {
       await firstFetchPosts(categoryContext.isCategory);
-    }, 1000);
+    }, 500);
   }, [categoryContext.isCategory]);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const Home = () => {
     };
     setTimeout(async () => {
       if (scrollLoading) fetchPosts(categoryContext.isCategory);
-    }, 1500);
+    }, 500);
   }, [scrollLoading]);
 
   useEffect(() => {

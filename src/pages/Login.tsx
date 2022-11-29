@@ -10,6 +10,7 @@ import { userState } from '../store/user';
 import { Label_L2, Label_L3, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
 import LikeIcon from '../components/asset/LikeIcon';
+import ImageControl from '../components/asset/ImageControl';
 
 interface InputProps {
   state?: string;
@@ -17,15 +18,13 @@ interface InputProps {
 
 const S = {
   Introduce: styled.h3`
-    padding: ${getVwValue('70 20 60')};
+    padding: ${getVwValue('70 20 140')};
     text-align: center;
     ${Title_T1}
   `,
   IntroduceImg: styled.h3`
-    width: ${getVwValue('280')};
-    height: ${getVwValue('280')};
-    margin: 0 auto;
-    background: #f8f8f8;
+    display: flex;
+    justify-content: center;
   `,
   Content: styled.div`
     display: flex;
@@ -187,7 +186,14 @@ const Login = () => {
             {userData.fullName}에게
             <br /> {userData.location} 친구들을 소개할게요!
           </S.Introduce>
-          <S.IntroduceImg></S.IntroduceImg>
+          <S.IntroduceImg>
+            <ImageControl
+              width='277'
+              height='282'
+              src={'/images/notice.png'}
+              alt={'notice'}
+            />
+          </S.IntroduceImg>
         </C.Wrapper>
       ) : (
         <C.Wrapper>

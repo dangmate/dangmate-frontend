@@ -22,6 +22,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import { C } from '../../../styles/emotionStyle';
 import ButtonRound from '../../asset/ButtonRound';
+import { useNavigate } from 'react-router-dom';
 
 interface InputProps {
   state?: string;
@@ -208,6 +209,8 @@ const ProfileEdit = (props: IProps) => {
   const [fullName, setFullName] = useState<string | undefined>(props.fullName);
   const [editError, setEditError] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const inputNickState = () => {
     let color = '';
     if (editError) {
@@ -279,9 +282,9 @@ const ProfileEdit = (props: IProps) => {
       formData.append('multipartFile', image);
       const response = await axiosMultiRequest().post('/api/gallery', formData);
       if (response.data) {
-        const thumbnail = response.data.imagePath;
+        const profile = response.data.imagePath;
         const data = {
-          thumbnail,
+          profile,
           fullName
         };
         try {
@@ -294,10 +297,12 @@ const ProfileEdit = (props: IProps) => {
               email: userData.email,
               fullName: res.data.fullName,
               location: userData.location,
-              userId: userData.userId
+              userId: userData.userId,
+              profile: res.data.profile
             });
-            console.log(userData);
             props.setEditMode(false);
+            alert('프로필 수정 완료!');
+            // navigate('/profile');
           }
         } catch (err: any) {
           if (err.response.status === 401) {
@@ -311,7 +316,7 @@ const ProfileEdit = (props: IProps) => {
       }
     } else {
       const data = {
-        thumbnail: props.profile,
+        profile: props.profile,
         fullName
       };
       try {
@@ -324,10 +329,13 @@ const ProfileEdit = (props: IProps) => {
             email: userData.email,
             fullName: res.data.fullName,
             location: userData.location,
-            userId: userData.userId
+            userId: userData.userId,
+            profile: props.profile
           });
           console.log(userData);
           props.setEditMode(false);
+          alert('프로필 수정 완료!');
+          // navigate('/profile');
         }
       } catch (err: any) {
         if (err.response.status === 401) {

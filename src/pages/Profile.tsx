@@ -222,7 +222,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     if (isGuest) {

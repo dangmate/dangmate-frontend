@@ -17,7 +17,10 @@ interface SProps {
 }
 const S = {
   Category: styled.div<SProps>`
-    padding: ${getVwValue('3 10')};
+    display: flex;
+    align-items: center;
+    height: ${getVwValue('24')};
+    padding: ${getVwValue('0 10')};
     border: 1px solid
       ${(props) =>
         props.active

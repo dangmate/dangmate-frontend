@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import ImageControl from '../../asset/ImageControl';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import { Title_T2 } from '../../../styles/style.font';
 import { useNavigate } from 'react-router-dom';
 import { guestState } from '../../../store/guest';
+import axiosRequest from '../../../api/axios';
+import { UserType } from '../../../api/type';
 
 const S = {
   Container: styled.div`
@@ -25,9 +27,31 @@ const S = {
 };
 
 const HomeHeader = () => {
-  const userData = useRecoilValue(userState);
   const navigate = useNavigate();
   const isGuest = useRecoilValue(guestState);
+  const [userData, setUserData] = useRecoilState(userState);
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      const res = await axiosRequest().get(`/api/user/${userData.userId}`);
+      if (res.status === 200) {
+        setUserData((userData: UserType) => {
+          return { ...userData, profile: res.data.profile };
+        });
+      }
+    } catch (err: any) {
+      if (err.status === 404) {
+        console.log('존재하지 않는 유저입니다.');
+      }
+      if (err.status === 500) {
+        console.log('유저 조회에 실패했습니다.');
+      }
+    }
+  }, [userData.profile]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <S.Container>
