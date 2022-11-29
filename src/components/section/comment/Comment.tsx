@@ -19,6 +19,7 @@ import {
 import { fetchCommentReply } from '../../../api/request';
 import { Body_B2, Body_B3 } from '../../../styles/style.font';
 import BottomMenu from '../../asset/BottomMenu';
+import { useNavigate } from 'react-router-dom';
 
 const S = {
   Container: styled.div``,
@@ -101,6 +102,8 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const setUpdateCommentStore = useSetRecoilState(CommentUpdateState);
   const setUpdateMode = useSetRecoilState(UpdateMode);
 
+  const nagivate = useNavigate();
+
   // 대댓글 업데이트
   const fetchReplyList = async () => {
     if (props.data.reply > 0) {
@@ -167,6 +170,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
         console.log(response);
         console.log('삭제성공!');
         setIsMenu(false);
+        // nagivate(0);
       }
     } catch (err) {
       console.log(err);
@@ -312,8 +316,8 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
       )}
       {isMenu && isReply && (
         <BottomMenu
-          updateText={'대댓글 수정하기'}
-          deleteText={'대댓글 삭제하기'}
+          updateText={'댓글 수정하기'}
+          deleteText={'댓글 삭제하기'}
           update={onClickUpdateCommentReply}
           delete={onClickDeleteCommentReply}
           deem={onClickDeem}
