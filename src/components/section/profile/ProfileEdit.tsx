@@ -22,6 +22,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
 import { C } from '../../../styles/emotionStyle';
 import ButtonRound from '../../asset/ButtonRound';
+import { useNavigate } from 'react-router-dom';
 
 interface InputProps {
   state?: string;
@@ -208,6 +209,8 @@ const ProfileEdit = (props: IProps) => {
   const [fullName, setFullName] = useState<string | undefined>(props.fullName);
   const [editError, setEditError] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const inputNickState = () => {
     let color = '';
     if (editError) {
@@ -296,8 +299,9 @@ const ProfileEdit = (props: IProps) => {
               location: userData.location,
               userId: userData.userId
             });
-            console.log(userData);
             props.setEditMode(false);
+            alert('프로필 수정 완료!');
+            // navigate('/profile');
           }
         } catch (err: any) {
           if (err.response.status === 401) {
@@ -328,6 +332,8 @@ const ProfileEdit = (props: IProps) => {
           });
           console.log(userData);
           props.setEditMode(false);
+          alert('프로필 수정 완료!');
+          // navigate('/profile');
         }
       } catch (err: any) {
         if (err.response.status === 401) {
