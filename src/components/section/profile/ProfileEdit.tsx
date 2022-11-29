@@ -282,9 +282,9 @@ const ProfileEdit = (props: IProps) => {
       formData.append('multipartFile', image);
       const response = await axiosMultiRequest().post('/api/gallery', formData);
       if (response.data) {
-        const thumbnail = response.data.imagePath;
+        const profile = response.data.imagePath;
         const data = {
-          thumbnail,
+          profile,
           fullName
         };
         try {
@@ -297,7 +297,8 @@ const ProfileEdit = (props: IProps) => {
               email: userData.email,
               fullName: res.data.fullName,
               location: userData.location,
-              userId: userData.userId
+              userId: userData.userId,
+              profile: res.data.profile
             });
             props.setEditMode(false);
             alert('프로필 수정 완료!');
@@ -315,7 +316,7 @@ const ProfileEdit = (props: IProps) => {
       }
     } else {
       const data = {
-        thumbnail: props.profile,
+        profile: props.profile,
         fullName
       };
       try {
@@ -328,7 +329,8 @@ const ProfileEdit = (props: IProps) => {
             email: userData.email,
             fullName: res.data.fullName,
             location: userData.location,
-            userId: userData.userId
+            userId: userData.userId,
+            profile: props.profile
           });
           console.log(userData);
           props.setEditMode(false);

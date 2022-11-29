@@ -21,6 +21,7 @@ export interface UserType {
   fullName: string;
   location: string;
   userId: number;
+  profile: null | string;
 }
 
 export interface CardType {
