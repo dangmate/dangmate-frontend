@@ -70,6 +70,7 @@ interface CommentType {
   fullName: string;
   isComment: boolean;
   reply: number;
+  profile: null | string;
 }
 
 interface CommentReplyType {
@@ -235,7 +236,9 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
       <S.Head>
         <S.Column>
           <UserName
-            src={'/images/profile.png'}
+            src={
+              props.data.profile ? props.data.profile : '/images/profile.png'
+            }
             alt={'profile'}
             name={props.data.fullName}
           ></UserName>
