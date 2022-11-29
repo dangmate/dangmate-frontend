@@ -18,10 +18,8 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../../../styles/styleUtil';
 import { Common } from '../../../styles/common';
 import axiosRequest, { axiosMultiRequest } from '../../../api/axios';
-import profile from '../../../pages/Profile';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { userState } from '../../../store/user';
-import { UserType } from '../../../api/type';
 import { C } from '../../../styles/emotionStyle';
 import ButtonRound from '../../asset/ButtonRound';
 
@@ -343,29 +341,26 @@ const ProfileEdit = (props: IProps) => {
     }
   };
 
-  // const EditUserCheck = async () => {
-  //   const data = {
-  //     thumbnail: props.profile,
-  //     fullName: props.fullName
-  //   };
-  //   try {
-  //     const res = await axiosRequest().put(
-  //       `/api/user/${userData.userId}`,
-  //       data
-  //     );
-  //     if (res.status == 200) {
-  //       setEditError(false);
-  //     }
-  //   } catch (err: any) {
-  //     if (err.response.status === 401) {
-  //       setEditError(true);
-  //     } else if (err.response.status === 404) {
-  //       console.log('존재하지 않는 유저입니다.');
-  //     } else if (err.response.status === 500) {
-  //       console.log('유저 업데이트에 실패했습니다.');
-  //     }
-  //   }
-  // };
+  const getCheckProfile = async () => {
+    try {
+      const { data } = await axiosRequest().get(
+        `/api/user/${userData.userId}/check-profile`
+      );
+      if (data.canBeUpdated) {
+        console.log('업데이트가능');
+        setEditError(() => false);
+      } else {
+        console.log('업데이트불가능');
+        setEditError(() => true);
+      }
+    } catch (err: any) {
+      if (err.response.status === 404) {
+        console.log('존재하지 않는 유저입니다.');
+      } else if (err.response.status === 500) {
+        console.log('유저 업데이트에 실패했습니다.');
+      }
+    }
+  };
 
   useEffect(() => {
     if (image) {
@@ -406,10 +401,9 @@ const ProfileEdit = (props: IProps) => {
     }
   }, [isEdited, fullName, nickname, keyword, image, checkUniqNick]);
 
-  // useEffect(() => {
-  //   EditUserCheck();
-  //   console.log(editError);
-  // }, [editError]);
+  useEffect(() => {
+    getCheckProfile();
+  }, [editError]);
 
   // useEffect(() => {
   //   test();
