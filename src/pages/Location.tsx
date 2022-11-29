@@ -13,6 +13,7 @@ import { getCityCode } from '../utils/ciryCode';
 import { Body_B2, Label_L2, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
 import Loader from '../components/asset/Loader';
+import ImageControl from '../components/asset/ImageControl';
 
 declare global {
   interface Window {
@@ -107,6 +108,14 @@ const S = {
     padding: ${getVwValue('12')};
     margin-top: ${getVwValue('5')};
     border-bottom: 1px solid ${(props) => props.state};
+  `,
+  ImageWrap: styled.div`
+    display: flex;
+    justify-content: center;
+    //height: 100%;
+    //align-items: center;
+    // margin-bottom: ${getVwValue('130')};
+    //flex: 1 1 0%;
   `
 };
 
@@ -133,6 +142,8 @@ const Location = () => {
 
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
+
+  const [searchOn, setSearchOn] = useState(true);
 
   const options = {
     enableHighAccuracy: true,
@@ -302,6 +313,7 @@ const Location = () => {
   };
 
   const autoSearch = () => {
+    setSearchOn(false);
     setListLoading(true);
     setRegionList([]);
     getRegionThirdList();
@@ -342,6 +354,17 @@ const Location = () => {
             이외의 목적으로 사용하지 않아요.
           </p>
         </S.Title>
+        {searchOn && (
+          <S.ImageWrap>
+            <ImageControl
+              width='277'
+              height='282'
+              src={'/images/location.png'}
+              alt={'char'}
+            />
+          </S.ImageWrap>
+        )}
+
         <S.SearchList>
           {listLoading ? (
             <Loader />

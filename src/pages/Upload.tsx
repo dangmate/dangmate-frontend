@@ -15,8 +15,18 @@ import { Body_B2, Label_L3, Title_T1 } from '../styles/style.font';
 import { C } from '../styles/emotionStyle';
 
 const S = {
+  UploadWrap: styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  `,
   Container: styled.div`
-    padding: ${getVwValue('0 20 100')};
+    padding: ${getVwValue('0 20')};
   `,
   Row: styled.div`
     display: block;
@@ -26,9 +36,11 @@ const S = {
   `,
   Content: styled.div`
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin: ${getVwValue('60 0 0')};
+    height: 100%;
+    flex: 1 1 0%;
+    margin-bottom: ${getVwValue('80')};
   `,
   FormContent: styled.div`
     margin: ${getVwValue('60 0 0')};
@@ -46,7 +58,6 @@ const S = {
     display: flex;
     justify-content: space-between;
     width: ${getVwValue('210')};
-    margin: ${getVwValue('65 0 0')};
   `,
   Button: styled.div`
     width: 100%;
@@ -119,11 +130,17 @@ const S = {
     height: 100%;
   `,
   Introduce: styled.h3`
-    padding: ${getVwValue('70 20 60')};
+    padding: ${getVwValue('70 20 140')};
     text-align: center;
+    ${Title_T1}
+    &>p {
+      margin-top: ${getVwValue('8')};
+      ${Body_B2}
+    }
   `,
   IntroduceImg: styled.h3`
-    text-align: center;
+    display: flex;
+    justify-content: center;
   `
 };
 
@@ -334,34 +351,28 @@ const UploadForm = () => {
       {!success ? (
         <>
           {!next ? (
-            <>
+            <S.UploadWrap>
               <ArrowBack onClick={() => navigate(-1)} />
               <S.Container>
                 <S.Row>
-                  <S.H2>우리 댕댕이가 말하고 싶은 주제는?</S.H2>
+                  <S.H2>댕댕이가 말하고 싶은 주제는?</S.H2>
                   <S.P>언제든지 바꿀 수 있으니 걱정하지마세요.</S.P>
                 </S.Row>
-                <S.Content>
-                  <ImageControl
-                    width={'280'}
-                    height={'280'}
-                    src={'/images/Frame.png'}
-                    alt={''}
-                  />
-                  <S.CategoryWrap>
-                    <Category
-                      title={'산책 메이트'}
-                      active={toggleA}
-                      onClick={onClickToggleAHandler}
-                    />
-                    <Category
-                      title={'댕댕 이야기'}
-                      active={toggleB}
-                      onClick={onClickToggleBHandler}
-                    />
-                  </S.CategoryWrap>
-                </S.Content>
               </S.Container>
+              <S.Content>
+                <S.CategoryWrap>
+                  <Category
+                    title={'산책 메이트'}
+                    active={toggleA}
+                    onClick={onClickToggleAHandler}
+                  />
+                  <Category
+                    title={'댕댕 이야기'}
+                    active={toggleB}
+                    onClick={onClickToggleBHandler}
+                  />
+                </S.CategoryWrap>
+              </S.Content>
               <C.Bottom>
                 <C.Button>
                   <ButtonRound
@@ -373,7 +384,7 @@ const UploadForm = () => {
                   </ButtonRound>
                 </C.Button>
               </C.Bottom>
-            </>
+            </S.UploadWrap>
           ) : (
             <>
               {isUpdate ? (
@@ -496,9 +507,16 @@ const UploadForm = () => {
         <S.Wrapper>
           <S.Introduce>
             {userData.location} 댕댕이들에게 전달 완료!
-            <br /> 우리 {userData.fullName}에게 어떤 친구가 생길까요?
+            <p>우리 {userData.fullName}에게 어떤 친구가 생길까요?</p>
           </S.Introduce>
-          <S.IntroduceImg>이미지</S.IntroduceImg>
+          <S.IntroduceImg>
+            <ImageControl
+              width='277'
+              height='282'
+              src={'/images/notice.png'}
+              alt={'notice'}
+            />
+          </S.IntroduceImg>
         </S.Wrapper>
       )}
     </>
