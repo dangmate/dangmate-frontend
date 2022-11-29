@@ -11,10 +11,8 @@ const Layout = () => {
     if (userData.fullName && userData.email && userData.location) {
       setGuest(false);
       console.log('guestmode : false');
-      alert('hihihihihihi');
     } else {
       setGuest(true);
-      alert('hihihihihihi');
       console.log('guestmode : true');
     }
   }, [userData]);
