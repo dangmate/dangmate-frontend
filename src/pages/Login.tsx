@@ -61,6 +61,7 @@ const S = {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: ${getVwValue('100')};
 
     & > span {
       display: block;
