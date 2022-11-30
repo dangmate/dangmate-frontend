@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
-import { Title_T2 } from '../styles/style.font';
+import { Title_T2, Title_T3 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
 import { LikeEmpty } from '../components/section/home/PostEmpty';
 import LikeTabMenu from '../components/section/home/LikeTabMenu';
@@ -41,7 +41,7 @@ const S = {
   `,
   Text: styled.div`
     color: ${Common.colors.grey_sub};
-    ${Title_T2}
+    ${Title_T3}
   `,
   FeedList: styled.div`
     padding: ${getVwValue('0 20')};

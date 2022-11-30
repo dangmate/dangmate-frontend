@@ -16,8 +16,8 @@ export const Title_T2 = `
 `;
 
 export const Title_T3 = `
-  font-family: Pretendard-Bold, sans-serif;
-  font-size: ${getVwValue('22')};
+  font-family:Pretendard-Medium, sans-serif;
+  font-size: ${getVwValue('18')};
   line-height: 130%;
   letter-spacing: ${getVwValue('-0.1')};
 `;

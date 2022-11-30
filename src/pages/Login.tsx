@@ -242,7 +242,7 @@ const Login = () => {
                   onChange={(e) => setPwd(e.target.value)}
                   onFocus={() => setPwdFocus(true)}
                   onBlur={() => setPwdFocus(false)}
-                  placeholder='6~12자리 입력해 주세요.'
+                  placeholder='6~20자리 입력해 주세요.'
                   state={inputPwdState()}
                 />
                 {pwd && !validPwd ? (
