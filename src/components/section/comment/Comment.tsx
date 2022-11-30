@@ -37,6 +37,10 @@ const S = {
     color: ${Common.colors.grey_sub};
     ${Body_B2}
   `,
+  CommentDisabledContent: styled.div`
+    color: ${Common.colors.grey_disabled};
+    ${Body_B2}
+  `,
   TimeWrap: styled.div`
     margin-left: ${getVwValue('10')};
   `,
@@ -71,6 +75,7 @@ interface CommentType {
   isComment: boolean;
   reply: number;
   profile: null | string;
+  isActive: boolean;
 }
 
 interface CommentReplyType {
@@ -87,6 +92,7 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
   const [replyData, setReplyData] = useState<CommentReplyType[]>([]);
   const [isShowReply, setIsShowReply] = useState(false);
   const [replyCount, setReplyCount] = useState(0);
+  const [isActive, setIsActive] = useState<boolean>(true);
 
   const [isMenu, setIsMenu] = useState<boolean>(false);
   const [updateCommentData, setUpdateCommentData] = useState({
@@ -231,6 +237,13 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
     setReplyCount(props.data.reply);
   }, []);
 
+  useEffect(() => {
+    if (props.data.isActive) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, []);
   return (
     <S.Container>
       <S.Head>
@@ -255,7 +268,13 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
       </S.Head>
 
       <S.Content>
-        <S.CommentContent>{props.data.content}</S.CommentContent>
+        {isActive ? (
+          <S.CommentContent>{props.data.content}</S.CommentContent>
+        ) : (
+          <S.CommentDisabledContent>
+            삭제된 댓글입니다.
+          </S.CommentDisabledContent>
+        )}
 
         <S.Foot>
           <S.Column>
