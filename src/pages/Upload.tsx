@@ -331,7 +331,12 @@ const UploadForm = () => {
   };
 
   useEffect(() => {
-    setValidText(TEXT_REGEX.test(text));
+    if (text) {
+      setValidText(true);
+    } else {
+      setValidText(false);
+    }
+    // setValidText(TEXT_REGEX.test(text));
   }, [text]);
 
   useEffect(() => {

@@ -193,7 +193,12 @@ const CommentInput = (props: IProp) => {
   };
 
   useEffect(() => {
-    setValidComment(COMMENT_REGEX.test(comment));
+    if (comment) {
+      setValidComment(true);
+    } else {
+      setValidComment(false);
+    }
+    // setValidComment(COMMENT_REGEX.test(comment));
   }, [comment]);
 
   useEffect(() => {
@@ -228,6 +233,7 @@ const CommentInput = (props: IProp) => {
           onChange={onChangeComment}
           onFocus={() => onFocusHandler()}
           // onBlur={() => setCommentFocus(false)}
+          maxLength={100}
           placeholder={
             !isGuest ? '댓글을 작성해 주세요.' : '로그인 후 작성 가능해요.'
           }
