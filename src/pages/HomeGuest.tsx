@@ -21,7 +21,7 @@ const S = {
     position: relative;
   `,
   FeedList: styled.div`
-    padding: ${getVwValue('0 20')};
+    padding: ${getVwValue('0 20 70')};
   `
 };
 

@@ -9,7 +9,7 @@ const S = {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: ${getVwValue('50 0 100')};
+    margin: ${getVwValue('0 0 100')};
   `
 };
 
