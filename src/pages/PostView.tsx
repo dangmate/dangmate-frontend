@@ -91,6 +91,8 @@ const PostView = () => {
   const [commentCount, setCommentCount] = useState(0);
   const [relatedUsers, setRelatedUsers] = useState(0);
 
+  console.log(userData.userId);
+
   const fetchPost = async () => {
     try {
       const response = await axiosRequest().get(

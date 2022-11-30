@@ -10,7 +10,7 @@ export const userState = atom({
     email: '',
     fullName: '',
     location: '',
-    userId: 0,
+    userId: 1,
     profile: null
   } as UserType,
   effects_UNSTABLE: [persistAtom]
