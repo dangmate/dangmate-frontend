@@ -3,7 +3,13 @@ import styled from '@emotion/styled';
 import { getVwValue } from '../styles/styleUtil';
 import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
-import { Body_B2, Label_L2, Title_T2, Title_T4 } from '../styles/style.font';
+import {
+  Body_B2,
+  Label_L2,
+  Title_T2,
+  Title_T3,
+  Title_T4
+} from '../styles/style.font';
 import LikeIcon from '../components/asset/LikeIcon';
 import ImageControl from '../components/asset/ImageControl';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -67,7 +73,7 @@ const S = {
   `,
   Text: styled.div`
     color: ${Common.colors.grey_sub};
-    ${Title_T2}
+    ${Title_T3}
   `,
   Article: styled.div`
     padding: ${getVwValue('0 20')};
