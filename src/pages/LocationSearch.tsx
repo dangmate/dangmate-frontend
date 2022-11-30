@@ -141,11 +141,11 @@ const LocationSearch = () => {
 
   const onSelectHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLTextAreaElement;
-    if (target.innerText.split(' ').length !== 3) {
+    if (target.innerText.split(' ').length < 3) {
       alert('동,읍,면이 포함된 지역 이름을 입력해주세요');
       return;
     }
-    if (target.innerText.slice(-1) === '구') {
+    if (target.innerText.slice(-1) !== '동') {
       alert('동,읍,면이 포함된 지역 이름을 입력해주세요');
       return;
     }
@@ -187,7 +187,11 @@ const LocationSearch = () => {
             state={inputSearchState()}
             placeholder='내 동네 검색 (동,읍,면)'
           />
-          {search && !validSearch ? <p>2글자 이상 입력해주세요.</p> : <></>}
+          {search && !validSearch ? (
+            <p>동, 읍, 면이 포함된 2글자 이상 입력해주세요.</p>
+          ) : (
+            <></>
+          )}
           {search && validSearch && !foundSearch ? (
             <p>입력하신 동네를 찾을 수 없어요.</p>
           ) : (
