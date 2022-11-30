@@ -16,6 +16,7 @@ const S = {
     align-items: center;
   `,
   Count: styled.div`
+    width: ${getVwValue('10')};
     margin-left: ${getVwValue('5')};
     color: ${Common.colors.grey_body};
     ${Button_Btn2}
@@ -26,6 +27,15 @@ const S = {
     align-items: center;
     width: ${getVwValue('24')};
     height: ${getVwValue('24')};
+    margin-top: ${getVwValue('0')};
+  `,
+  LikeTrueWrap: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: ${getVwValue('24')};
+    height: ${getVwValue('24')};
+    margin-top: ${getVwValue('-3')};
   `
 };
 interface IProps {
@@ -51,6 +61,9 @@ const LikeAction = (props: IProps) => {
       postId: props.postId
     };
     console.log(data);
+    if (like) {
+      return;
+    }
     try {
       const response = await axiosRequest().post(`/api/post/like`, data);
       setLike(true);
@@ -64,6 +77,10 @@ const LikeAction = (props: IProps) => {
   const postUnlikeAction = async () => {
     if (isGuest) {
       navigate('/login');
+      return;
+    }
+
+    if (!like) {
       return;
     }
     try {
@@ -92,23 +109,25 @@ const LikeAction = (props: IProps) => {
 
   return (
     <S.Like onClick={like ? postUnlikeAction : postLikeAction}>
-      <S.LikeWrap>
-        {like ? (
+      {like ? (
+        <S.LikeTrueWrap>
           <ImageControl
             width='24'
-            // height='24'
+            height='24'
             src={'/svg/like_true.svg'}
             alt={'profile'}
           ></ImageControl>
-        ) : (
+        </S.LikeTrueWrap>
+      ) : (
+        <S.LikeWrap>
           <ImageControl
-            width='18'
-            height='16'
+            width='24'
+            height='24'
             src={'/svg/like.svg'}
             alt={'profile'}
           ></ImageControl>
-        )}
-      </S.LikeWrap>
+        </S.LikeWrap>
+      )}
       <S.Count>{likeCount}</S.Count>
     </S.Like>
   );

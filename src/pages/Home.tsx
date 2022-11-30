@@ -83,6 +83,7 @@ const Home = () => {
       try {
         const { data } = await axiosRequest().post(`/api/posts?size=5`, param);
 
+        console.log(data);
         firstIdRef.current = data.firstId;
         if (data.posts.length > 0) {
           lastPostIdRef.current = data.posts[data.posts.length - 1].postId;
@@ -118,6 +119,7 @@ const Home = () => {
           `/api/posts?size=5&lastPostId=${lastPostIdRef.current}`,
           data
         );
+        console.log(response.data);
         lastPostIdRef.current =
           response.data.posts[response.data.posts.length - 1].postId;
         setFeed((feed) => {
