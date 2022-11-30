@@ -72,6 +72,9 @@ const Home = () => {
     });
 
     const firstFetchPosts = async (category: string) => {
+      if (!isGuest) {
+        return;
+      }
       try {
         const response = await axiosRequest().get(
           `/api/posts?size=5&category=${category}`
@@ -132,6 +135,12 @@ const Home = () => {
       navigate('/home');
     }
   }, [isGuest]);
+
+  useEffect(() => {
+    if (feed.length < 1 || !feed) {
+      setScrollLoading(false);
+    }
+  }, [feed]);
 
   return (
     <>

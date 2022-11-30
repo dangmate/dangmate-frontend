@@ -46,7 +46,10 @@ const Home = () => {
     const { scrollTop, scrollHeight } = document.documentElement;
     if (window.innerHeight + scrollTop + 10 >= scrollHeight) {
       // 더 이상 컨텐츠가 없을 때
+      console.log(firstIdRef.current);
+      console.log(lastPostIdRef.current);
       if (firstIdRef.current === lastPostIdRef.current) {
+        console.log('끝!!');
         return;
       }
 
@@ -101,6 +104,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async (category: string) => {
       if (firstIdRef.current === 0 || isInitialMount.current) {
+        console.log('끝끝');
         return;
       }
       const data = {
@@ -134,6 +138,12 @@ const Home = () => {
       navigate('/feed');
     }
   }, [isGuest]);
+
+  useEffect(() => {
+    if (feed.length < 1 || !feed) {
+      setScrollLoading(false);
+    }
+  }, [feed]);
 
   return (
     <>
