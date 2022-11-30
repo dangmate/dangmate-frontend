@@ -206,6 +206,14 @@ const UploadForm = () => {
   const onChangeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
+    const maxSize = 10 * 1024 * 1024;
+    const fileSize = file.size;
+    console.log(fileSize);
+    if (fileSize > maxSize) {
+      alert('첨부파일 사이즈는 10MB 이내로 등록 가능합니다.');
+      setImage(null);
+      return;
+    }
 
     if (file && file.type.substring(0, 5) === 'image') {
       setImage(file);
