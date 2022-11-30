@@ -255,12 +255,14 @@ const Comment = (props: { data: CommentType; postId: string | undefined }) => {
             alt={'profile'}
             name={props.data.fullName}
           ></UserName>
-          <S.TimeWrap>
-            <PostTime data={props.data.createdAt} />
-          </S.TimeWrap>
+          {isActive && (
+            <S.TimeWrap>
+              <PostTime data={props.data.createdAt} />
+            </S.TimeWrap>
+          )}
         </S.Column>
 
-        {props.data.fullName === userData.fullName && (
+        {props.data.fullName === userData.fullName && isActive && (
           <S.Column onClick={showBottomMenu}>
             <ButtonMore />
           </S.Column>
