@@ -28,7 +28,7 @@ interface IProp {
 }
 
 const App = () => {
-  alert(123);
+  alert(12345);
   // router
   const routes: RouteObject[] = [
     {
