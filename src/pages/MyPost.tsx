@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Common } from '../styles/common';
 import { Title_T2 } from '../styles/style.font';
 import PostCard from '../components/section/home/PostCard';
-import { MyPostEmpty } from '../components/section/home/PostEmpty';
+import {
+  MyCommentEmpty,
+  MyPostEmpty
+} from '../components/section/home/PostEmpty';
 import MyPostTabMenu from '../components/section/home/MyPostTabMenu';
 import axiosRequest from '../api/axios';
 import { useRecoilValue } from 'recoil';
@@ -131,7 +134,7 @@ const MyPost = () => {
                 );
               })
             ) : (
-              <MyPostEmpty />
+              <MyCommentEmpty />
             )}
           </S.FeedList>
         </>

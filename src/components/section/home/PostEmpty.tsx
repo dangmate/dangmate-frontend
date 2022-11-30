@@ -71,3 +71,17 @@ export const MyPostEmpty = () => {
     </S.EmptyFeed>
   );
 };
+
+export const MyCommentEmpty = () => {
+  return (
+    <S.EmptyFeed>
+      {/*<ImageControl*/}
+      {/*  width='160'*/}
+      {/*  height='160'*/}
+      {/*  src={'/images/likeEmpty.png'}*/}
+      {/*  alt={'profile'}*/}
+      {/*></ImageControl>*/}
+      <S.Text2>등록한 댓글이 없어요</S.Text2>
+    </S.EmptyFeed>
+  );
+};
