@@ -63,7 +63,7 @@ const MyPost = () => {
       );
       if (res.status === 200) {
         setMyPostList(res.data.posts);
-        setPost(true);
+        // setPost(true);
         console.log(myPostList);
       }
     } catch (err) {
@@ -78,7 +78,7 @@ const MyPost = () => {
       );
       if (res.status === 200) {
         setMyCommentList(res.data.comments);
-        setPost(false);
+        // setPost(false);
         console.log(myCommentList);
       }
     } catch (err) {

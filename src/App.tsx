@@ -3,7 +3,7 @@ import { RouteObject, useLocation, useRoutes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import Favorite from './pages/Favorite';
-import Story from './pages/MyPost';
+import MyPost from './pages/MyPost';
 import Profile from './pages/Profile';
 import NoMatch from './components/common/NoMatch';
 import { useMobileCheck, isMobile } from './hooks/useMobile';
@@ -19,7 +19,6 @@ import PostView from './pages/PostView';
 import Upload from './pages/Upload';
 import { FeedCategory } from './context/FeedCategory';
 import { SkeletonTheme } from 'react-loading-skeleton';
-import { Common } from './styles/common';
 import HomeGuest from './pages/HomeGuest';
 
 interface IProp {
@@ -45,7 +44,7 @@ const App = () => {
         { path: 'upload', element: <Upload /> },
         { path: 'upload/:postId', element: <Upload /> },
         { path: 'favorite', element: <Favorite /> },
-        { path: 'story', element: <Story /> },
+        { path: 'mypost', element: <MyPost /> },
         { path: 'profile', element: <Profile /> },
         { path: '*', element: <NoMatch /> }
       ]

@@ -97,7 +97,7 @@ const NaviBar = () => {
         </li>
         <li
           onClick={
-            isGuest ? () => navigate('/login') : () => navigate('/story')
+            isGuest ? () => navigate('/login') : () => navigate('/mypost')
           }
         >
           <S.SvgWrap>
