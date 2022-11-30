@@ -103,7 +103,7 @@ const S = {
 
 const EMAIL_REGEX =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-const PWD_REGEX = /^[A-Za-z0-9]{6,12}$/;
+const PWD_REGEX = /^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -242,11 +242,11 @@ const Login = () => {
                   onChange={(e) => setPwd(e.target.value)}
                   onFocus={() => setPwdFocus(true)}
                   onBlur={() => setPwdFocus(false)}
-                  placeholder='6자리 이상 입력해 주세요.'
+                  placeholder='6~12자리 입력해 주세요.'
                   state={inputPwdState()}
                 />
                 {pwd && !validPwd ? (
-                  <p>6자리 이상의 비밀번호를 입력해 주세요.</p>
+                  <p>6~20자리의 비밀번호를 입력해 주세요.</p>
                 ) : (
                   <></>
                 )}
