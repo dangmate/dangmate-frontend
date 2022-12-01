@@ -27,6 +27,10 @@ interface IProp {
 }
 
 const App = () => {
+  if (import.meta.env.MODE === 'production') {
+    console.log = function no_console() {};
+    console.warn = function no_console() {};
+  }
   // router
   const routes: RouteObject[] = [
     {
