@@ -1,3 +1,3 @@
 # Dangmate Frontend
 
-![](../../1.png)
+![](./public/images/readme_1.png)
