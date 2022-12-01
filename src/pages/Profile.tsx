@@ -178,7 +178,7 @@ const Profile = () => {
     if (window.confirm('정말로 로그아웃 할까요?')) {
       window.localStorage.removeItem('recoil-persist');
       setGuest(true);
-      setUserData({ email: '', fullName: '', location: '', userId: 0 });
+      setUserData({ email: '', fullName: '', location: '', userId: 1 });
       navigate('/');
     }
   };
