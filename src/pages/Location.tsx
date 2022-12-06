@@ -329,7 +329,6 @@ const Location = () => {
 
   useEffect(() => {
     getCoords();
-    getRegionThirdList();
   }, [coords.latitude, coords.longitude, regionFirstName, cityCode]);
 
   useEffect(() => {
