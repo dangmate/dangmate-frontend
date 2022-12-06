@@ -145,6 +145,8 @@ const Location = () => {
 
   const [searchOn, setSearchOn] = useState(true);
 
+  const [test, setTest] = useState<string[]>([]);
+
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -253,13 +255,7 @@ const Location = () => {
           const mapData =
             res.data.result &&
             res.data.result.map((item: any) => item.addr_name);
-          console.log(mapData);
-          const setData = () => {
-            mapData.forEach((item: any) => {
-              setAddressList((addressList) => [...addressList, item]);
-            });
-          };
-          setData();
+          setAddressList((prevState) => [...prevState, ...mapData]);
         });
     });
 
@@ -304,7 +300,10 @@ const Location = () => {
       }
     };
 
-    const promised = addressList.map(async (value, index) => {
+    const set = new Set(addressList);
+    console.log('Set', set);
+
+    const promised = [...set].map(async (value, index) => {
       await geocoder.addressSearch(value, callback);
     });
 
