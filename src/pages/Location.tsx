@@ -329,13 +329,14 @@ const Location = () => {
 
   useEffect(() => {
     getCoords();
+    getRegionThirdList();
   }, [coords.latitude, coords.longitude, regionFirstName, cityCode]);
 
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 3000);
   }, []);
 
   return (
