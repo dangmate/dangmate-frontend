@@ -45,16 +45,8 @@ const OnBoarding = (props: { isShow: boolean }) => {
           height='200'
           src={'/images/splash.png'}
           alt={'splash'}
-          // fit={'cover'}
         />
       </S.ImageWrap>
-      {/*<ImageControl*/}
-      {/*  width='360'*/}
-      {/*  height='800'*/}
-      {/*  src={'/images/splash.jpg'}*/}
-      {/*  alt={'profile'}*/}
-      {/*  fit={'cover'}*/}
-      {/*/>*/}
     </S.Container>
   );
 };
