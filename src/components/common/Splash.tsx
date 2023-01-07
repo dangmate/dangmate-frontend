@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getVwValue } from '../../styles/styleUtil';
 import ImageControl from '../asset/ImageControl';
 import { Common } from '../../styles/common';
+import { useLocation } from 'react-router-dom';
+import { isMobile } from '../../hooks/useMobile';
 
 const S = {
   Container: styled.div<{ isShow: boolean }>`
@@ -14,6 +16,7 @@ const S = {
     opacity: ${(props) => (props.isShow ? 1 : 0)};
     visibility: ${(props) => (props.isShow ? 'visible' : 'hidden')};
     transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
+    z-index: 10000;
   `,
   ImageWrap: styled.div`
     position: fixed;
@@ -27,9 +30,24 @@ const S = {
   `
 };
 
-const OnBoarding = (props: { isShow: boolean }) => {
+const Splash = () => {
+  const location = useLocation();
+  const [isShow, setShow] = useState<boolean>(true);
+
+  const setSplashState = () => {
+    if (location.pathname === '/' && isMobile()) {
+      setTimeout(() => setShow(false), 2000);
+    } else {
+      setShow(false);
+    }
+  };
+
+  useEffect(() => {
+    setSplashState();
+  }, []);
+
   return (
-    <S.Container isShow={props.isShow}>
+    <S.Container isShow={isShow}>
       <S.SvgWrap>
         <ImageControl
           width='108'
@@ -59,4 +77,4 @@ const OnBoarding = (props: { isShow: boolean }) => {
   );
 };
 
-export default OnBoarding;
+export default Splash;

@@ -5,10 +5,9 @@ import HomeHeader from '../components/section/home/HomeHeader';
 import HomeTabMenu from '../components/section/home/HomeTabMenu';
 import PostCard from '../components/section/home/PostCard';
 import axiosRequest from '../api/axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../store/user';
 import { PostEmpty } from '../components/section/home/PostEmpty';
-import { FeedCategory } from '../context/FeedCategory';
 import ButtonWrite from '../components/asset/ButtonWrite';
 import NaviBar from '../components/asset/NaviBar';
 import { CardType } from '../api/type';
@@ -16,6 +15,7 @@ import Loader from '../components/asset/Loader';
 import CardSkeleton from '../components/section/home/CardSkeleton';
 import { guestState } from '../store/guest';
 import { useNavigate } from 'react-router-dom';
+import { categoryState } from '../store/category';
 
 const S = {
   Container: styled.div`
@@ -29,9 +29,9 @@ const S = {
 const Home = () => {
   const userData = useRecoilValue(userState);
   const [feed, setFeed] = useState<CardType[]>([]);
-  const categoryContext = useContext(FeedCategory);
   const isGuest = useRecoilValue(guestState);
   const navigate = useNavigate();
+  const [currentCategory, setCurrentCategory] = useRecoilState(categoryState);
 
   // infinite scroll
   const firstIdRef = useRef(0);
@@ -101,9 +101,9 @@ const Home = () => {
     };
 
     setTimeout(async () => {
-      await firstFetchPosts(categoryContext.isCategory);
+      await firstFetchPosts(currentCategory);
     }, 500);
-  }, [categoryContext.isCategory]);
+  }, [currentCategory]);
 
   useEffect(() => {
     const fetchPosts = async (category: string) => {
@@ -134,7 +134,7 @@ const Home = () => {
       }
     };
     setTimeout(async () => {
-      if (scrollLoading) fetchPosts(categoryContext.isCategory);
+      if (scrollLoading) fetchPosts(currentCategory);
     }, 500);
   }, [scrollLoading]);
 

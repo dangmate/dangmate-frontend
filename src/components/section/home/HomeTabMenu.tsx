@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { Common } from '../../../styles/common';
 import { getVwValue } from '../../../styles/styleUtil';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button_Btn2 } from '../../../styles/style.font';
-import { FeedCategory } from '../../../context/FeedCategory';
+import { useRecoilState } from 'recoil';
+import { categoryState } from '../../../store/category';
 
 interface tabType {
   active: boolean;
@@ -41,29 +42,26 @@ const S = {
   `
 };
 
-interface IProps {
-  fetchPosts?: (props: string) => void;
-}
-const HomeTabMenu = (props: IProps) => {
-  const categoryContext = useContext(FeedCategory);
+const HomeTabMenu = () => {
+  const [currentCategory, setCurrentCategory] = useRecoilState(categoryState);
   const [toggleState, setToggleState] = useState<number>(1);
   const fetchAllPosts = () => {
     setToggleState(1);
-    categoryContext.setCategory('all');
+    setCurrentCategory('all');
   };
   const fetchMatePosts = () => {
     setToggleState(2);
-    categoryContext.setCategory('산책 메이트');
+    setCurrentCategory('산책 메이트');
   };
   const fetchStoryPosts = () => {
     setToggleState(3);
-    categoryContext.setCategory('댕댕 이야기');
+    setCurrentCategory('댕댕 이야기');
   };
 
   useEffect(() => {
-    if (categoryContext.isCategory === 'all') setToggleState(1);
-    else if (categoryContext.isCategory === '산책 메이트') setToggleState(2);
-    else if (categoryContext.isCategory === '댕댕 이야기') setToggleState(3);
+    if (currentCategory === 'all') setToggleState(1);
+    else if (currentCategory === '산책 메이트') setToggleState(2);
+    else if (currentCategory === '댕댕 이야기') setToggleState(3);
   }, []);
 
   return (
