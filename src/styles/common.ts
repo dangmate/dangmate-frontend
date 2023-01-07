@@ -19,6 +19,9 @@ export const Common = {
     bg_dark: '#F1F1F5',
 
     system_error: '#DC0000',
-    system_good: '#04B014'
+    system_good: '#04B014',
+
+    skeleton_base: '#D3D3DB',
+    skeleton_highlight: '#e8e8f0'
   }
 };
