@@ -66,50 +66,50 @@ const PostCard = (props: PostType) => {
   const [detailData, setDetailData] = useState(props.data);
   return (
     <>
-      {detailData ? (
-        <S.Container>
-          <Link to={`/view/${detailData.postId}`}>
-            {detailData.thumbnail ? (
-              <S.Media>
-                <img src={detailData.thumbnail} alt='thumb' />
-              </S.Media>
-            ) : (
-              <></>
-            )}
+      {/*{detailData ? (*/}
+      <S.Container>
+        <Link to={`/view/${detailData.postId}`}>
+          {detailData.thumbnail ? (
+            <S.Media>
+              <img src={detailData.thumbnail} alt='thumb' />
+            </S.Media>
+          ) : (
+            <></>
+          )}
 
-            <S.FeedHead>
-              <UserName
-                src={
-                  detailData.profile ? detailData.profile : 'images/profile.png'
-                }
-                alt={''}
-                name={detailData.fullName}
-              />
-              <Category title={detailData.category} />
-            </S.FeedHead>
+          <S.FeedHead>
+            <UserName
+              src={
+                detailData.profile ? detailData.profile : 'images/profile.png'
+              }
+              alt={''}
+              name={detailData.fullName}
+            />
+            <Category title={detailData.category} />
+          </S.FeedHead>
 
-            <S.Content>{detailData.content}</S.Content>
-          </Link>
+          <S.Content>{detailData.content}</S.Content>
+        </Link>
 
-          <S.Actions>
-            <S.Column>
-              <UserLocation location={detailData.location} />
-              <PostTime data={detailData.createdAt} />
-            </S.Column>
+        <S.Actions>
+          <S.Column>
+            <UserLocation location={detailData.location} />
+            <PostTime data={detailData.createdAt} />
+          </S.Column>
 
-            <S.Column>
-              <CommentAction comment={detailData.comments} />
-              <LikeAction
-                like={detailData.likes}
-                postId={detailData.postId}
-                isLike={detailData.isLike}
-              />
-            </S.Column>
-          </S.Actions>
-        </S.Container>
-      ) : (
-        <CardSkeleton cards={1} />
-      )}
+          <S.Column>
+            <CommentAction comment={detailData.comments} />
+            <LikeAction
+              like={detailData.likes}
+              postId={detailData.postId}
+              isLike={detailData.isLike}
+            />
+          </S.Column>
+        </S.Actions>
+      </S.Container>
+      {/*// ) : (*/}
+      {/*//   <CardSkeleton cards={1} />*/}
+      {/*// )}*/}
     </>
   );
 };

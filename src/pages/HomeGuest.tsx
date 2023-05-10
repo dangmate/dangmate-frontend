@@ -35,7 +35,7 @@ const Home = () => {
   // infinite scroll
   const firstIdRef = useRef(0);
   const lastPostIdRef = useRef<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [scrollLoading, setScrollLoading] = useState(false);
   const isInitialMount = useRef(true);
@@ -66,7 +66,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    // setLoading(true);
     setFeed(() => {
       return [];
     });
@@ -89,7 +89,7 @@ const Home = () => {
           return [...response.data.posts];
         });
         console.log('feed', feed);
-        setLoading(false);
+        // setLoading(false);
         console.log('fetch end', loading);
       } catch (err) {
         console.log(err);
@@ -101,32 +101,32 @@ const Home = () => {
     }, 1000);
   }, [currentCategory]);
 
-  useEffect(() => {
-    const fetchPosts = async (category: string) => {
-      if (firstIdRef.current === 0 || isInitialMount.current) {
-        return;
-      }
-
-      try {
-        const response = await axiosRequest().get(
-          `/api/posts?size=5&lastPostId=${lastPostIdRef.current}&category=${category}`
-        );
-        console.log(response.data);
-        lastPostIdRef.current =
-          response.data.posts[response.data.posts.length - 1].postId;
-        setFeed((feed) => {
-          return [...feed, ...response.data.posts];
-        });
-        setScrollLoading(false);
-        console.log('fetch end', loading);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    setTimeout(async () => {
-      if (scrollLoading) fetchPosts(currentCategory);
-    }, 1500);
-  }, [scrollLoading]);
+  // useEffect(() => {
+  //   const fetchPosts = async (category: string) => {
+  //     if (firstIdRef.current === 0 || isInitialMount.current) {
+  //       return;
+  //     }
+  //
+  //     try {
+  //       const response = await axiosRequest().get(
+  //         `/api/posts?size=5&lastPostId=${lastPostIdRef.current}&category=${category}`
+  //       );
+  //       console.log(response.data);
+  //       lastPostIdRef.current =
+  //         response.data.posts[response.data.posts.length - 1].postId;
+  //       setFeed((feed) => {
+  //         return [...feed, ...response.data.posts];
+  //       });
+  //       setScrollLoading(false);
+  //       console.log('fetch end', loading);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   setTimeout(async () => {
+  //     if (scrollLoading) fetchPosts(currentCategory);
+  //   }, 1500);
+  // }, [scrollLoading]);
 
   useEffect(() => {
     if (!isGuest) {
